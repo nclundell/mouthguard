@@ -1,0 +1,33 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  cfbd_id: 1
+  season: 1
+  start: 2024-12-21 16:16:15
+  completed: false
+  attendance: 1
+  venue_id: one
+  home_id: one
+  home_points: 1
+  home_line_scores: 
+  away_id: one
+  away_points: 1
+  away_line_scores: 
+  highlights: MyString
+  notes: MyString
+
+two:
+  cfbd_id: 1
+  season: 1
+  start: 2024-12-21 16:16:15
+  completed: false
+  attendance: 1
+  venue_id: two
+  home_id: two
+  home_points: 1
+  home_line_scores: 
+  away_id: two
+  away_points: 1
+  away_line_scores: 
+  highlights: MyString
+  notes: MyString

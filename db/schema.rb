@@ -10,7 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_21_204956) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_21_211615) do
+  create_table "games", force: :cascade do |t|
+    t.integer "cfbd_id"
+    t.integer "season"
+    t.datetime "start"
+    t.boolean "completed"
+    t.integer "attendance"
+    t.integer "venue_id"
+    t.integer "home_id"
+    t.integer "home_points"
+    t.json "home_line_scores"
+    t.integer "away_id"
+    t.integer "away_points"
+    t.json "away_line_scores"
+    t.string "highlights"
+    t.string "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["away_id"], name: "index_games_on_away_id"
+    t.index ["home_id"], name: "index_games_on_home_id"
+    t.index ["venue_id"], name: "index_games_on_venue_id"
+  end
+
   create_table "teams", force: :cascade do |t|
     t.integer "cfbd_id"
     t.string "school"
@@ -40,4 +62,8 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_21_204956) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_foreign_key "games", "teams", column: "away_id"
+  add_foreign_key "games", "teams", column: "home_id"
+  add_foreign_key "games", "venues"
 end
