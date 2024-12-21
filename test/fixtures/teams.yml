@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  cfbd_id: 1
+  school: MyString
+  mascot: MyString
+  abbreviation: MyString
+  alternate_names: 
+  conference: MyString
+  color: MyString
+  alternate_color: MyString
+  logos: 
+
+two:
+  cfbd_id: 1
+  school: MyString
+  mascot: MyString
+  abbreviation: MyString
+  alternate_names: 
+  conference: MyString
+  color: MyString
+  alternate_color: MyString
+  logos: 
