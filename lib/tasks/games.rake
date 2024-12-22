@@ -23,7 +23,7 @@ namespace :games do
 
     games = JSON.parse(response.body)
 
-    games.each do |game_data|
+    games.each do |game_data|;
       game = Game.find_or_initialize_by(cfbd_id: game_data["id"])
       game["season"]           = game_data["season"]
       game["start"]            = game_data["startDate"]
@@ -38,6 +38,36 @@ namespace :games do
       game["away_line_scores"] = game_data["awayLineScores"]
       game["highlights"]       = game_data["highlights"]
       game["notes"]            = game_data["notes"]
+      game.save!
+    end
+  end
+
+  task live_update: [:environment] do
+    puts "Updating live games..."
+
+    season = Rails.application.credentials.season
+
+    uri = URI("https://apinext.collegefootballdata.com/scoreboard?classification=fbs")
+
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Get.new(uri.request_uri)
+    request["Authorization"] = "Bearer #{Rails.application.credentials.cfbd_key}"
+    request["Content-Type"] = "application/json"
+
+    response = http.start do |http|
+      http.request(request)
+    end
+
+    games = JSON.parse(response.body)
+
+    games.each do |game_data|
+      game = Game.find_or_initialize_by(cfbd_id: game_data["id"])
+      game["home_points"]      = game_data["homeTeam"]["points"]
+      game["home_line_scores"] = game_data["homeTeam"]["lineScores"]
+      game["away_points"]      = game_data["awayTeam"]["points"]
+      game["away_line_scores"] = game_data["awayTeam"]["lineScores"]
       game.save!
     end
   end
