@@ -9,6 +9,15 @@
 #   end
 
 # Calling Rake Tasks: Order Matters Here!
-Rake::Task["venues:load"].invoke
-Rake::Task["teams:load"].invoke
-Rake::Task["games:load"].invoke
+LoadVenuesJob.perform_now
+LoadTeamsJob.perform_now
+LoadGamesJob.perform_now
+# Rake::Task["venues:load"].invoke
+# Rake::Task["teams:load"].invoke
+# Rake::Task["games:load"].invoke
+
+nathan = User.find_or_initialize_by(
+  email_address: Rails.application.credentials.nclundell_email_address
+)
+nathan.password = Rails.application.credentials.nclundell_password
+nathan.save!

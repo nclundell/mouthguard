@@ -1,9 +1,9 @@
 require 'net/http'
 
-namespace :venues do
-  desc "Get Venue from CFBD"
+class LoadVenuesJob < ApplicationJob
+  queue_as :default
 
-  task load: [ :environment] do
+  def perform(*args)
     puts "Loading venues..."
 
     uri = URI("https://apinext.collegefootballdata.com/venues")

@@ -1,9 +1,9 @@
 require 'net/http'
 
-namespace :teams do
-  desc "Get Team Data from CFBD"
+class LoadTeamsJob < ApplicationJob
+  queue_as :default
 
-  task load: [:environment] do
+  def perform(*args)
     puts "Loading teams..."
 
     season = Rails.application.credentials.season

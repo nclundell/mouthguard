@@ -1,9 +1,9 @@
 require 'net/http'
 
-namespace :games do
-  desc "Get game from CFBD"
+class LoadGamesJob < ApplicationJob
+  queue_as :data_loading
 
-  task load: [:environment] do
+  def perform(*args)
     puts "Loading games..."
 
     season = Rails.application.credentials.season
@@ -23,7 +23,7 @@ namespace :games do
 
     games = JSON.parse(response.body)
 
-    games.each do |game_data|;
+    games.each do |game_data|
       game = Game.find_or_initialize_by(cfbd_id: game_data["id"])
       game["season"]           = game_data["season"]
       game["start"]            = game_data["startDate"]
