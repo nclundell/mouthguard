@@ -64,10 +64,29 @@ namespace :games do
 
     games.each do |game_data|
       game = Game.find_or_initialize_by(cfbd_id: game_data["id"])
-      game["home_points"]      = game_data["homeTeam"]["points"]
-      game["home_line_scores"] = game_data["homeTeam"]["lineScores"]
-      game["away_points"]      = game_data["awayTeam"]["points"]
-      game["away_line_scores"] = game_data["awayTeam"]["lineScores"]
+      unless game["status"] == "completed"
+        game["tv"]               = game_data["tv"]
+        game["status"]           = game_data["status"]
+        game["period"]           = game_data["period"]
+        game["clock"]            = game_data["clock"]
+        game["situation"]        = game_data["situation"]
+        game["possession"]       = game_data["possession"]
+        game["last_play"]        = game_data["lastPlay"]
+        game["home_points"]      = game_data["homeTeam"]["points"]
+        game["home_line_scores"] = game_data["homeTeam"]["lineScores"]
+        game["away_points"]      = game_data["awayTeam"]["points"]
+        game["away_line_scores"] = game_data["awayTeam"]["lineScores"]
+      else
+        game["period"]           = nil
+        game["clock"]            = nil
+        game["situation"]        = nil
+        game["possession"]       = nil
+        game["last_play"]        = nil
+        game["home_points"]      = game_data["homeTeam"]["points"]
+        game["home_line_scores"] = game_data["homeTeam"]["lineScores"]
+        game["away_points"]      = game_data["awayTeam"]["points"]
+        game["away_line_scores"] = game_data["awayTeam"]["lineScores"]
+      end
       game.save!
     end
   end

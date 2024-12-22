@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_22_035543) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_22_051510) do
   create_table "games", force: :cascade do |t|
     t.integer "cfbd_id"
     t.integer "season"
@@ -28,6 +28,13 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_22_035543) do
     t.string "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "tv"
+    t.string "status"
+    t.string "period"
+    t.string "clock"
+    t.string "situation"
+    t.string "possession"
+    t.string "last_play"
     t.index ["away_id"], name: "index_games_on_away_id"
     t.index ["home_id"], name: "index_games_on_home_id"
     t.index ["venue_id"], name: "index_games_on_venue_id"
