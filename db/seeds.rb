@@ -7,3 +7,8 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+# Calling Rake Tasks: Order Matters Here!
+Rake::Task["venues:load"].invoke
+Rake::Task["teams:load"].invoke
+Rake::Task["games:load"].invoke
