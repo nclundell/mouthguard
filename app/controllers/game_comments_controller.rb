@@ -1,0 +1,2 @@
+class GameCommentsController < ApplicationController
+end
