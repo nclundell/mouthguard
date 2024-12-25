@@ -2,9 +2,11 @@ Rails.application.routes.draw do
   mount MissionControl::Jobs::Engine, at: "/jobs"
 
   resource :session
+  resources :dashboard, only: [ :index ]
   resources :passwords, param: :token
-  resources :games
-  resources :game_comments
+  resources :games do
+    resources :game_comments
+  end
   resources :picks
   resources :teams
   resources :venues
@@ -20,5 +22,5 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  root "games#index"
+  root "dashboard#index"
 end

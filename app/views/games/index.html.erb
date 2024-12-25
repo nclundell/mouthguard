@@ -5,17 +5,11 @@
 
   <% content_for :title, "Games" %>
 
-  <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Games</h1>
-    <%= link_to "New game", new_game_path, class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
-  </div>
-
-  <div id="games" class="min-w-full">
+  <div id="games" class="container flex flex-wrap items-top max-w-auto place-content-center overflow-auto">
     <% @games.each do |game| %>
-      <%= render game %>
-      <p>
-        <%= link_to "Show this game", game, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-      </p>
+      <%= link_to game do %>
+        <%= render game %>
+      <% end %>
     <% end %>
   </div>
 </div>
