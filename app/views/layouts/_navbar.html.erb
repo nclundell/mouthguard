@@ -1,0 +1,90 @@
+<nav class="bg-blue-900">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between">
+      <div class="flex items-center">
+        <%= icon "trophy", class: "font-bold text-amber-400 size-8" %>
+        <%= link_to root_path, class:"font-semibold px-4 text-2xl text-white" do %>
+          Nelundaar
+        <% end %>
+        <div class="hidden sm:ml-6 sm:block">
+          <div class="flex space-x-4">
+            <%= link_to games_path, class: "rounded-md px-3 py-2 text-sm font-medium text-white" do %>
+              Games
+            <% end %>
+            <%= link_to games_path, class: "rounded-md px-3 py-2 text-sm font-medium text-white" do %>
+              Picks
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="hidden sm:ml-6 sm:block">
+        <div class="flex flex-row items-center">
+          <!-- Profile dropdown -->
+          <div class="relative ml-3">
+            <% if authenticated? %>
+              <%= button_to session_path, method: :delete, class:"flex flex-row relative p-1" do %>
+                <%= icon "user-circle", class: "text-white size-8" %>
+                <span class="align-middle text-white p-1">
+                  <%= Current.user.email_address %>
+                </span>
+              <% end %>
+            <% else %>
+              <%= button_to new_session_path, method: :get, class:"flex flex-row relative p-1" do %>
+                <%= icon "user-circle", class: "text-white size-8" %>
+                <span class="align-middle text-white p-1">
+                  Log In
+                </span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="-mr-2 flex sm:hidden">
+        <!-- Mobile menu button -->
+        <button type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white" aria-controls="mobile-menu" aria-expanded="false">
+          <span class="absolute -inset-0.5"></span>
+          <span class="sr-only">Open main menu</span>
+          <%= icon "bars-3", class: "size-8" %>
+          <%= icon "x-mark", class: "hidden size-8" %>
+          <svg class="hidden size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile menu, show/hide based on menu state. -->
+  <div class="sm:hidden" id="mobile-menu">
+    <div class="space-y-1 px-2 pb-3 pt-2">
+      <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+      <%= link_to "Dashboard", root_path, class:"block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white" %>
+      <%= link_to "Games", games_path, class:"block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white" %>
+      <%= link_to "Picks", games_path, class:"block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white" %>
+    </div>
+    <div class="border-t border-gray-700 pb-3 pt-4">
+      <% if authenticated? %>
+        <div class="flex items-center px-5">
+          <div class="shrink-0">
+            <%= icon "user-circle", class: "text-white size-10" %>
+          </div>
+          <div class="ml-3">
+            <div class="text-base font-medium text-white">Nathan Lundell</div>
+            <div class="text-sm font-medium text-gray-400"><%= Current.user.email_address %></div>
+          </div>
+        </div>
+        <div class="mt-3 space-y-1 px-2">
+          <%= button_to session_path, method: :delete, class: "w-full block rounded-md px-3 py-2 text-base text-left font-medium text-gray-400 hover:bg-gray-700 hover:text-white" do %>
+            Log Out
+          <% end %>
+        </div>
+      <% else %>
+        <%= button_to  new_session_path, method: :get, class:"w-full flex flex-row block rounded-md px-3 py-2 text-base text-left font-medium text-gray-400 hover:bg-gray-700 hover:text-white" do %>
+          <%= icon "user-circle", class: "text-white size-8" %>
+          Log In
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</nav>
+
