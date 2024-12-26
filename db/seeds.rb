@@ -20,4 +20,6 @@ nathan = User.find_or_initialize_by(
   email_address: Rails.application.credentials.nclundell_email_address
 )
 nathan.password = Rails.application.credentials.nclundell_password
+nathan.first_name = "Nathan"
+nathan.last_name = "Lundell"
 nathan.save!

@@ -1,0 +1,61 @@
+<div class="container px-6 sm:px-6 lg:px-8">
+  <div class="sm:flex sm:items-center">
+  </div>
+  <div class="mt-8 flow-root">
+    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        <table class="min-w-full divide-y divide-gray-300">
+          <thead>
+            <tr>
+              <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Bowl</th>
+              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">TV</th>
+              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Date</th>
+              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Time</th>
+              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Winner</th>
+              <% @users.each do |user| %>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                  <%= user.display_name || user.first_name || user.email_address %>
+                </th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody class="bg-white">
+            <% @games.each do |game| %>
+              <tr class="even:bg-gray-50 text-gray-900 hover:rounded-md hover:bg-blue-600 hover:text-white">
+                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3">
+                  <%= game.notes %>
+
+                </td>
+                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3">
+                  <%= game.tv || "TBD" %>
+                </td>
+                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3">
+                  <%= game.start.strftime("%-m/%e") || "TBD" %>
+
+                </td>
+                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3">
+                  <%= time_tag game.start, "data-local": "time", "data-format": "%l:%M %p" %>
+                </td>
+                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3"><%= game.winner&.school %></td>
+                <% @users.each do |user| %>
+                  <td class="flex whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3"> 
+                    <% pick = Pick.find_by(game: game, user: user)%>
+                    <% unless game.winner.blank? || pick.blank? %>
+                      <% if pick.team == game.winner %>
+                        <%= icon "check-badge", class: "font-bold text-green-500 size-6 mr-2" %>
+                      <% else %>
+                        <%= icon "x-circle", class: "font-bold text-red-500 size-6 mr-2" %>
+                      <% end %>
+                    <% end %>
+                    <span class="my-auto"><%= pick&.team&.school %></span>
+                  </td>
+                <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,9 +1,10 @@
 <nav class="bg-blue-900">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="flex h-16 items-center justify-between">
+      <!-- Left Side -->
       <div class="flex items-center">
-        <%= icon "trophy", class: "font-bold text-amber-400 size-8" %>
-        <%= link_to root_path, class:"font-semibold px-4 text-2xl text-white" do %>
+        <%= link_to root_path, class:"flex font-semibold text-2xl text-white" do %>
+          <%= icon "trophy", class: "font-bold text-amber-400 size-8 mr-4" %>
           Nelundaar
         <% end %>
         <div class="hidden sm:ml-6 sm:block">
@@ -11,12 +12,13 @@
             <%= link_to games_path, class: "rounded-md px-3 py-2 text-sm font-medium text-white" do %>
               Games
             <% end %>
-            <%= link_to games_path, class: "rounded-md px-3 py-2 text-sm font-medium text-white" do %>
+            <%= link_to picks_path, class: "rounded-md px-3 py-2 text-sm font-medium text-white" do %>
               Picks
             <% end %>
           </div>
         </div>
       </div>
+      <!-- Right Side -->
       <div class="hidden sm:ml-6 sm:block">
         <div class="flex flex-row items-center">
           <!-- Profile dropdown -->
