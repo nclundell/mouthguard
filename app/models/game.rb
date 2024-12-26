@@ -12,7 +12,8 @@ class Game < ApplicationRecord
   end
 
   def today?
-    start.to_date == Date.today
+    adjusted_start = start - 5.hours # Default check in EST
+    adjusted_start.to_date == Date.today
   end
 
   def winner
