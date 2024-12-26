@@ -1,0 +1,43 @@
+<div class="container">
+  <table>
+    <thead class="border-b-2 border-black border-solid">
+      <th class="px-2"></th>
+      <th class="px-2">1</th>
+      <th class="px-2">2</th>
+      <th class="px-2">3</th>
+      <th class="px-2">4</th>
+      <% if game.away_line_scores.length > 4 %>
+        <th class="px-2">OT</th>
+      <% end %>
+      <th class="px-2">T</th>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="px-2"><%= game.away.abbreviation %></td>
+        <% unless game.away_line_scores.blank? %>
+          <td class="px-2"><%= game.away_line_scores[0] %></td>
+          <td class="px-2"><%= game.away_line_scores[1] %></td>
+          <td class="px-2"><%= game.away_line_scores[2] %></td>
+          <td class="px-2"><%= game.away_line_scores[3] %></td>
+          <% if game.away_line_scores.length > 4 %>
+            <td class="px-2"><%= game.away_line_scores[4] %></td>
+          <% end %>
+          <td class="px-2"><%= game.away_points %></td>
+        <% end %>
+      </tr> 
+      <tr class="mt-1">
+        <td class="px-2"><%= game.home.abbreviation %></td>
+        <% unless game.home_line_scores.blank? %>
+          <td class="px-2"><%= game.home_line_scores[0] %></td>
+          <td class="px-2"><%= game.home_line_scores[1] %></td>
+          <td class="px-2"><%= game.home_line_scores[2] %></td>
+          <td class="px-2"><%= game.home_line_scores[3] %></td>
+          <% if game.home_line_scores.length > 4 %>
+            <td class="px-2"><%= game.home_line_scores[4] %></td>
+          <% end %>
+          <td class="px-2"><%= game.home_points %></td>
+        <% end %>
+      </tr>
+    </tbody>
+  </table>
+</div>

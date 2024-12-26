@@ -11,6 +11,12 @@ class Game < ApplicationRecord
     Time.now > start
   end
 
+  def is_completed?
+    return true if completed
+
+    false
+  end
+
   def today?
     adjusted_start = start - 5.hours # Default check in EST
     adjusted_start.to_date == Date.today

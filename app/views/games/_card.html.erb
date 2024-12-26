@@ -3,17 +3,20 @@
     <%= game.notes %>
   </div>
   <div class="text-center">
-    <% if game.completed %>
-      Final | <%= time_tag game.start, "data-local": "time", "data-format": "%b. %e at %l:%M %p" %>
-    <% else %> 
+    <% if game.is_completed? %>
+      Final | <%= time_tag game.start, "data-local": "time", "data-format": "%b. %e" %>
+    <% elsif game.is_live? %> 
+      <% if game.away_line_scores.length > 4 %>
+        <%= game.tv %> | OT
+      <% else %>
+        <%= game.tv %> | <%= game.clock %> <%= game.period&.to_i&.ordinalize %>
+      <% end %>
+    <% else %>
       <%= game.tv %> | <%= time_tag game.start, "data-local": "time", "data-format": "%b. %e at %l:%M %p" %>
-    <% end %>
-    <% if game.is_live? %>
-      <%= game.period %> | <%= game.clock %>
     <% end %>
   </div>
   <div class="flex flex-row justify-center content-center">
-    <div class="flex flex-col justify-center content-center away-team px-4">
+    <div class="flex flex-col justify-center content-center away-team px-2">
       <div class="flex flex-row justify-center content-center">
         <div class="size-16 pr-1">
           <%= image_tag game.away.logos.first %>
@@ -22,17 +25,21 @@
           <%= game.away_points || 0 %>
         </div>
         <% if game.possession == "away" %>
-            <%= icon "chevron-double-left", class: "size-4 my-auto" %>
+          <%= icon "chevron-double-left", class: "size-4 my-auto" %>
+        <% else %>    
+          <%= icon "chevron-double-left", class: "size-4 my-auto text-white" %>
         <% end %>
       </div>
-      <div class="font-semibold text-l text-center my-auto">
+      <div class="font-semibold text-l text-left my-auto">
         <%= game.away.school %>
       </div>
     </div>
-    <div class="flex flex-col justify-center content-center home-team px-4">
+    <div class="flex flex-col justify-center content-center home-team px-2">
       <div class="flex flex-row justify-center content-center">
         <% if game.possession == "home" %>
-            <%= icon "chevron-double-right", class: "size-4 my-auto" %>
+          <%= icon "chevron-double-right", class: "size-4 my-auto" %>
+        <% else %>    
+          <%= icon "chevron-double-right", class: "size-4 my-auto text-white" %>
         <% end %>
         <div class="font-bold text-4xl my-auto">
           <%= game.home_points || 0 %>
@@ -41,7 +48,7 @@
           <%= image_tag game.home.logos.first %>
         </div>
       </div>
-      <div class="font-semibold text-l text-center my-auto">
+      <div class="font-semibold text-l text-right my-auto">
         <%= game.home.school %>
       </div>
     </div>

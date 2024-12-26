@@ -1,15 +1,73 @@
-<div class="mx-auto md:w-2/3 w-full flex">
+<div class="container mx-auto md:w-2/3 w-full flex flex-col">
   <div class="mx-auto">
     <% if notice.present? %>
       <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
     <% end %>
 
-    <%= render @game %>
-
-    <%= link_to "Edit this game", edit_game_path(@game), class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <%= link_to "Back to games", games_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <div class="inline-block ml-2">
-      <%= button_to "Destroy this game", @game, method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
+    <div class="font-bold text-center text-4xl">
+      <%= @game.notes %>
     </div>
+    <div class="font-semibold text-center text-xl">
+      <%= time_tag @game.start, "data-local": "time", "data-format": "%B %e at %l:%M %p" %>
+    </div>
+    <div class="text-center text-xl">
+    </div>
+    <div class="flex flex-row justify-center content-center">
+      <div class="flex flex-col justify-center content-center away-team px-4">
+        <div class="flex flex-row justify-center content-center">
+          <div class="size-40 pr-1">
+            <%= image_tag @game.away.logos.first %>
+          </div>
+          <div class="font-bold text-4xl my-auto">
+            <%= @game.away_points || 0 %>
+          </div>
+          <% if @game.possession == "away" %>
+            <%= icon "chevron-double-left", class: "size-4 my-auto" %>
+          <% else %>    
+            <%= icon "chevron-double-left", class: "size-4 my-auto text-white" %>
+          <% end %>
+        </div>
+        <div class="font-semibold text-xl text-left my-auto">
+          <%= @game.away.school %> <%= @game.away.mascot %>
+        </div>
+      </div>
+      <div class="my-auto text-center">
+        <% unless @game.clock.blank? %>
+          <% if @game.away_line_scores.length > 4 %>
+            <%= @game.tv %> | OT
+          <% else %>
+            <%= @game.tv %> | <%= @game.clock %> <%= @game.period&.to_i&.ordinalize %>
+          <% end %>
+        <% else %>
+          <%= @game.tv %> | Final
+        <% end %>
+        <div class="my-2">
+          <%= render partial: "games/boxscore", locals: { game: @game } %>
+        </div>
+      </div>
+      <div class="flex flex-col justify-center content-center home-team px-4">
+        <div class="flex flex-row justify-center content-center">
+          <% if @game.possession == "home" %>
+              <%= icon "chevron-double-right", class: "size-4 my-auto" %>
+          <% else %>    
+            <%= icon "chevron-double-right", class: "size-4 my-auto text-white" %>
+          <% end %>
+          <div class="font-bold text-4xl my-auto">
+            <%= @game.home_points || 0 %>
+          </div>
+          <div class="size-40 pl-1">
+            <%= image_tag @game.home.logos.first %>
+          </div>
+        </div>
+        <div class="font-semibold text-xl text-right my-auto">
+          <%= @game.home.school %> <%= @game.home.mascot %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-center my-2 px-1">
+    <% unless @game.last_play.blank? %>
+      <%= @game.last_play %>
+    <% end %>
   </div>
 </div>

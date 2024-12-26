@@ -11,7 +11,7 @@
     <% else %>
       <% @games.each do |game| %>
         <%= link_to game do %>
-          <%= render game %>
+          <%= render partial: "games/card", locals: { game: game } %>
         <% end %>
       <% end %>
     <%end%>
