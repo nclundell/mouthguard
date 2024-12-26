@@ -24,12 +24,12 @@
           <!-- Profile dropdown -->
           <div class="relative ml-3">
             <% if authenticated? %>
-              <%= button_to session_path, method: :delete, class:"flex flex-row relative p-1" do %>
+              <button class="flex flex-row relative p-1" data-action="click->navbar#toggleMenu">
                 <%= icon "user-circle", class: "text-white size-8" %>
                 <span class="align-middle text-white p-1">
                   <%= Current.user.name %>
                 </span>
-              <% end %>
+              </button>
             <% else %>
               <%= button_to new_session_path, method: :get, class:"flex flex-row relative p-1" do %>
                 <%= icon "user-circle", class: "text-white size-8" %>
@@ -43,14 +43,37 @@
       </div>
       <div class="-mr-2 flex sm:hidden">
         <!-- Mobile menu button -->
-        <button type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white" data-action="click->navbar#toggleMobileMenu">
+        <button type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white" data-action="click->navbar#toggleMenu">
           <%= icon "bars-3", class: "size-8" %>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Mobile menu, show/hide based on menu state. -->
+  <!-- Profile Dropdown Menu -->
+  <div class="max-w-7xl mx-auto">
+    <div class="hidden max-sm:hidden relative" data-navbar-target="profileMenu">
+      <div class="absolute right-0 z-10 mt-1 w-48 origin-top-right border-2 border-gray-400 rounded-md bg-gray-200 py-1 shadow-lg" role="menu" tabindex="-1">
+        <div class="my-1 px-2">
+          <%= button_to session_path, method: :delete, class: "w-full block rounded-md px-3 py-1 text-left text-sm hover:bg-blue-600 hover:text-white" do %>
+            Your Profile
+          <% end %>
+        </div>
+        <div class="my-1 px-2">
+          <%= button_to session_path, method: :delete, class: "w-full block rounded-md px-3 py-1 text-left text-sm hover:bg-blue-600 hover:text-white" do %>
+            Your Picks
+          <% end %>
+        </div>
+        <div class="my-1 px-2">
+          <%= button_to session_path, method: :delete, class: "w-full block rounded-md px-3 py-1 text-left text-sm hover:bg-blue-600 hover:text-white" do %>
+            Log Out
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
   <div class="hidden sm:hidden" id="mobile-menu" data-navbar-target="mobileMenu">
     <div class="space-y-1 px-2 pb-3 pt-2">
       <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
