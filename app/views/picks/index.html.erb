@@ -12,7 +12,7 @@
             <th scope="col" class="sticky top-0 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Winner</th>
             <% @users.each do |user| %>
               <th scope="col" class="sticky top-0 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                <%= user.display_name || user.first_name || user.email_address %>
+                <%= user.name %>
               </th>
             <% end %>
           </thead>

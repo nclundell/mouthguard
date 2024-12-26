@@ -27,7 +27,7 @@
               <%= button_to session_path, method: :delete, class:"flex flex-row relative p-1" do %>
                 <%= icon "user-circle", class: "text-white size-8" %>
                 <span class="align-middle text-white p-1">
-                  <%= Current.user.email_address %>
+                  <%= Current.user.name %>
                 </span>
               <% end %>
             <% else %>
