@@ -1,23 +1,20 @@
-<div class="container px-6 sm:px-6 lg:px-8">
-  <div class="sm:flex sm:items-center">
-  </div>
-  <div class="mt-8 flow-root">
+<div class="container">
+  <div class="max-sm:hidden px-6 sm:px-6 lg:px-8">
+  <div class="low-root">
     <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
       <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
         <table class="min-w-full divide-y divide-gray-300">
           <thead>
-            <tr>
-              <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Bowl</th>
-              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">TV</th>
-              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Date</th>
-              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Time</th>
-              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Winner</th>
-              <% @users.each do |user| %>
-                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                  <%= user.display_name || user.first_name || user.email_address %>
-                </th>
-              <% end %>
-            </tr>
+            <th scope="col" class="sticky top-0 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Bowl</th>
+            <th scope="col" class="sticky top-0 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">TV</th>
+            <th scope="col" class="sticky top-0 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Date</th>
+            <th scope="col" class="sticky top-0 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Time</th>
+            <th scope="col" class="sticky top-0 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Winner</th>
+            <% @users.each do |user| %>
+              <th scope="col" class="sticky top-0 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                <%= user.display_name || user.first_name || user.email_address %>
+              </th>
+            <% end %>
           </thead>
           <tbody class="bg-white">
             <% @games.each do |game| %>
@@ -59,3 +56,8 @@
   </div>
 </div>
 
+<!-- Mobile Table -->
+  <div class="sm:hidden" id="mobile-menu">
+    Stuff
+  </div>
+</div>
