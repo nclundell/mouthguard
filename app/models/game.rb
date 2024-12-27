@@ -6,6 +6,8 @@ class Game < ApplicationRecord
   has_many :game_comments
   has_many :picks
 
+  broadcasts_refreshes
+
   def is_live?
     return false if completed
     Time.now > start

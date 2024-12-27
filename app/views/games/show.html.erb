@@ -1,5 +1,5 @@
 <div class="container mx-auto md:w-2/3 w-full flex flex-col">
-  <div class="mx-auto">
+  <div class="mx-auto max-sm:hidden">
     <% if notice.present? %>
       <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
     <% end %>
@@ -32,14 +32,16 @@
         </div>
       </div>
       <div class="my-auto text-center">
-        <% unless @game.clock.blank? %>
-          <% if @game.away_line_scores.length > 4 %>
+        <% if @game.is_live? %>
+          <% if @game.away_line_scores&.length.to_i > 4 %>
             <%= @game.tv %> | OT
           <% else %>
             <%= @game.tv %> | <%= @game.clock %> <%= @game.period&.to_i&.ordinalize %>
           <% end %>
-        <% else %>
+        <% elsif @game.is_completed? %>
           <%= @game.tv %> | Final
+        <% else %>
+          <%= @game.tv %>
         <% end %>
         <div class="my-2">
           <%= render partial: "games/boxscore", locals: { game: @game } %>
@@ -64,6 +66,10 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="sm:hidden">
+    <%= render partial: "games/card", locals: { game: @game } %>
+    <%= render partial: "games/boxscore", locals: { game: @game } %>
   </div>
   <div class="text-center my-2 px-1">
     <% unless @game.last_play.blank? %>

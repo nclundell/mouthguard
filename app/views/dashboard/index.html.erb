@@ -11,7 +11,9 @@
     <% else %>
       <% @games.each do |game| %>
         <%= link_to game do %>
-          <%= render partial: "games/card", locals: { game: game } %>
+          <div class="border-4 rounded border-neutral-400 w-80 m-4">
+            <%= render partial: "games/card", locals: { game: game } %>
+          </div>
         <% end %>
       <% end %>
     <%end%>
