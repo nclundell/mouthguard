@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   mount MissionControl::Jobs::Engine, at: "/jobs"
 
   resource :session
+  resource :registration, only: [ :new, :create ]
   resources :dashboard, only: [ :index ]
   resources :passwords, param: :token
   resources :games do

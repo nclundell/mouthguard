@@ -1,12 +1,12 @@
 class Game < ApplicationRecord
+  include Turbo::Broadcastable
+
   belongs_to :venue
   belongs_to :home, class_name: "Team"
   belongs_to :away, class_name: "Team"
 
   has_many :game_comments
   has_many :picks
-
-  broadcasts_refreshes
 
   def is_live?
     return false if completed
