@@ -3,9 +3,9 @@
 </div>
 <div class="text-center">
   <% if game.is_completed? %>
-    Final | <%= time_tag game.start, "data-local": "time", "data-format": "%b. %e" %>
-  <% elsif game.is_live?  %> 
-    <% if game.away_line_scores&.length.to_i > 4 %>
+    Final | <%= time_tag game.start, "data-local": "time", "data-format": "%b. %e at %l:%M %p" %>
+  <% elsif game.is_live? %> 
+    <% if game.away_line_scores.length > 4 %>
       <%= game.tv %> | OT
     <% else %>
       <%= game.tv %> | <%= game.clock %> <%= game.period&.to_i&.ordinalize %>
