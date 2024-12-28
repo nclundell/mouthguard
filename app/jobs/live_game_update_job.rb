@@ -1,12 +1,11 @@
 require 'net/http'
+include ApplicationHelper
 
 class LiveGameUpdateJob < ApplicationJob
   queue_as :live_update
 
   def perform(*args)
-    puts "Updating live games..."
-
-    season = Rails.application.credentials.season
+    puts "Updating #{current_season} live games..."
 
     uri = URI("https://apinext.collegefootballdata.com/scoreboard?classification=fbs")
 

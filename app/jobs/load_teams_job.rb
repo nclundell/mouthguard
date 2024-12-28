@@ -1,13 +1,13 @@
 require 'net/http'
+include ApplicationHelper
 
 class LoadTeamsJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    puts "Loading teams..."
+    puts "Loading #{current_season} teams..."
 
-    season = Rails.application.credentials.season
-    uri = URI("https://apinext.collegefootballdata.com/teams/fbs?year=#{season}")
+    uri = URI("https://apinext.collegefootballdata.com/teams/fbs?year=#{current_season}")
 
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
