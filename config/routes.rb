@@ -5,11 +5,12 @@ Rails.application.routes.draw do
   resource :registration, only: [ :new, :create ]
   resources :dashboard, only: [ :index ]
   resources :passwords, param: :token
-  resources :games do
-    resources :game_comments
-  end
-  resources :picks
+  resources :games, only: [ :index, :show ]
+  resources :picks, only: [ :index ]
   resources :teams
+  resources :users do
+    resources :picks
+  end
   resources :venues
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

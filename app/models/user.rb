@@ -7,8 +7,11 @@ class User < ApplicationRecord
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
+  accepts_nested_attributes_for :picks
+
   def name
     return display_name unless display_name.blank?
+    return "#{first_name} #{last_name}" unless first_name.blank? || last_name.blank?
     return first_name unless first_name.blank?
 
     email_address
