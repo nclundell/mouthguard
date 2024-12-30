@@ -2,6 +2,7 @@ include ApplicationHelper
 
 class Users::PicksController < ApplicationController
   def index
+    @user = User.find(params[:user_id])
     @picks = Pick.where(user_id: params[:user_id]).select {
       |p| p.game.season = current_season
     }

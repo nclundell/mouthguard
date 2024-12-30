@@ -6,12 +6,12 @@
         <table class="min-w-full border-separate border-spacing-0">
           <thead>
             <tr>
-              <th scope="col" class="sticky top-0 left-0 z-10 border-b border-gray-300 bg-white/75 py-4 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8">Bowl</th>
-              <th scope="col" class="sticky top-0 z-10 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter lg:table-cell max-lg:hidden">TV</th>
-              <th scope="col" class="sticky top-0 z-10 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter xl:table-cell max-xl:hidden">Date</th>
-              <th scope="col" class="sticky top-0 z-10 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter xl:table-cell max-xl:hidden">Time</th>
+              <th scope="col" class="sticky top-0 left-0 border-b border-gray-300 bg-white/75 py-4 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8">Bowl</th>
+              <th scope="col" class="sticky top-0 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter lg:table-cell max-lg:hidden">TV</th>
+              <th scope="col" class="sticky top-0 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter xl:table-cell max-xl:hidden">Date</th>
+              <th scope="col" class="sticky top-0 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter xl:table-cell max-xl:hidden">Time</th>
               <% @users.each do |user| %>
-                <th scope="col" class="sticky top-0 z-10 hidden border-b border-gray-300 bg-white/75 px-3 py-3.5 backdrop-blur backdrop-filter sm:table-cell text-left">
+                <th scope="col" class="sticky top-0 hidden border-b border-gray-300 bg-white/75 px-3 py-3.5 backdrop-blur backdrop-filter sm:table-cell text-left">
                   <% if user == @current_user %>
                     <%= link_to user_picks_path(user), method: :get, class: "flex flex-row text-sm font-semibold text-gray-900" do %>
                       <%= user.name %> (<%= user.picks_correct %>)
