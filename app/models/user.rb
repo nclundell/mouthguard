@@ -1,3 +1,5 @@
+include ApplicationHelper
+
 class User < ApplicationRecord
   has_secure_password
 
@@ -15,5 +17,9 @@ class User < ApplicationRecord
     return first_name unless first_name.blank?
 
     email_address
+  end
+
+  def picks_correct
+    picks.select { |p| p.game.season == current_season && p.game.winner == p.team }.count
   end
 end

@@ -1,47 +1,50 @@
 <div class="container">
-  <div class="max-sm:hidden px-6 sm:px-6 lg:px-8">
-  <div class="low-root">
-    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-        <table class="min-w-full divide-y divide-gray-300">
+  <!-- Desktop Table -->
+  <div class="max-sm:hidden mt-4">
+    <div class="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle">
+        <table class="min-w-full border-separate border-spacing-0">
           <thead>
-            <th scope="col" class="sticky top-0 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Bowl</th>
-            <th scope="col" class="sticky top-0 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">TV</th>
-            <th scope="col" class="sticky top-0 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Date</th>
-            <th scope="col" class="sticky top-0 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Time</th>
-            <th scope="col" class="sticky top-0 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Winner</th>
-            <% @users.each do |user| %>
-              <th scope="col" class="sticky top-0 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                <%= user.name %>
-              </th>
-            <% end %>
+            <tr>
+              <th scope="col" class="sticky top-0 left-0 z-10 border-b border-gray-300 bg-white/75 py-4 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8">Bowl</th>
+              <th scope="col" class="sticky top-0 z-10 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter lg:table-cell max-lg:hidden">TV</th>
+              <th scope="col" class="sticky top-0 z-10 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter xl:table-cell max-xl:hidden">Date</th>
+              <th scope="col" class="sticky top-0 z-10 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter xl:table-cell max-xl:hidden">Time</th>
+              <% @users.each do |user| %>
+                <th scope="col" class="sticky top-0 z-10 hidden border-b border-gray-300 bg-white/75 px-3 py-3.5 backdrop-blur backdrop-filter sm:table-cell text-left">
+                  <% if user == @current_user %>
+                    <%= link_to user_path(user), method: :get, class: "flex flex-row text-sm font-semibold text-gray-900" do %>
+                      <%= user.name %> (<%= user.picks_correct %>)
+                      <%= icon "pencil-square", class: "size-4 ml-2 my-auto" %>
+                    <% end %>
+                  <% else %>
+                    <span class="text-sm font-semibold text-gray-900">
+                      <%= user.name %> (<%= user.picks_correct %>)
+                    </span>
+                  <% end %>
+                </th>
+              <% end %>
+            </tr>
           </thead>
-          <tbody class="bg-white">
-            <% @games.each do |game| %>
-              <tr class="even:bg-gray-50 text-gray-900 hover:rounded-md hover:bg-blue-600 hover:text-white">
-                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3">
-                  <%= game.notes %>
-
+          <tbody>
+            <% @games.each do |game| %> 
+              <tr class="even:bg-gray-100 hover:bg-blue-500 hover:text-white">
+                <td class="whitespace-nowrap py-4 pl-4 text-sm font-medium"><%= game.notes %></td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm lg:table-cell max-lg:hidden"><%= game.tv %></td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm xl:table-cell max-xl:hidden">
+                  <%= time_tag game.start, "data-local": "time", "data-format": "%-m/%e" %>
                 </td>
-                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3">
-                  <%= game.tv || "TBD" %>
-                </td>
-                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3">
-                  <%= game.start.strftime("%-m/%e") || "TBD" %>
-
-                </td>
-                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3">
+                <td class="whitespace-nowrap px-3 py-4 text-sm xl:table-cell max-xl:hidden">
                   <%= time_tag game.start, "data-local": "time", "data-format": "%l:%M %p" %>
                 </td>
-                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3"><%= game.winner&.school %></td>
                 <% @users.each do |user| %>
-                  <td class="flex whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3"> 
-                    <% pick = Pick.find_by(game: game, user: user)%>
+                  <% pick = Pick.find_by(game: game, user: user)%>
+                  <td class="flex flex-row whitespace-nowrap px-3 py-4 text-sm">
                     <% unless game.winner.blank? || pick.blank? %>
                       <% if pick.team == game.winner %>
-                        <%= icon "check-badge", class: "font-bold text-green-500 size-6 mr-2" %>
+                        <%= icon "check-circle", class: "font-extrabold text-green-500 size-8 mr-2" %>
                       <% else %>
-                        <%= icon "x-circle", class: "font-bold text-red-500 size-6 mr-2" %>
+                        <%= icon "x-circle", class: "font-bold text-red-500 size-8 mr-2" %>
                       <% end %>
                     <% end %>
                     <span class="my-auto"><%= pick&.team&.school %></span>
@@ -54,10 +57,50 @@
       </div>
     </div>
   </div>
-</div>
 
-<!-- Mobile Table -->
-  <div class="sm:hidden" id="mobile-menu">
-    Stuff
+  <!-- Mobile Table -->
+  <div class="sm:hidden">
+    <div class="">
+      <div class="inline-block min-w-full align-middle">
+        <table class="min-w-full border-separate border-spacing-0">
+          <tbody>
+            <% @games.each do |game| %>
+              <tr class="w-full">
+                <th scope="colgroup" class="sticky top-0 h-10 z-10 pl-4 py-2 bg-gray-100 text-left text-sm font-semibold text-gray-900">
+                  <%= game.notes %>
+                </th>
+                <th scope="colgroup" class="sticky top-0 h-10 z-10 pr-4 py-2  bg-gray-100 text-right text-sm font-normal text-black/50">
+                  <%= time_tag game.start, "data-local": "time", "data-format": "%-m/%e %l:%M %p" %>
+                </th>
+              </tr>
+              <tr class="w-full shadow-md">
+                <th scope="col" class="sticky top-10 z-10 pl-4 py-2 bg-gray-100 border-b border-gray-300 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter">Name</th>
+                <th scope="col" class="sticky top-10 z-10 pl-4 py-2 bg-gray-100 border-b border-gray-300 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter">Pick</th>
+              </tr>
+              <% @users.each do |user| %> 
+                <% pick = Pick.find_by(game: game, user: user)%>
+                <tr>
+                  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 pl-3">
+                    <%= user.name %>
+                  </td>
+                  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
+                    <div class="flex flex-row">
+                      <% unless game.winner.blank? || pick.blank? %>
+                        <% if pick.team == game.winner %>
+                          <%= icon "check-circle", class: "font-bold text-green-500 size-8 mr-2" %>
+                        <% else %>
+                          <%= icon "x-circle", class: "font-bold text-red-500 size-8 mr-2" %>
+                        <% end %>
+                      <% end %>
+                      <span class="my-auto"><%= pick&.team&.school %></span>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
