@@ -9,7 +9,9 @@ Rails.application.routes.draw do
   resources :picks, only: [ :index ]
   resources :teams
   resources :users do
-    resources :picks
+    get "picks", to: "users/picks#index"
+    put "picks", to: "users/picks#update"
+    get "picks/edit", to: "users/picks#edit"
   end
   resources :venues
 

@@ -1,0 +1,31 @@
+<div class="mx-auto md:w-2/3 w-full">
+  <h1 class="font-bold text-4xl">Editing Picks: <%= @user.name %></h1>
+
+  <%= form_with model: @user, url: { controller: 'users/picks', action: 'update' }, method: :put do |f| %>
+    <% if @user.errors.any? %>
+      <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+        <h2><%= pluralize(@user.errors.count, "error") %> prohibited your picks from being saved:</h2>
+
+        <ul>
+          <% @user.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= f.fields_for :picks do |pf| %> 
+      <%= pf.object.game.away.school %>
+      <%= pf.radio_button :team_id, pf.object.game.away.id %>
+      <%= pf.object.game.home.school %>
+      <%= pf.radio_button :team_id, pf.object.game.home.id %>
+      <%= pf.hidden_field :user_id %>
+      <%= pf.hidden_field :game_id %>
+      <br>
+    <% end %>
+
+    <div class="inline">
+      <%= f.submit "Update Picks", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+    </div>
+  <% end %>
+</div>

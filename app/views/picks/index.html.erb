@@ -13,7 +13,7 @@
               <% @users.each do |user| %>
                 <th scope="col" class="sticky top-0 z-10 hidden border-b border-gray-300 bg-white/75 px-3 py-3.5 backdrop-blur backdrop-filter sm:table-cell text-left">
                   <% if user == @current_user %>
-                    <%= link_to user_path(user), method: :get, class: "flex flex-row text-sm font-semibold text-gray-900" do %>
+                    <%= link_to user_picks_path(user), method: :get, class: "flex flex-row text-sm font-semibold text-gray-900" do %>
                       <%= user.name %> (<%= user.picks_correct %>)
                       <%= icon "pencil-square", class: "size-4 ml-2 my-auto" %>
                     <% end %>
