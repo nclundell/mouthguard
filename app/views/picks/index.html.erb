@@ -39,15 +39,17 @@
                 </td>
                 <% @users.each do |user| %>
                   <% pick = Pick.find_by(game: game, user: user)%>
-                  <td class="flex flex-row whitespace-nowrap px-3 py-4 text-sm">
+                  <td class="flex flex-row whitespace-nowrap px-3 py-4 text-sm table-cell">
                     <% unless game.winner.blank? || pick.blank? %>
-                      <% if pick.team == game.winner %>
-                        <%= icon "check-circle", class: "font-extrabold text-green-500 size-8 mr-2" %>
-                      <% else %>
-                        <%= icon "x-circle", class: "font-bold text-red-500 size-8 mr-2" %>
+                      <div class="flex flex-row">
+                        <% if pick.team == game.winner %>
+                          <%= icon "check-circle", class: "font-extrabold text-green-500 size-8 mr-2" %>
+                        <% else %>
+                          <%= icon "x-circle", class: "font-bold text-red-500 size-8 mr-2" %>
+                        <% end %>
                       <% end %>
-                    <% end %>
-                    <span class="my-auto"><%= pick&.team&.school %></span>
+                      <span class="my-auto"><%= pick&.team&.school %></span>
+                    </div>
                   </td>
                 <% end %>
               </tr>
