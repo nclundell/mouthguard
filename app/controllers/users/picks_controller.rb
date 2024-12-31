@@ -22,7 +22,7 @@ class Users::PicksController < ApplicationController
         p.update!(team_id: upp[:team_id])
       end
     end
-    redirect_to user_picks_path(Current.user)
+    redirect_to user_picks_path(Current.user), notice: "Picks saved successfully!"
   end
 
   private
