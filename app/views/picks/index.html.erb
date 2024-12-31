@@ -1,67 +1,100 @@
 <div class="container">
-  <!-- Desktop Table -->
-  <div class="max-sm:hidden mt-4">
-    <div class="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
-      <div class="inline-block min-w-full py-2 align-middle">
-        <table class="min-w-full border-separate border-spacing-0">
-          <thead>
-            <tr>
-              <th scope="col" class="sticky top-0 left-0 border-b border-gray-300 bg-white/75 py-4 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8">Bowl</th>
-              <th scope="col" class="sticky top-0 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter lg:table-cell max-lg:hidden">TV</th>
-              <th scope="col" class="sticky top-0 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter xl:table-cell max-xl:hidden">Date</th>
-              <th scope="col" class="sticky top-0 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter xl:table-cell max-xl:hidden">Time</th>
-              <% @users.each do |user| %>
-                <th scope="col" class="sticky top-0 hidden border-b border-gray-300 bg-white/75 px-3 py-3.5 backdrop-blur backdrop-filter sm:table-cell text-left">
-                  <% if user == @current_user %>
-                    <%= link_to user_picks_path(user), method: :get, class: "flex flex-row text-sm font-semibold text-gray-900" do %>
-                      <%= user.name %> (<%= user.picks_correct %>)
-                      <%= icon "pencil-square", class: "size-4 ml-2 my-auto" %>
-                    <% end %>
-                  <% else %>
-                    <span class="text-sm font-semibold text-gray-900">
-                      <%= user.name %> (<%= user.picks_correct %>)
-                    </span>
-                  <% end %>
-                </th>
-              <% end %>
-            </tr>
-          </thead>
-          <tbody>
-            <% @games.each do |game| %> 
-              <tr class="even:bg-gray-100 hover:bg-blue-500 hover:text-white">
-                <td class="whitespace-nowrap py-4 pl-4 text-sm font-medium"><%= game.notes %></td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm lg:table-cell max-lg:hidden"><%= game.tv %></td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm xl:table-cell max-xl:hidden">
-                  <%= time_tag game.start, "data-local": "time", "data-format": "%-m/%e" %>
-                </td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm xl:table-cell max-xl:hidden">
-                  <%= time_tag game.start, "data-local": "time", "data-format": "%l:%M %p" %>
-                </td>
-                <% @users.each do |user| %>
-                  <% pick = Pick.find_by(game: game, user: user)%>
-                  <td class="flex flex-row whitespace-nowrap px-3 py-4 text-sm table-cell">
-                    <% unless game.winner.blank? || pick.blank? %>
-                      <div class="flex flex-row">
-                        <% if pick.team == game.winner %>
-                          <%= icon "check-circle", class: "font-extrabold text-green-500 size-8 mr-2" %>
-                        <% else %>
-                          <%= icon "x-circle", class: "font-bold text-red-500 size-8 mr-2" %>
-                        <% end %>
-                      <% end %>
-                      <span class="my-auto"><%= pick&.team&.school %></span>
-                    </div>
-                  </td>
-                <% end %>
-              </tr>
+  <!-- Computer Table -->
+  <div class="max-sm:hidden flex flex-col items-center">
+    <!-- Headers -->
+    <div class="flex flex-row py-2 px-4 mb-2 content-center border-b border-gray-300 sticky top-0 bg-white">
+      <% @users.each do |user| %>
+        <div class="font-semibold text-gray-900 text-left w-44">
+          <% if user == Current.user %>
+            <%= link_to user_picks_path(user), method: :get do %>
+              <div class="flex flex-row">
+                <%= user.name %> (<%= user.picks_correct %>)
+                <%= icon "pencil-square", class: "text-black size-4 ml-1 my-auto" %>
+              </div>
             <% end %>
-          </tbody>
-        </table>
-      </div>
+          <% else %>
+            <%= user.name %> (<%= user.picks_correct %>)
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Games -->
+    <div class="flex-row">
+      <% @games.each do |game| %> 
+        <%= link_to game_path(game) do %>
+          <div class="grow bg-gray-200 py-2 px-3 rounded">
+            <div class="flex flex-row">
+              <span class="grow font-semibold text-left">
+                <%= game.notes %>
+              </span>
+              <span class="grow text-sm text-right text-black/75">
+                <%= game.tv %> | <%= time_tag game.start, "data-local": "time", "data-format": "%b. %e @ %l:%M %p" %>
+              </span>
+            </div>
+          </div>
+        <% end %>
+        <div class="flex flex-row py-2 px-3">
+          <% @users.each do |user| %>
+            <% pick = Pick.find_by(game: game, user: user) %>
+            <div class="flex flex-row whitespace-nowrap text-sm w-44 h-8">
+              <% unless game.winner.blank? %>
+                <div class="flex flex-row">
+                  <% if pick.team == game.winner %>
+                    <%= icon "check-circle", class: "font-extrabold text-green-500 size-8 mr-2" %>
+                  <% else %>
+                    <%= icon "x-circle", class: "font-bold text-red-500 size-8 mr-2" %>
+                  <% end %>
+                </div>
+              <% end %>
+              <span class="my-auto"><%= pick&.team&.school %></span>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
 
   <!-- Mobile Table -->
-  <div class="sm:hidden">
+  <div class="sm:hidden -mt-8 flex flex-col items-center">
+    <div class="flex-row">
+      <% @games.each do |game| %> 
+        <%= link_to game_path(game), class: "sticky top-0" do %>
+          <div class="grow bg-gray-200 py-2 px-3 rounded">
+            <div class="flex flex-col text-left">
+              <div class="grow font-semibold">
+                <%= game.notes %>
+              </div>
+              <div class="grow text-sm text-black/75">
+                <%= game.tv %> | <%= time_tag game.start, "data-local": "time", "data-format": "%b. %e @ %l:%M %p" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+        <div class="flex flex-col py-2 px-3">
+          <% @users.each do |user| %>
+            <% pick = Pick.find_by(game: game, user: user) %>
+            <div class="flex flex-row whitespace-nowrap text-sm h-10">
+              <div class="w-1/3 my-auto">
+                <%= user.name %> (<%= user.picks_correct %>)
+              </div>
+              <% unless game.winner.blank? %>
+                <div class="flex flex-row my-auto">
+                  <% if pick.team == game.winner %>
+                    <%= icon "check-circle", class: "font-extrabold text-green-500 size-8 mr-2" %>
+                  <% else %>
+                    <%= icon "x-circle", class: "font-bold text-red-500 size-8 mr-2" %>
+                  <% end %>
+                </div>
+              <% end %>
+              <span class="my-auto"><%= pick&.team&.school %></span>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class="hidden">
     <div class="">
       <div class="inline-block min-w-full align-middle">
         <table class="min-w-full border-separate border-spacing-0">
