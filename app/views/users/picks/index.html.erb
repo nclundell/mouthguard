@@ -5,11 +5,26 @@
 
   <% content_for :title, "Picks" %>
 
-  <% @picks.each do |pick| %>
-    <%= pick.user.name %> <%= pick.game.notes %>
-  <% end %>
-
-  <div class="inline">
-    <%= button_to "Edit Picks", user_picks_edit_path(@user), method: :get, class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+  <div class="flex flex-col justify-center">
+    <% @picks.each do |pick| %>
+      <div>
+        <%= pick.user.name %> <%= pick.game.notes %>
+      </div<
+    <% end %>
   </div>
+
+  <% if @picks.length > 0 %>
+    <div class="inline">
+      <%= button_to "Edit Picks", user_picks_edit_path(@user), method: :get, class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+    </div>
+  <% else %>
+    <div class="flex flex-col justify-center">
+      <div class="mx-auto font-semibold text-2xl">
+        You have no picks yet!
+      </div>
+      <div class="mx-auto mt-8">
+        <%= button_to "Create Picks", user_picks_edit_path(@user), method: :get, class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+      </div>
+    </div>
+  <% end %>
 </div>
