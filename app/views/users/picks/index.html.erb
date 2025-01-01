@@ -1,30 +1,61 @@
-<div class="w-full">
+<div class="w-full text-center" data-controller="user-picks">
   <% if notice.present? %>
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
   <% end %>
 
-  <% content_for :title, "Picks" %>
-
-  <div class="flex flex-col justify-center">
-    <% @picks.each do |pick| %>
-      <div>
-        <%= pick.user.name %> <%= pick.game.notes %>
-      </div<
+  <div class="flex flex-row justify-evenly">
+    <div class="w-1/3"></div>
+    <div class="w-1/3 font-bold text-4xl mb-4">My Picks</div>
+    <% if @picks.length > 0 %>
+      <div class="w-1/3">
+        <%= button_to "Edit Picks", user_picks_edit_path(@user), method: :get, class: "rounded-lg py-3 px-5 bg-blue-600 text-white font-medium cursor-pointer" %>
+      </div>
     <% end %>
   </div>
 
-  <% if @picks.length > 0 %>
-    <div class="inline">
-      <%= button_to "Edit Picks", user_picks_edit_path(@user), method: :get, class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
-    </div>
-  <% else %>
-    <div class="flex flex-col justify-center">
-      <div class="mx-auto font-semibold text-2xl">
-        You have no picks yet!
+  <div class="flex flex-col justify-center">
+    <% @picks.each do |pick| %>
+      <div class="font-semibold text-xl py-2">
+        <%= pick.game.notes %>
+        <div class="text-sm text-black/75">
+          <%= pick.game.tv %> | <%= time_tag pick.game.start, "data-local": "time", "data-format": "%b. %e @ %l:%M %p" %>
+        </div>
       </div>
-      <div class="mx-auto mt-8">
-        <%= button_to "Create Picks", user_picks_edit_path(@user), method: :get, class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+      <div class="flex flex-row justify-center mb-6" data-user-picks-target="bowl">
+        <label
+          class="relative flex cursor-pointer rounded-lg border border-4 bg-white p-2 shadow-sm size-48"
+          data-user-picks-target="team"
+        >
+          <div class="flex flex-col mx-auto">
+            <input class="sr-only"
+              <% if pick.team_id == pick.game.away.id %>
+                checked="checked"
+              <% end %>
+            >
+            <%= image_tag pick.game.away.logos.first, class: "size-36" %>
+            <span class="font-semibold text-center">
+              <%= pick.game.away.school %>
+            </span>
+          </div>
+        </label>
+        <span class="font-semibold content-center px-4">vs</span>
+        <label
+          class="relative flex cursor-pointer rounded-lg border border-4 bg-white p-2 shadow-sm size-48"
+          data-user-picks-target="team"
+        >
+          <div class="flex flex-col mx-auto">
+            <input class="sr-only"
+              <% if pick.team_id == pick.game.home.id %>
+                checked="checked"
+              <% end %>
+            >
+            <%= image_tag pick.game.home.logos.first, class: "size-36" %>
+            <span class="font-semibold text-center">
+              <%= pick.game.home.school %>
+            </span>
+          </div>
+        </label>
       </div>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 </div>

@@ -17,13 +17,13 @@
     <%= f.fields_for :picks do |pf| %> 
       <div class="font-semibold text-xl py-2">
         <%= pf.object.game.notes %>
-        <div class="text-sm text-black=75">
+        <div class="text-sm text-black/75">
           <%= pf.object.game.tv %> | <%= time_tag pf.object.game.start, "data-local": "time", "data-format": "%b. %e @ %l:%M %p" %>
         </div>
       </div>
       <div class="flex flex-row justify-center" data-user-picks-target="bowl">
         <label
-          class="relative flex cursor-pointer rounded-lg border border-4 bg-white p-2 shadow-sm size-48"
+          class="relative flex rounded-lg border border-4 bg-white p-2 shadow-sm size-48"
           data-action="click->user-picks#pickTeam"
           data-user-picks-target="team"
         >
@@ -37,7 +37,7 @@
         </label>
         <span class="font-semibold content-center px-4">vs</span>
         <label
-          class="relative flex cursor-pointer rounded-lg border border-4 bg-white p-2 shadow-sm size-48"
+          class="relative flex rounded-lg border border-4 bg-white p-2 shadow-sm size-48"
           data-action="click->user-picks#pickTeam"
           data-user-picks-target="team"
         >
