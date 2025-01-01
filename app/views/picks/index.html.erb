@@ -23,7 +23,7 @@
     <div class="flex-row">
       <% @games.each do |game| %> 
         <%= link_to game_path(game) do %>
-          <div class="grow bg-gray-200 py-2 px-3 rounded">
+          <div class="grow bg-slate-200 py-2 px-3 rounded">
             <div class="flex flex-row">
               <span class="grow font-semibold text-left">
                 <%= game.notes %>
@@ -60,7 +60,7 @@
     <div class="flex-row">
       <% @games.each do |game| %> 
         <%= link_to game_path(game), class: "sticky top-0" do %>
-          <div class="grow bg-gray-200 py-2 px-3 rounded">
+          <div class="grow bg-slate-200 py-2 px-3">
             <div class="flex flex-col text-left">
               <div class="grow font-semibold">
                 <%= game.notes %>
@@ -92,50 +92,6 @@
           <% end %>
         </div>
       <% end %>
-    </div>
-  </div>
-  <div class="hidden">
-    <div class="">
-      <div class="inline-block min-w-full align-middle">
-        <table class="min-w-full border-separate border-spacing-0">
-          <tbody>
-            <% @games.each do |game| %>
-              <tr class="w-full">
-                <th scope="colgroup" class="sticky top-0 h-10 z-10 pl-4 py-2 bg-gray-100 text-left text-sm font-semibold text-gray-900">
-                  <%= game.notes %>
-                </th>
-                <th scope="colgroup" class="sticky top-0 h-10 z-10 pr-4 py-2  bg-gray-100 text-right text-sm font-normal text-black/50">
-                  <%= time_tag game.start, "data-local": "time", "data-format": "%-m/%e %l:%M %p" %>
-                </th>
-              </tr>
-              <tr class="w-full shadow-md">
-                <th scope="col" class="sticky top-10 z-10 pl-4 py-2 bg-gray-100 border-b border-gray-300 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter">Name</th>
-                <th scope="col" class="sticky top-10 z-10 pl-4 py-2 bg-gray-100 border-b border-gray-300 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter">Pick</th>
-              </tr>
-              <% @users.each do |user| %> 
-                <% pick = Pick.find_by(game: game, user: user)%>
-                <tr>
-                  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 pl-3">
-                    <%= user.name %>
-                  </td>
-                  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
-                    <div class="flex flex-row">
-                      <% unless game.winner.blank? || pick.blank? %>
-                        <% if pick.team == game.winner %>
-                          <%= icon "check-circle", class: "font-bold text-green-500 size-8 mr-2" %>
-                        <% else %>
-                          <%= icon "x-circle", class: "font-bold text-red-500 size-8 mr-2" %>
-                        <% end %>
-                      <% end %>
-                      <span class="my-auto"><%= pick&.team&.school %></span>
-                    </div>
-                  </td>
-                </tr>
-              <% end %>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
     </div>
   </div>
 </div>

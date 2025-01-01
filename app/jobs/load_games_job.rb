@@ -36,7 +36,7 @@ class LoadGamesJob < ApplicationJob
       game["away_points"]      = game_data["awayPoints"]
       game["away_line_scores"] = game_data["awayLineScores"]
       game["highlights"]       = game_data["highlights"]
-      game["notes"]            = game_data["notes"]
+      game["notes"]            = game_data["notes"].partition("Presented").first.strip
       game.save!
     end
   end
