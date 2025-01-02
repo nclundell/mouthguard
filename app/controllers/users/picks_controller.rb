@@ -10,9 +10,6 @@ class Users::PicksController < ApplicationController
 
   def edit
     @user = User.find(params[:user_id])
-    @picks = Game.where(season: current_season).map do |game|
-      Pick.find_or_create_by(game_id: game.id, user_id: params[:user_id])
-    end
   end
 
   def update

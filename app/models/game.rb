@@ -10,7 +10,8 @@ class Game < ApplicationRecord
 
   def is_live?
     return false if completed
-    return false if period.blank? || clock.blank?
+    return false if away_line_scores.nil?
+    return false if home_line_scores.nil?
 
     Time.now > start
   end
