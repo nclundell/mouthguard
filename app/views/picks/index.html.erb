@@ -1,20 +1,11 @@
 <div class="container">
   <!-- Computer Table -->
-  <div class="max-sm:hidden flex flex-col items-center">
+  <div class="max-sm:hidden flex flex-col">
     <!-- Headers -->
-    <div class="flex flex-row flex-wrap py-2 px-4 mb-2 content-center border-b border-gray-300 sticky top-0 bg-white">
+    <div class="flex flex-row flex-wrap py-2 px-4 mb-2 border-b border-gray-300 sticky top-0 bg-white">
       <% @users.each do |user| %>
         <div class="font-semibold text-gray-900 text-left w-44">
-          <% if user == Current.user %>
-            <%= link_to user_picks_path(user), method: :get do %>
-              <div class="flex flex-row">
-                <%= user.name %> (<%= user.picks_correct %>)
-                <%= icon "pencil-square", class: "text-black size-4 ml-1 my-auto" %>
-              </div>
-            <% end %>
-          <% else %>
-            <%= user.name %> (<%= user.picks_correct %>)
-          <% end %>
+          <%= user.name %> (<%= user.picks_correct %>)
         </div>
       <% end %>
     </div>
