@@ -1,7 +1,7 @@
 class Game < ApplicationRecord
   include Turbo::Broadcastable
 
-  belongs_to :venue
+  belongs_to :venue, optional: :true
   belongs_to :home, class_name: "Team"
   belongs_to :away, class_name: "Team"
 
