@@ -12,12 +12,17 @@
       </div>
     <% end %>
 
-    <div class="flex flex-row justify-evenly">
+    <div class="max-sm:hidden flex flex-row justify-evenly">
       <div class="w-1/3"></div>
       <div class="w-1/3 font-bold text-4xl mb-4">Editing Picks: <%= @user.name %></div>
       <div class="w-1/3">
         <%= f.submit "Update Picks", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
       </div>
+    </div>
+    
+    <div class="sm:hidden">
+      <div class="font-bold text-4xl mb-4">Editing Picks: <%= @user.name %></div>
+        <%= f.submit "Update Picks", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
     </div>
 
     <%= f.fields_for :picks do |pf| %> 

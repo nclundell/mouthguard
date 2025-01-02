@@ -6,7 +6,7 @@
 </div>
 <div class="flex flex-row justify-center mb-6" data-user-picks-target="bowl">
   <label
-    class="relative flex cursor-pointer rounded-lg border border-4 bg-white p-2 shadow-sm size-48"
+    class="relative flex cursor-pointer rounded-lg border border-4 bg-white p-2 shadow-sm max-sm:size-36 sm:size-48"
     data-user-picks-target="team"
   >
     <div class="flex flex-col mx-auto">
@@ -15,7 +15,7 @@
           checked="checked"
         <% end %>
       >
-      <%= image_tag pick.game.away.logos.first, class: "size-36" %>
+      <%= image_tag pick.game.away.logos.first, class: "mx-auto max-sm:size-20 sm:size-36" %>
       <span class="font-semibold text-center">
         <%= pick.game.away.school %>
       </span>
@@ -23,7 +23,7 @@
   </label>
   <span class="font-semibold content-center px-4">vs</span>
   <label
-    class="relative flex cursor-pointer rounded-lg border border-4 bg-white p-2 shadow-sm size-48"
+    class="relative flex cursor-pointer rounded-lg border border-4 bg-white p-2 shadow-sm max-sm:size-36 sm:size-48"
     data-user-picks-target="team"
   >
     <div class="flex flex-col mx-auto">
@@ -32,7 +32,7 @@
           checked="checked"
         <% end %>
       >
-      <%= image_tag pick.game.home.logos.first, class: "size-36" %>
+      <%= image_tag pick.game.home.logos.first, class: "mx-auto max-sm:size-20 sm:size-36" %>
       <span class="font-semibold text-center">
         <%= pick.game.home.school %>
       </span>

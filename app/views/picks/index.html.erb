@@ -75,7 +75,7 @@
           <% @users.each do |user| %>
             <% pick = Pick.find_by(game: game, user: user) %>
             <div class="flex flex-row whitespace-nowrap text-sm h-10">
-              <div class="w-1/3 my-auto">
+              <div class="w-1/2 my-auto">
                 <%= user.name %> (<%= user.picks_correct %>)
               </div>
               <% unless game.winner.blank? %>

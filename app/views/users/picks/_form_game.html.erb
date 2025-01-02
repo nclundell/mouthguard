@@ -6,13 +6,13 @@
 </div>
 <div class="flex flex-row justify-center mb-6">
   <label
-    class="relative flex rounded-lg border border-4 bg-white p-2 shadow-sm size-48"
+    class="relative flex rounded-lg border border-4 bg-white p-2 shadow-sm max-sm:size-36 sm:size-48"
     data-action="click->user-picks#updateBowl"
     data-user-picks-target="team"
   >
     <div class="flex flex-col mx-auto", data-user-picks-target="radio">
       <%= f.radio_button :team_id, f.object.game.away.id, class: "sr-only" %>
-      <%= image_tag f.object.game.away.logos.first, class: "size-36" %>
+      <%= image_tag f.object.game.away.logos.first, class: "mx-auto max-sm:size-20 sm:size-36" %>
       <span class="font-semibold text-center">
         <%= f.object.game.away.school %>
       </span>
@@ -20,13 +20,13 @@
   </label>
   <span class="font-semibold content-center px-4">vs</span>
   <label
-    class="relative flex rounded-lg border border-4 bg-white p-2 shadow-sm size-48"
+    class="relative flex rounded-lg border border-4 bg-white p-2 shadow-sm max-sm:size-36 sm:size-48"
     data-action="click->user-picks#updateBowl"
     data-user-picks-target="team"
   >
     <div class="flex flex-col mx-auto", data-user-picks-target="radio">
       <%= f.radio_button :team_id, f.object.game.home.id, class: "sr-only" %>
-    <%= image_tag f.object.game.home.logos.first, class: "size-36" %>
+    <%= image_tag f.object.game.home.logos.first, class: "mx-auto max-sm:size-20 sm:size-36" %>
       <span class="font-semibold text-center">
         <%= f.object.game.home.school %>
       </span>
