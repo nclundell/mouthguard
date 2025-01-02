@@ -4,8 +4,38 @@ production:
     queue: live_update
     schedule: every 30 seconds
 
+  load_game_data:
+    class: LoadGamesJob
+    queue: data_loading
+    schedule: every hour
+
+  load_team_data:
+    class: LoadTeamsJob
+    queue: data_loading
+    schedule: every day at 3am
+    
+  load_venue_data:
+    class: LoadVenuesJob
+    queue: data_loading
+    schedule: every day at 3am
+
 development:
   live_game_update:
     class: LiveGameUpdateJob
     queue: live_update
     schedule: every 30 seconds
+
+  load_game_data:
+    class: LoadGamesJob
+    queue: data_loading
+    schedule: every hour
+
+  load_team_data:
+    class: LoadTeamsJob
+    queue: data_loading
+    schedule: every day at 3am
+    
+  load_venue_data:
+    class: LoadVenuesJob
+    queue: data_loading
+    schedule: every day at 3am

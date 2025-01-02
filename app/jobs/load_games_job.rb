@@ -30,13 +30,10 @@ class LoadGamesJob < ApplicationJob
       game["attendance"]       = game_data["attendance"]
       game["venue_id"]         = Venue.find_by(cfbd_id: game_data["venueId"])&.id
       game["home_id"]          = Team.find_by(cfbd_id: game_data["homeId"])&.id
-      game["home_points"]      = game_data["homePoints"]
-      game["home_line_scores"] = game_data["homeLineScores"]
       game["away_id"]          = Team.find_by(cfbd_id: game_data["awayId"])&.id
-      game["away_points"]      = game_data["awayPoints"]
-      game["away_line_scores"] = game_data["awayLineScores"]
       game["highlights"]       = game_data["highlights"]
       game["notes"]            = game_data["notes"].partition("Presented").first.strip
+      game["notes"].gsub!("College Football Playoff", "CFP")
       game.save!
     end
   end
