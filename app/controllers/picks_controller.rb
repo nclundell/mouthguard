@@ -2,8 +2,7 @@ include ApplicationHelper
 
 class PicksController < ApplicationController
   def index
-    @current_user = Current.user
-    @games = Game.where(season: current_season)
+    @games = Game.where(season: current_season).where(id: Pick.select(:game_id))
     @users = User.all
   end
 end
