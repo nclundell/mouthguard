@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_26_033823) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_02_222604) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -83,6 +83,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_033823) do
     t.string "situation"
     t.string "possession"
     t.string "last_play"
+    t.boolean "playoff"
     t.index ["away_id"], name: "index_games_on_away_id"
     t.index ["home_id"], name: "index_games_on_home_id"
     t.index ["venue_id"], name: "index_games_on_venue_id"

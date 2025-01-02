@@ -38,6 +38,7 @@ class LoadGamesJob < ApplicationJob
       game["highlights"]       = game_data["highlights"]
       game["notes"]            = game_data["notes"].partition("Presented").first.partition(" - ").first.strip
       game["notes"].gsub!("College Football Playoff", "CFP")
+      game["playoff"]          = game["notes"].include? "CFP"
       game.save!
 
       User.all.each do |user|
