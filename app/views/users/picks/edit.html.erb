@@ -1,6 +1,4 @@
 <div class="mx-auto w-full text-center" data-controller="user-picks">
-  <h1 class="font-bold text-4xl mb-4">Editing Picks: <%= @user.name %></h1>
-
   <%= form_with model: @user, url: { controller: 'users/picks', action: 'update' }, method: :put do |f| %>
     <% if @user.errors.any? %>
       <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
@@ -14,50 +12,19 @@
       </div>
     <% end %>
 
+    <div class="flex flex-row justify-evenly">
+      <div class="w-1/3"></div>
+      <div class="w-1/3 font-bold text-4xl mb-4">Editing Picks: <%= @user.name %></div>
+      <div class="w-1/3">
+        <%= f.submit "Update Picks", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+      </div>
+    </div>
+
     <%= f.fields_for :picks do |pf| %> 
       <% unless pf.object.game.is_live? || pf.object.game.is_completed? %>
-        <div class="font-semibold text-xl py-2">
-          <%= pf.object.game.notes %>
-          <div class="text-sm text-black/75">
-            <%= pf.object.game.tv %> | <%= time_tag pf.object.game.start, "data-local": "time", "data-format": "%b. %e @ %l:%M %p" %>
-          </div>
-        </div>
-        <div class="flex flex-row justify-center" data-user-picks-target="bowl">
-          <label
-            class="relative flex rounded-lg border border-4 bg-white p-2 shadow-sm size-48"
-            data-action="click->user-picks#pickTeam"
-            data-user-picks-target="team"
-          >
-            <div class="flex flex-col mx-auto">
-              <%= pf.radio_button :team_id, pf.object.game.away.id, class: "sr-only" %>
-              <%= image_tag pf.object.game.away.logos.first, class: "size-36" %>
-              <span class="font-semibold text-center">
-                <%= pf.object.game.away.school %>
-              </span>
-            </div>
-          </label>
-          <span class="font-semibold content-center px-4">vs</span>
-          <label
-            class="relative flex rounded-lg border border-4 bg-white p-2 shadow-sm size-48"
-            data-action="click->user-picks#pickTeam"
-            data-user-picks-target="team"
-          >
-            <div class="flex flex-col mx-auto">
-              <%= pf.radio_button :team_id, pf.object.game.home.id, class: "sr-only" %>
-              <%= image_tag pf.object.game.home.logos.first, class: "size-36" %>
-              <span class="font-semibold text-center">
-                <%= pf.object.game.home.school %>
-              </span>
-            </div>
-          </label>
-        </div>
-        <%= pf.hidden_field :user_id %>
-        <%= pf.hidden_field :game_id %>
+        <div 
+        <%= render partial: "users/picks/form_game", locals: { f: pf } %>
       <% end %>
     <% end %>
-
-    <div class="inline">
-      <%= f.submit "Update Picks", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
-    </div>
   <% end %>
 </div>

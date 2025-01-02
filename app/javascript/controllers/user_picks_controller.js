@@ -8,19 +8,16 @@ export default class extends Controller {
     this.updateAllTeams();
   }
 
-  pickTeam () {
-    var input = this.teamTarget.firstElementChild.firstElementChild;
-    input.checked = true;
-
+  updateBowl () {
     this.updateAllTeams();
   }
 
   updateAllTeams () {
     for (var team of this.teamTargets) {
       if (team.firstElementChild.firstElementChild.checked == true) {
-        team.classList.add("border-blue-300");
+        team.classList.add("border-blue-500");
       } else {
-        team.classList.remove("border-blue-300");
+        team.classList.remove("border-blue-500");
       }
     }
   }
