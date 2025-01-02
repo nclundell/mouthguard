@@ -36,9 +36,13 @@ class LoadGamesJob < ApplicationJob
       game["home_points"]      = game_data["homeTeam"]["points"] if game["home_points"].nil?
       game["home_line_scores"] = game_data["homeTeam"]["lineScores"] if game["home_line_scores"].nil?
       game["highlights"]       = game_data["highlights"]
-      game["notes"]            = game_data["notes"].partition("Presented").first.strip
+      game["notes"]            = game_data["notes"].partition("Presented").first.partition(" - ").first.strip
       game["notes"].gsub!("College Football Playoff", "CFP")
       game.save!
+
+      User.all.each do |user|
+        Pick.find_or_create_by(game: game, user: user)
+      end
     end
   end
 end
