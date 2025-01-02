@@ -6,7 +6,7 @@ class Game < ApplicationRecord
   belongs_to :away, class_name: "Team"
 
   has_many :game_comments
-  has_many :picks
+  has_many :picks, dependent: :destroy
 
   def is_live?
     return false if completed
