@@ -7,7 +7,7 @@ servers:
     - 5.78.114.230
 
 proxy:
-  ssl: "Full"
+  ssl: true
   host: mouthguard.nclundell.dev
 
 registry:
