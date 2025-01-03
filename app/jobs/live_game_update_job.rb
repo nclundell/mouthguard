@@ -1,4 +1,4 @@
-require 'net/http'
+require "net/http"
 include ApplicationHelper
 
 class LiveGameUpdateJob < ApplicationJob

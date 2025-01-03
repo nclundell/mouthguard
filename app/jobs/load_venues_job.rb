@@ -1,4 +1,4 @@
-require 'net/http'
+require "net/http"
 
 class LoadVenuesJob < ApplicationJob
   queue_as :default
