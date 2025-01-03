@@ -3,8 +3,6 @@
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
   <% end %>
 
-  <% content_for :title, "Games" %>
-
   <div id="games" class="container flex flex-wrap items-top max-w-auto place-content-center overflow-auto">
     <% @games.each do |game| %>
       <%= link_to game do %>

@@ -3,8 +3,6 @@
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
   <% end %>
 
-  <% content_for :title, "Dashboard" %>
-
   <div class="container flex flex-wrap items-top max-w-auto place-content-center overflow-auto">
     <% if @games.blank? %>
       No Games Today!
