@@ -23,8 +23,10 @@ class Game < ApplicationRecord
   end
 
   def today?
-    adjusted_start = start - 5.hours # Default check in EST
-    adjusted_start.to_date == Date.today
+    est_date = Time.now.localtime("-05:00").to_date
+    est_start_date = start.to_time.localtime("-05:00").to_date
+
+    est_date == est_start_date
   end
 
   def winner
