@@ -3,10 +3,14 @@
     <div class="flex h-16 items-center justify-between">
       <!-- Left Side -->
       <div class="flex items-center">
-        <%= link_to root_path, class:"flex font-semibold text-2xl text-white" do %>
+        <%= link_to root_path, class:"max-sm:hidden flex font-semibold text-2xl text-white" do %>
           <%= icon "trophy", class: "font-bold text-amber-400 size-8 mr-4" %>
           Mouthguard
         <% end %>
+        <div class="sm:hidden flex font-semibold text-2xl text-white">
+          <%= icon "trophy", class: "font-bold text-amber-400 size-8 mr-4" %>
+          Mouthguard
+        </div>
         <div class="hidden sm:ml-6 sm:block">
           <div class="flex space-x-4">
             <%= link_to games_path, class: "rounded-md px-3 py-2 text-sm font-medium text-white" do %>
