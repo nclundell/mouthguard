@@ -26,7 +26,7 @@
       <% if game.possession == "away" %>
         <%= icon "chevron-double-left", class: "size-4 my-auto" %>
       <% else %>    
-        <%= icon "chevron-double-left", class: "size-4 my-auto text-white" %>
+        <div class="size-4"></div>
       <% end %>
     </div>
     <div class="font-semibold text-l text-left my-auto">
@@ -38,7 +38,7 @@
       <% if game.possession == "home" %>
         <%= icon "chevron-double-right", class: "size-4 my-auto" %>
       <% else %>    
-        <%= icon "chevron-double-right", class: "size-4 my-auto text-white" %>
+        <div class="size-4"></div>
       <% end %>
       <div class="font-bold text-4xl my-auto">
         <%= game.home_points || 0 %>
