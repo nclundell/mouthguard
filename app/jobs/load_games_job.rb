@@ -42,7 +42,7 @@ class LoadGamesJob < ApplicationJob
       game.save!
 
       User.all.each do |user|
-        Pick.find_or_create_by(game: game, user: user)
+        Pick.find_or_create_by(game: game, user: user, season: game["season"])
       end
     end
   end

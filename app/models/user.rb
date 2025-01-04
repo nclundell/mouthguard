@@ -17,7 +17,7 @@ class User < ApplicationRecord
     Rails.logger.info("Generating picks for: #{email_address}")
 
     Game.where(season: current_season).each do |g|
-      Pick.find_or_create_by(game: g, user: self)
+      Pick.find_or_create_by(game: g, user: self, season: game.season)
     end
   end
 
