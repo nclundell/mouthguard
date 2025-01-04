@@ -1,0 +1,5 @@
+<div class="container flex flex-col items-center">
+  <% @leaders.each do |leader| %>
+    <%= render partial: "leaders/leader", locals: { leader: leader } %>
+  <% end %>
+</div>

@@ -1,3 +1,5 @@
+include ApplicationHelper
+
 class Game < ApplicationRecord
   include Turbo::Broadcastable
 
@@ -7,6 +9,19 @@ class Game < ApplicationRecord
 
   has_many :game_comments
   has_many :picks, dependent: :destroy
+
+  scope :completed, -> { where(completed: true) }
+  scope :this_season, -> { where(season: current_season) }
+  scope :live, -> {
+    where(completed: false).
+    where.not(away_line_scores: nil).
+    where.not(home_line_scores: nil).
+    where("start < ?", Time.now)
+  }
+  scope :to_be_played, -> {
+    where(completed: false).
+    where("start > ?", Time.now)
+  }
 
   def is_live?
     return false if completed

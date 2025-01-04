@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   resources :games, only: [ :index, :show ]
   resources :picks, only: [ :index ]
   resources :teams
+  resources :leaders, only: [ :index ]
   resources :users do
     get "picks", to: "users/picks#index"
     put "picks", to: "users/picks#update"
