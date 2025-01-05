@@ -47,20 +47,20 @@ class User < ApplicationRecord
     count
   end
 
-  def can_beat?(other_user)
+  def potential_pick_difference(other_user)
     return false if other_user.blank?
 
     played_difference = self.picks_correct - other_user.picks_correct
-    total = played_difference - remaining_pick_difference(other_user)
-    total > 0
+    played_difference - remaining_pick_difference(other_user)
   end
 
   def can_win?
-    self.can_beat?(User.leaders.first)
+    return true if User.leaders.include? self
+    self.potential_pick_difference(User.leaders.first) > 0
   end
 
   def self.leaders
-    User.rank.map { |user| user if user.rank == 1 }
+    User.rank.select { |user| user.rank == 1 }
   end
 
   def self.rank
