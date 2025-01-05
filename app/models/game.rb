@@ -7,7 +7,6 @@ class Game < ApplicationRecord
   belongs_to :home, class_name: "Team"
   belongs_to :away, class_name: "Team"
 
-  has_many :game_comments
   has_many :picks, dependent: :destroy
 
   scope :completed, -> { where(completed: true) }
