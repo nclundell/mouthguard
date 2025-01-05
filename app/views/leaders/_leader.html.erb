@@ -1,8 +1,12 @@
 <div class="flex flex-row mb-4 border border-2 rounded">
   <div class="flex flex-row rounded px-4 py-3 w-72">
     <div class="my-auto">#<%= leader.rank %></div>
-    <div class="flex flex-row mr-4">
-      <%= icon "user-circle", class: "size-6 mx-2 my-auto" %>
+    <div class="flex flex-row">
+      <% if leader.avatar.attached? %>
+        <%= image_tag leader.avatar, class: "size-6 rounded-full mx-2 my-auto" %>
+      <% else %>
+        <%= icon "user-circle", class: "text-black size-6 mx-2 my-auto" %>
+      <% end %>
       <div class="my-auto"><%= leader.name %></div>
     </div>
   </div>

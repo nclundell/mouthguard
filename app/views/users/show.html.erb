@@ -1,10 +1,17 @@
-<div class="mx-auto md:w-2/3 w-full">
+<div class="mx-auto md:w-2/3 w-full px-4">
   <div class="mx-auto">
     <% if notice.present? %>
       <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
     <% end %>
 
-    <h1 class="font-bold text-4xl"><%= @user.name %></h1>
+    <div class="flex flex-row">
+      <% if Current.user.avatar.attached? %>
+        <%= image_tag Current.user.avatar, class: "size-20 rounded-full" %>
+      <% else %>
+        <%= icon "user-circle", class: "text-black size-20" %>
+      <% end %>
+      <h1 class="font-bold text-4xl my-auto ml-4"><%= @user.name %></h1>
+    </div>
 
     <div class="my-5">
       Email Address

@@ -1,5 +1,12 @@
-<div class="mx-auto md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">Editing: <%= @user.name %></h1>
+<div class="mx-auto md:w-2/3 w-full px-4">
+  <div class="flex flex-row">
+    <% if Current.user.avatar.attached? %>
+      <%= image_tag Current.user.avatar, class: "size-20 rounded-full" %>
+    <% else %>
+      <%= icon "user-circle", class: "text-black size-20" %>
+    <% end %>
+    <h1 class="font-bold text-4xl my-auto ml-4">Editing: <%= @user.name %></h1>
+  </div>
 
   <%= form_with(model: @user, class: "contents") do |form| %>
     <% if @user.errors.any? %>
@@ -20,6 +27,16 @@
     </div>
 
     <div class="my-5">
+      Avatar
+      <%= form.file_field :avatar, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      Display Name
+      <%= form.text_field :display_name, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
       First Name
       <%= form.text_field :first_name, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
     </div>
@@ -27,11 +44,6 @@
     <div class="my-5">
       Last Name
       <%= form.text_field :last_name, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
-    </div>
-
-    <div class="my-5">
-      Display Name
-      <%= form.text_field :display_name, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
     </div>
 
     <div class="inline">

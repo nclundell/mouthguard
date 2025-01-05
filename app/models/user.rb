@@ -7,6 +7,8 @@ class User < ApplicationRecord
   has_many :game_comments
   has_many :picks, dependent: :destroy
 
+  has_one_attached :avatar
+
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
   after_create :generate_picks
