@@ -3,8 +3,9 @@ include ApplicationHelper
 class User < ApplicationRecord
   has_secure_password
 
-  has_many :sessions, dependent: :destroy
+  has_many :comments, dependent: :destroy
   has_many :picks, dependent: :destroy
+  has_many :sessions, dependent: :destroy
 
   has_one_attached :avatar
 
