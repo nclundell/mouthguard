@@ -26,18 +26,20 @@
           </div>
         <% end %>
         <div class="flex flex-row flex-wrap py-2 px-3">
-          <% @users.each do |user| %>
-            <% pick = Pick.find_by(game: game, user: user) %>
-            <div class="flex flex-row flex-nowrap text-sm w-44 h-8">
-              <% unless game.winner.blank? %>
-                  <% if pick.team == game.winner %>
-                    <%= icon "check-circle", class: "font-extrabold text-green-500 size-8 mr-2" %>
-                  <% else %>
-                    <%= icon "x-circle", class: "font-bold text-red-500 size-8 mr-2" %>
-                  <% end %>
-              <% end %>
-              <span class="my-auto"><%= pick&.team&.school %></span>
-            </div>
+          <% if game.completed? || game.is_live? %>
+            <% @users.each do |user| %>
+              <% pick = Pick.find_by(game: game, user: user) %>
+              <div class="flex flex-row flex-nowrap text-sm w-44 h-8">
+                <% unless game.winner.blank? %>
+                    <% if pick.team == game.winner %>
+                      <%= icon "check-circle", class: "font-extrabold text-green-500 size-8 mr-2" %>
+                    <% else %>
+                      <%= icon "x-circle", class: "font-bold text-red-500 size-8 mr-2" %>
+                    <% end %>
+                <% end %>
+                <span class="my-auto"><%= pick&.team&.school %></span>
+              </div>
+            <% end %>
           <% end %>
         </div>
       <% end %>
