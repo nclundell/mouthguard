@@ -13,13 +13,13 @@
         </div>
         <div class="hidden sm:ml-6 sm:block">
           <div class="flex space-x-4">
-            <%= link_to games_path, class: "rounded-md px-3 py-2 text-sm font-medium text-white" do %>
+            <%= link_to games_path, class: "px-3 py-2 text-sm font-medium text-white rounded-lg hover:rshadow-xl hover:bg-gray-900" do %>
               Games
             <% end %>
-            <%= link_to picks_path, class: "rounded-md px-3 py-2 text-sm font-medium text-white" do %>
+            <%= link_to picks_path, class: "px-3 py-2 text-sm font-medium text-white rounded-lg hover:shadow-xl hover:bg-gray-900" do %>
               Picks
             <% end %>
-            <%= link_to leaders_path, class: "rounded-md px-3 py-2 text-sm font-medium text-white" do %>
+            <%= link_to leaders_path, class: "px-3 py-2 text-sm font-medium text-white rounded-lg hover:shadow-xl hover:bg-gray-900" do %>
               Leaders
             <% end %>
           </div>
@@ -27,11 +27,11 @@
       </div>
       <!-- Right Side -->
       <div class="hidden sm:ml-6 sm:block">
-        <div class="flex flex-row items-center">
+        <div class="inline-flex items-center">
           <!-- Profile dropdown -->
-          <div class="relative ml-3">
+          <div class="relative ml-3 px-1 rounded-lg hover:shadow-xl hover:bg-gray-900">
             <% if authenticated? %>
-              <button class="flex flex-row relative p-1" data-action="click->navbar#toggleMenu">
+              <button class="inline-flex relative p-1" data-action="click->navbar#toggleMenu">
                 <% if Current.user.avatar.attached? %>
                   <%= image_tag Current.user.avatar, class: "size-8 rounded-full" %>
                 <% else %>
@@ -42,7 +42,7 @@
                 </span>
               </button>
             <% else %>
-              <%= button_to new_session_path, method: :get, class:"flex flex-row relative p-1" do %>
+              <%= button_to new_session_path, method: :get, class:"inline-flex relative p-1" do %>
                 <%= icon "user-circle", class: "text-white size-8" %>
                 <span class="align-middle text-white p-1">
                   Sign In
