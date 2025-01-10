@@ -5,7 +5,16 @@
     <% end %>
 
     <div class="font-bold text-center text-4xl">
-      <%= @game.notes %>
+      <% if @game.notes.include? "at the" %>
+        <% parts = @game.notes.partition "at the" %>
+        <%= parts[0].strip %>
+        <br>
+        <%= parts[1].strip %>
+        <br>
+        <%= parts[2].strip %>
+      <% else %>
+        <%= @game.notes %>
+      <% end %>
     </div>
     <div class="font-semibold text-center text-xl">
       <%= time_tag @game.start, "data-local": "time", "data-format": "%B %e at %l:%M %p" %>
