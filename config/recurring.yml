@@ -2,7 +2,7 @@ production:
   live_game_update:
     class: LiveGameUpdateJob
     queue: live_update
-    schedule: every 30 seconds
+    schedule: every 10 seconds
 
   load_game_data:
     class: LoadGamesJob
