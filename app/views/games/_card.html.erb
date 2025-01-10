@@ -1,5 +1,18 @@
-<div class="font-semibold text-xl text-center underline p-2">
-  <%= game.notes %>
+<div class="font-semibold text-xl text-center p-2">
+  <% if game.notes.include? "at the" %>
+    <% parts = game.notes.partition "at the" %>
+    <div>
+      <%= parts[0].strip %>
+    </div>
+    <div class="text-sm">
+      <%= parts[1].strip %>
+    </div>
+    <div>
+      <%= parts[2].strip %>
+    </div>
+  <% else %>
+    <%= game.notes %>
+  <% end %>
 </div>
 <div class="text-center">
   <% if game.is_completed? %>

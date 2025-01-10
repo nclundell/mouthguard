@@ -7,11 +7,15 @@
     <div class="font-bold text-center text-4xl">
       <% if @game.notes.include? "at the" %>
         <% parts = @game.notes.partition "at the" %>
-        <%= parts[0].strip %>
-        <br>
-        <%= parts[1].strip %>
-        <br>
-        <%= parts[2].strip %>
+        <div>
+          <%= parts[0].strip %>
+        </div>
+        <div class="text-xl">
+          <%= parts[1].strip %>
+        </div>
+        <div>
+          <%= parts[2].strip %>
+        </div>
       <% else %>
         <%= @game.notes %>
       <% end %>
