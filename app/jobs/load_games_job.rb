@@ -40,10 +40,6 @@ class LoadGamesJob < ApplicationJob
       game["notes"].gsub!("College Football Playoff", "CFP")
       game["playoff"]          = game["notes"].include? "CFP"
       game.save!
-
-      User.all.each do |user|
-        Pick.find_or_create_by(game: game, user: user, season: game["season"])
-      end
     end
   end
 end
