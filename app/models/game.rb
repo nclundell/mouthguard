@@ -14,8 +14,6 @@ class Game < ApplicationRecord
   scope :this_season, -> { where(season: current_season) }
   scope :live, -> {
     where(completed: false).
-    where.not(away_line_scores: nil).
-    where.not(home_line_scores: nil).
     where("start < ?", Time.now)
   }
   scope :to_be_played, -> {
