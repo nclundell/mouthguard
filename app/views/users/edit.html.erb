@@ -5,7 +5,7 @@
     <% else %>
       <%= icon "user-circle", class: "text-black size-20" %>
     <% end %>
-    <h1 class="font-bold text-4xl my-auto ml-4">Editing: <%= @user.name %></h1>
+    <h1 class="font-bold text-4xl my-auto ml-4"><%= @user.name %></h1>
   </div>
 
   <%= form_with(model: @user, class: "contents") do |form| %>
