@@ -40,8 +40,8 @@ class User < ApplicationRecord
   def remaining_pick_difference(other_user)
     count = 0
     Game.to_be_played.this_season.each do |g|
-      user_pick = g.picks.by_user(self).first.team
-      other_pick = g.picks.by_user(other_user).first.team
+      user_pick = g.picks.for_user(self).first.team
+      other_pick = g.picks.for_user(other_user).first.team
 
       count += 1 unless user_pick == other_pick
     end
