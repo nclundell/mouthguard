@@ -34,7 +34,7 @@
     <%= icon "lock-closed", class: "size-8 my-auto ml-2", variant: "solid" %>
   </div>
 
-  <div class="flex flex-wrap space-x-4 justify-center">
+  <div class="flex flex-wrap justify-center">
     <% @locked.each do |pick| %>
       <%= render partial: "users/picks/game", locals: { pick: pick } %>
     <% end %>

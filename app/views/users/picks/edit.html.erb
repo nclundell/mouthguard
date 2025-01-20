@@ -12,11 +12,7 @@
       </div>
     <% end %>
 
-    <div class="font-bold text-4xl mb-4">Editing Picks: <%= @user.name %></div>
-
-    <hr>
-
-    <div class="max-sm:hidden relative mb-4 mt-4">
+    <div class="max-sm:hidden relative">
       <div class="absolute right-0">
         <%= f.submit "Update Picks",
           class: "rounded-lg py-2 px-5 bg-blue-600 text-white font-medium cursor-pointer my-auto"
@@ -38,29 +34,12 @@
       %>
     </div>
 
-    <div class="flex flex-wrap space-x-4 justify-center">
+    <div class="flex flex-wrap justify-center">
       <%= f.fields_for :picks do |pf| %>
         <% if @available.include? pf.object %>
-          <div>
-            <%= render partial: "users/picks/form_game", locals: { f: pf } %>
-          </div>
+          <%= render partial: "users/picks/form_game", locals: { f: pf } %>
         <% end %>
       <% end %>
     </div>
-
-    <hr>
-
-    <% unless @locked.blank? %>
-      <div class="font-semibold text-4xl mb-4 mt-4 inline-flex">
-        Locked Games
-        <%= icon "lock-closed", class: "size-8 my-auto ml-2", variant: "solid" %>
-      </div>
-      <div class="flex flex-wrap space-x-4 justify-center">
-        <% @locked.each do |pick| %>
-          <%= render partial: "users/picks/game", locals: { pick: pick } %>
-        <% end %>
-      </div>
-    <% end %>
-
   <% end %>
 </div>
