@@ -24,6 +24,7 @@ class Game < ApplicationRecord
   def reveal_picks?
     completed? || is_live?
   end
+
   def is_live?
     return false if completed
     return false if away_line_scores.nil?

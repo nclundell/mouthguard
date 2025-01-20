@@ -1,4 +1,4 @@
-<div class="mx-auto w-full text-center" data-controller="user-picks">
+<div class="w-full max-w-7xl mx-auto text-center" data-controller="user-picks">
   <%= form_with model: @user, url: { controller: 'users/picks', action: 'update' }, method: :put do |f| %>
     <% if @user.errors.any? %>
       <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
@@ -12,24 +12,55 @@
       </div>
     <% end %>
 
-    <div class="max-sm:hidden flex flex-row justify-evenly">
-      <div class="w-1/3"></div>
-      <div class="w-1/3 font-bold text-4xl mb-4">Editing Picks: <%= @user.name %></div>
-      <div class="w-1/3">
-        <%= f.submit "Update Picks", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+    <div class="font-bold text-4xl mb-4">Editing Picks: <%= @user.name %></div>
+
+    <hr>
+
+    <div class="max-sm:hidden relative mb-4 mt-4">
+      <div class="absolute right-0">
+        <%= f.submit "Update Picks",
+          class: "rounded-lg py-2 px-5 bg-blue-600 text-white font-medium cursor-pointer my-auto"
+        %>
+      </div>
+      <div class="font-semibold text-4xl inline-flex">
+        Available Games
+        <%= icon "lock-open", class: "size-8 my-auto ml-2", variant: "solid" %>
       </div>
     </div>
-    
-    <div class="sm:hidden">
-      <div class="font-bold text-4xl mb-4">Editing Picks: <%= @user.name %></div>
-        <%= f.submit "Update Picks", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+
+    <div class="sm:hidden mb-4">
+      <div class="font-semibold text-4xl inline-flex mb-4">
+        Available Games
+        <%= icon "lock-open", class: "size-8 my-auto ml-2", variant: "solid" %>
+      </div>
+      <%= f.submit "Update Picks",
+        class: "rounded-lg py-2 px-5 bg-blue-600 text-white font-medium cursor-pointer my-auto"
+      %>
     </div>
 
-    <%= f.fields_for :picks do |pf| %> 
-      <% unless pf.object.game.is_live? || pf.object.game.is_completed? %>
-        <div 
-        <%= render partial: "users/picks/form_game", locals: { f: pf } %>
+    <div class="flex flex-wrap space-x-4 justify-center">
+      <%= f.fields_for :picks do |pf| %>
+        <% if @available.include? pf.object %>
+          <div>
+            <%= render partial: "users/picks/form_game", locals: { f: pf } %>
+          </div>
+        <% end %>
       <% end %>
+    </div>
+
+    <hr>
+
+    <% unless @locked.blank? %>
+      <div class="font-semibold text-4xl mb-4 mt-4 inline-flex">
+        Locked Games
+        <%= icon "lock-closed", class: "size-8 my-auto ml-2", variant: "solid" %>
+      </div>
+      <div class="flex flex-wrap space-x-4 justify-center">
+        <% @locked.each do |pick| %>
+          <%= render partial: "users/picks/game", locals: { pick: pick } %>
+        <% end %>
+      </div>
     <% end %>
+
   <% end %>
 </div>

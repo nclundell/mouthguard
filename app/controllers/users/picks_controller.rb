@@ -3,16 +3,14 @@ include ApplicationHelper
 class Users::PicksController < ApplicationController
   def index
     @user = User.find(params[:user_id])
-    @picks = Pick.where(user_id: params[:user_id]).select {
-      |p| p.game.season = current_season
-    }
+    @available = Pick.for_user(@user).select { |p| p unless p.reveal? }
+    @locked = Pick.for_user(@user).select { |p| p if p.reveal? }
   end
 
   def edit
     @user = User.find(params[:user_id])
-    Game.this_season.each do |game|
-      Pick.find_or_create_by(user: @user, game: game, season: current_season)
-    end
+    @available = Pick.for_user(@user).select { |p| p unless p.reveal? }
+    @locked = Pick.for_user(@user).select { |p| p if p.reveal? }
   end
 
   def update
