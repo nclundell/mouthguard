@@ -3,40 +3,44 @@
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
   <% end %>
 
-  <div class="max-sm:hidden relative mb-4">
-    <div class="absolute right-0">
+  <% unless @available.blank? %>
+    <div class="max-sm:hidden relative mb-4">
+      <div class="absolute right-0">
+        <%= button_to "Edit Picks", user_picks_edit_path(@user), method: :get, class: "rounded-lg py-2 px-5 bg-blue-600 text-white font-medium cursor-pointer" %>
+      </div>
+      <div class="font-semibold text-4xl inline-flex">
+        Available Games
+        <%= icon "lock-open", class: "size-8 my-auto ml-2", variant: "solid" %>
+      </div>
+    </div>
+
+    <div class="sm:hidden mb-4">
+      <div class="font-semibold text-4xl inline-flex mb-4">
+        Available Games
+        <%= icon "lock-open", class: "size-8 my-auto ml-2", variant: "solid" %>
+      </div>
       <%= button_to "Edit Picks", user_picks_edit_path(@user), method: :get, class: "rounded-lg py-2 px-5 bg-blue-600 text-white font-medium cursor-pointer" %>
     </div>
-    <div class="font-semibold text-4xl inline-flex">
-      Available Games
-      <%= icon "lock-open", class: "size-8 my-auto ml-2", variant: "solid" %>
+
+    <div class="flex flex-wrap justify-center">
+      <% @available.each do |pick| %>
+        <%= render partial: "users/picks/game", locals: { pick: pick } %>
+      <% end %>
     </div>
-  </div>
 
-  <div class="sm:hidden mb-4">
-    <div class="font-semibold text-4xl inline-flex mb-4">
-      Available Games
-      <%= icon "lock-open", class: "size-8 my-auto ml-2", variant: "solid" %>
+    <hr class="mb-4 mt-4">
+  <% end %>
+
+  <% unless @locked.blank? %>
+    <div class="font-semibold text-4xl mb-4 inline-flex">
+      Locked Games
+      <%= icon "lock-closed", class: "size-8 my-auto ml-2", variant: "solid" %>
     </div>
-    <%= button_to "Edit Picks", user_picks_edit_path(@user), method: :get, class: "rounded-lg py-2 px-5 bg-blue-600 text-white font-medium cursor-pointer" %>
-  </div>
 
-  <div class="flex flex-wrap space-x-4 justify-center">
-    <% @available.each do |pick| %>
-      <%= render partial: "users/picks/game", locals: { pick: pick } %>
-    <% end %>
-  </div>
-
-  <hr class="mb-4 mt-4">
-
-  <div class="font-semibold text-4xl mb-4 inline-flex">
-    Locked Games
-    <%= icon "lock-closed", class: "size-8 my-auto ml-2", variant: "solid" %>
-  </div>
-
-  <div class="flex flex-wrap justify-center">
-    <% @locked.each do |pick| %>
-      <%= render partial: "users/picks/game", locals: { pick: pick } %>
-    <% end %>
-  </div>
+    <div class="flex flex-wrap justify-center">
+      <% @locked.each do |pick| %>
+        <%= render partial: "users/picks/game", locals: { pick: pick } %>
+      <% end %>
+    </div>
+  <% end %>
 </div>

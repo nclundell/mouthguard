@@ -16,8 +16,10 @@ export default class extends Controller {
     for (var team of this.teamTargets) {
       if (team.firstElementChild.firstElementChild.checked == true) {
         team.classList.add("border-blue-500");
+        team.lastElementChild.classList.remove("hidden")
       } else {
         team.classList.remove("border-blue-500");
+        team.lastElementChild.classList.add("hidden")
       }
     }
   }
