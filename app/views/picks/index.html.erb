@@ -32,9 +32,9 @@
               <div class="flex flex-row flex-nowrap text-sm w-44 h-8">
                 <% unless game.winner.blank? %>
                     <% if pick.team == game.winner %>
-                      <%= icon "check-circle", class: "font-extrabold text-green-500 size-8 mr-2" %>
+                      <%= icon "check-circle", class: "font-extrabold text-green-500 size-8 mr-2", variant: "solid" %>
                     <% else %>
-                      <%= icon "x-circle", class: "font-bold text-red-500 size-8 mr-2" %>
+                      <%= icon "x-circle", class: "font-bold text-red-500 size-8 mr-2", variant: "solid" %>
                     <% end %>
                 <% end %>
                 <span class="my-auto"><%= pick&.team&.school %></span>
@@ -73,9 +73,9 @@
                 <% unless game.winner.blank? %>
                   <div class="flex flex-row my-auto">
                     <% if pick.team == game.winner %>
-                      <%= icon "check-circle", class: "font-extrabold text-green-500 size-8 mr-2" %>
+                      <%= icon "check-circle", class: "font-extrabold text-green-500 size-8 mr-2", variant: "solid" %>
                     <% else %>
-                      <%= icon "x-circle", class: "font-bold text-red-500 size-8 mr-2" %>
+                      <%= icon "x-circle", class: "font-bold text-red-500 size-8 mr-2", variant: "solid" %>
                     <% end %>
                   </div>
                 <% end %>
