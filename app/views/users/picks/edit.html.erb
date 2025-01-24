@@ -1,4 +1,4 @@
-<div class="w-full max-w-7xl mx-auto text-center" data-controller="user-picks">
+<div class="w-full max-w-7xl mx-auto text-center">
   <%= form_with model: @user, url: { controller: 'users/picks', action: 'update' }, method: :put do |f| %>
     <% if @user.errors.any? %>
       <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
@@ -36,8 +36,8 @@
 
     <div class="flex flex-wrap justify-center">
       <%= f.fields_for :picks do |pf| %>
-        <% if @available.include? pf.object %>
-          <%= render partial: "users/picks/form_game", locals: { f: pf } %>
+        <% unless @available.include? pf.object %>
+          <%= render Form::PickComponent.new(pick: pf) %>
         <% end %>
       <% end %>
     </div>

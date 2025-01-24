@@ -1,0 +1,53 @@
+<div class="m-4" data-controller="components--form--pick-component">
+  <div class="font-semibold text-xl py-2">
+    <%= @pick.object.game.notes %>
+    <div class="text-sm text-black/75">
+      <%= @pick.object.game.tv %> | <%= time_tag @pick.object.game.start, "data-local": "time", "data-format": "%b. %e @ %l:%M %p" %>
+    </div>
+  </div>
+  <div class="flex flex-row justify-center">
+    <label
+      class="relative flex rounded-lg border-4 bg-white p-2 shadow-sm max-sm:size-36 sm:size-48"
+      data-components--form--pick-component-target="awayTeam"
+      data-action="click->components--form--pick-component#set_pick_highlight"
+    >
+      <div class="flex flex-col mx-auto">
+        <%= @pick.radio_button :team_id,
+          @pick.object.game.away.id,
+          class: "sr-only",
+          data: { "components--form--pick-component-target": "awayRadio" }
+        %>
+        <%= image_tag @pick.object.game.away.logos.first, class: "mx-auto max-sm:size-20 sm:size-36" %>
+        <span class="font-semibold text-center">
+          <%= @pick.object.game.away.school %>
+        </span>
+      </div>
+      <div class="absolute hidden" data-components--form--pick-component-target="awayTeamCheckmark">
+        <%= icon "check-circle", class: "text-blue-500 size-8", variant: "solid" %>
+      </div>
+    </label>
+    <span class="font-semibold content-center px-4">vs</span>
+    <label
+      class="relative flex rounded-lg border-4 bg-white p-2 shadow-sm max-sm:size-36 sm:size-48"
+      data-components--form--pick-component-target="homeTeam"
+      data-action="click->components--form--pick-component#set_pick_highlight"
+    >
+      <div class="flex flex-col mx-auto", data-user-picks-target="radio">
+        <%= @pick.radio_button :team_id,
+          @pick.object.game.home.id,
+          class: "sr-only",
+          data: { "components--form--pick-component-target": "homeRadio" }
+        %>
+      <%= image_tag @pick.object.game.home.logos.first, class: "mx-auto max-sm:size-20 sm:size-36" %>
+        <span class="font-semibold text-center">
+          <%= @pick.object.game.home.school %>
+        </span>
+      </div>
+      <div class="absolute hidden" data-components--form--pick-component-target="homeTeamCheckmark">
+        <%= icon "check-circle", class: "text-blue-500 size-8", variant: "solid" %>
+      </div>
+    </label>
+  </div>
+  <%= @pick.hidden_field :user_id %>
+  <%= @pick.hidden_field :game_id %>
+</div>
