@@ -1,4 +1,4 @@
-<div class="w-full max-w-7xl mx-auto text-center" data-controller="user-picks">
+<div class="w-full max-w-7xl mx-auto text-center">
   <% if notice.present? %>
     <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
   <% end %>
@@ -24,7 +24,7 @@
 
     <div class="flex flex-wrap justify-center">
       <% @available.each do |pick| %>
-        <%= render partial: "users/picks/game", locals: { pick: pick } %>
+        <%= render PickComponent.new(pick: pick) %>
       <% end %>
     </div>
 
@@ -39,7 +39,7 @@
 
     <div class="flex flex-wrap justify-center">
       <% @locked.each do |pick| %>
-        <%= render partial: "users/picks/game", locals: { pick: pick } %>
+        <%= render PickComponent.new(pick: pick) %>
       <% end %>
     </div>
   <% end %>

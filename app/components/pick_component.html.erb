@@ -1,0 +1,49 @@
+<div class="m-4" data-controller="components--pick-component">
+  <div class="font-semibold text-xl py-2">
+    <%= @pick.game.notes %>
+    <div class="text-sm text-black/75">
+      <%= @pick.game.tv %> | <%= time_tag @pick.game.start, "data-local": "time", "data-format": "%b. %e @ %l:%M %p" %>
+    </div>
+  </div>
+  <div class="flex justify-center" data-components--pick-component-target="bowl">
+    <label
+      class="relative flex cursor-pointer rounded-lg border-4 bg-white p-2 shadow-sm max-sm:size-36 sm:size-48"
+      data-components--pick-component-target="awayTeam"
+    >
+      <div class="flex flex-col mx-auto">
+        <input class="sr-only" data-components--pick-component-target="awayRadio"
+          <% if @pick.team_id == @pick.game.away.id %>
+            checked="checked"
+          <% end %>
+        >
+        <%= image_tag @pick.game.away.logos.first, class: "mx-auto max-sm:size-20 sm:size-36" %>
+        <span class="font-semibold text-center">
+          <%= @pick.game.away.school %>
+        </span>
+      </div>
+      <div class="absolute hidden" data-components--pick-component-target="awayTeamCheckmark">
+        <%= icon "check-circle", class: "text-blue-500 size-8", variant: "solid" %>
+      </div>
+    </label>
+    <span class="font-semibold content-center px-4">vs</span>
+    <label
+      class="relative flex cursor-pointer rounded-lg border-4 bg-white p-2 shadow-sm max-sm:size-36 sm:size-48"
+      data-components--pick-component-target="homeTeam"
+    >
+      <div class="flex flex-col mx-auto">
+        <input class="sr-only" data-components--pick-component-target="homeRadio"
+          <% if @pick.team_id == @pick.game.home.id %>
+            checked="checked"
+          <% end %>
+        >
+        <%= image_tag @pick.game.home.logos.first, class: "mx-auto max-sm:size-20 sm:size-36" %>
+        <span class="font-semibold text-center">
+          <%= @pick.game.home.school %>
+        </span>
+      </div>
+      <div class="absolute hidden" data-components--pick-component-target="homeTeamCheckmark">
+        <%= icon "check-circle", class: "text-blue-500 size-8", variant: "solid" %>
+      </div>
+    </label>
+  </div>
+</div>
