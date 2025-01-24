@@ -12,34 +12,40 @@
       </div>
     <% end %>
 
-    <div class="max-sm:hidden relative">
-      <div class="absolute right-0">
+    <% unless @available.blank? %>
+      <div class="max-sm:hidden relative">
+        <div class="absolute right-0">
+          <%= f.submit "Update Picks",
+            class: "rounded-lg py-2 px-5 bg-blue-600 text-white font-medium cursor-pointer my-auto"
+          %>
+        </div>
+        <div class="font-semibold text-4xl inline-flex">
+          Available Games
+          <%= icon "lock-open", class: "size-8 my-auto ml-2", variant: "solid" %>
+        </div>
+      </div>
+
+      <div class="sm:hidden mb-4">
+        <div class="font-semibold text-4xl inline-flex mb-4">
+          Available Games
+          <%= icon "lock-open", class: "size-8 my-auto ml-2", variant: "solid" %>
+        </div>
         <%= f.submit "Update Picks",
           class: "rounded-lg py-2 px-5 bg-blue-600 text-white font-medium cursor-pointer my-auto"
         %>
       </div>
-      <div class="font-semibold text-4xl inline-flex">
-        Available Games
-        <%= icon "lock-open", class: "size-8 my-auto ml-2", variant: "solid" %>
-      </div>
-    </div>
 
-    <div class="sm:hidden mb-4">
-      <div class="font-semibold text-4xl inline-flex mb-4">
-        Available Games
-        <%= icon "lock-open", class: "size-8 my-auto ml-2", variant: "solid" %>
-      </div>
-      <%= f.submit "Update Picks",
-        class: "rounded-lg py-2 px-5 bg-blue-600 text-white font-medium cursor-pointer my-auto"
-      %>
-    </div>
-
-    <div class="flex flex-wrap justify-center">
-      <%= f.fields_for :picks do |pf| %>
-        <% if @available.include? pf.object %>
-          <%= render Form::PickComponent.new(pick: pf) %>
+      <div class="flex flex-wrap justify-center">
+        <%= f.fields_for :picks do |pf| %>
+          <% if @available.include? pf.object %>
+            <%= render Form::PickComponent.new(pick: pf) %>
+          <% end %>
         <% end %>
-      <% end %>
-    </div>
+      </div>
+    <% else %>
+      <div class="font-semibold text-4xl inline-flex">
+        There are no games available to pick at this time.
+      </div>
+    <% end %>
   <% end %>
 </div>
