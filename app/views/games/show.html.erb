@@ -74,7 +74,7 @@
     </div>
   </div>
   <div class="sm:hidden">
-    <%= render partial: "games/card", locals: { game: @game } %>
+    <%= render GameCardComponent.new(game: @game) %>
     <%= render GameBoxscoreComponent.new(game: @game) %>
   </div>
   <div class="text-center my-2 px-1">

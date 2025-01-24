@@ -1,0 +1,60 @@
+<div class="font-semibold text-2xl text-center p-2">
+  <% if @game.notes.include? "at the" %>
+    <% parts = @game.notes.partition "at the" %>
+    <div><%= parts[0].strip %></div>
+    <div><%= parts[2].strip %></div>
+  <% else %>
+    <%= @game.notes %>
+  <% end %>
+</div>
+<div class="text-center">
+  <% if @game.is_completed? %>
+    Final | <%= time_tag @game.start, "data-local": "time", "data-format": "%b. %e at %l:%M %p" %>
+  <% elsif @game.is_live? %> 
+    <% if @game.away_line_scores.length > 4 %>
+      <%= @game.tv %> | OT
+    <% else %>
+      <%= @game.tv %> | <%= @game.clock %> <%= @game.period&.to_i&.ordinalize %>
+    <% end %>
+  <% else %>
+    <%= @game.tv %> | <%= time_tag @game.start, "data-local": "time", "data-format": "%b. %e at %l:%M %p" %>
+  <% end %>
+</div>
+<div class="flex flex-row justify-center content-center">
+  <div class="flex flex-col justify-center content-center away-team px-2">
+    <div class="flex flex-row justify-center content-center">
+      <div class="size-16 pr-1">
+        <%= image_tag @game.away.logos.first %>
+      </div>
+      <div class="font-bold text-4xl my-auto">
+        <%= @game.away_points || 0 %>
+      </div>
+      <% if @game.possession == "away" %>
+        <%= icon "chevron-double-left", class: "size-4 my-auto" %>
+      <% else %>    
+        <div class="size-4"></div>
+      <% end %>
+    </div>
+    <div class="font-semibold text-l text-left my-auto">
+      <%= @game.away.school %>
+    </div>
+  </div>
+  <div class="flex flex-col justify-center content-center home-team px-2">
+    <div class="flex flex-row justify-center content-center">
+      <% if @game.possession == "home" %>
+        <%= icon "chevron-double-right", class: "size-4 my-auto" %>
+      <% else %>    
+        <div class="size-4"></div>
+      <% end %>
+      <div class="font-bold text-4xl my-auto">
+        <%= @game.home_points || 0 %>
+      </div>
+      <div class="size-16 pl-1">
+        <%= image_tag @game.home.logos.first %>
+      </div>
+    </div>
+    <div class="font-semibold text-l text-right my-auto">
+      <%= @game.home.school %>
+    </div>
+  </div>
+</div>
