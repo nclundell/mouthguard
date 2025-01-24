@@ -1,8 +1,13 @@
 production:
+  clean_up:
+    class: CleanUpJob
+    queue: default
+    schedule: every day at midnight
+
   live_game_update:
     class: LiveGameUpdateJob
     queue: live_update
-    schedule: every 10 seconds
+    schedule: every 30 seconds
 
   load_game_data:
     class: LoadGamesJob
@@ -20,6 +25,11 @@ production:
     schedule: every day at 3am
 
 development:
+  clean_up:
+    class: CleanUpJob
+    queue: default
+    schedule: every day at midnight
+
   live_game_update:
     class: LiveGameUpdateJob
     queue: live_update
