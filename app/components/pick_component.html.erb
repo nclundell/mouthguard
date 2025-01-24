@@ -1,17 +1,17 @@
-<div class="m-4" data-controller="components--pick-component">
+<div class="m-4" data-controller="components--pick">
   <div class="font-semibold text-xl py-2">
     <%= @pick.game.notes %>
     <div class="text-sm text-black/75">
       <%= @pick.game.tv %> | <%= time_tag @pick.game.start, "data-local": "time", "data-format": "%b. %e @ %l:%M %p" %>
     </div>
   </div>
-  <div class="flex justify-center" data-components--pick-component-target="bowl">
+  <div class="flex justify-center" data-components--pick-target="bowl">
     <label
       class="relative flex cursor-pointer rounded-lg border-4 bg-white p-2 shadow-sm max-sm:size-36 sm:size-48"
       data-components--pick-component-target="awayTeam"
     >
       <div class="flex flex-col mx-auto">
-        <input class="sr-only" data-components--pick-component-target="awayRadio"
+        <input class="sr-only" data-components--pick-target="awayRadio"
           <% if @pick.team_id == @pick.game.away.id %>
             checked="checked"
           <% end %>
@@ -21,17 +21,17 @@
           <%= @pick.game.away.school %>
         </span>
       </div>
-      <div class="absolute hidden" data-components--pick-component-target="awayTeamCheckmark">
+      <div class="absolute hidden" data-components--pick-target="awayTeamCheckmark">
         <%= icon "check-circle", class: "text-blue-500 size-8", variant: "solid" %>
       </div>
     </label>
     <span class="font-semibold content-center px-4">vs</span>
     <label
       class="relative flex cursor-pointer rounded-lg border-4 bg-white p-2 shadow-sm max-sm:size-36 sm:size-48"
-      data-components--pick-component-target="homeTeam"
+      data-components--pick-target="homeTeam"
     >
       <div class="flex flex-col mx-auto">
-        <input class="sr-only" data-components--pick-component-target="homeRadio"
+        <input class="sr-only" data-components--pick-target="homeRadio"
           <% if @pick.team_id == @pick.game.home.id %>
             checked="checked"
           <% end %>
@@ -41,7 +41,7 @@
           <%= @pick.game.home.school %>
         </span>
       </div>
-      <div class="absolute hidden" data-components--pick-component-target="homeTeamCheckmark">
+      <div class="absolute hidden" data-components--pick-target="homeTeamCheckmark">
         <%= icon "check-circle", class: "text-blue-500 size-8", variant: "solid" %>
       </div>
     </label>
