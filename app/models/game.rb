@@ -11,6 +11,7 @@ class Game < ApplicationRecord
   has_many :picks, dependent: :destroy
 
   scope :completed, -> { where(completed: true) }
+  scope :incomplete, -> { where.not(completed: true) }
   scope :this_season, -> { where(season: current_season) }
   scope :live, -> {
     where(completed: false).

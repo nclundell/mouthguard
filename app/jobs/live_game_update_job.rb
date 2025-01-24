@@ -5,7 +5,7 @@ class LiveGameUpdateJob < ApplicationJob
   queue_as :live_update
 
   def perform(*args)
-    unless Game.this_season.live.length > 0
+    unless Game.this_season.live.length > 0 || Game.this_season.incomplete.length > 0
       puts "No #{current_season} games are live, skipping update."
       return
     end
