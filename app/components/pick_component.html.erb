@@ -11,7 +11,11 @@
       data-components--pick-component-target="awayTeam"
     >
       <div class="flex flex-col mx-auto">
-        <input class="sr-only" data-components--pick-target="awayRadio"
+        <input
+          type="radio"
+          id="<%= @pick.game.home.school %>"
+          name="pick"
+          class="sr-only" data-components--pick-target="awayRadio"
           <% if @pick.team_id == @pick.game.away.id %>
             checked="checked"
           <% end %>
@@ -31,7 +35,11 @@
       data-components--pick-target="homeTeam"
     >
       <div class="flex flex-col mx-auto">
-        <input class="sr-only" data-components--pick-target="homeRadio"
+        <input
+          type="radio"
+          id="<%= @pick.game.home.school %>"
+          name="pick"
+          class="sr-only" data-components--pick-target="homeRadio"
           <% if @pick.team_id == @pick.game.home.id %>
             checked="checked"
           <% end %>
