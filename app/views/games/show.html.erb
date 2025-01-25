@@ -73,8 +73,17 @@
       </div>
     </div>
   </div>
-  <div class="sm:hidden">
-    <%= render GameCardComponent.new(game: @game) %>
+  <div class="sm:hidden mx-auto">
+    <div class="font-semibold text-2xl text-center p-2">
+      <% if @game.notes.include? "at the" %>
+        <% parts = @game.notes.partition "at the" %>
+        <div><%= parts[0].strip %></div>
+        <div><%= parts[2].strip %></div>
+      <% else %>
+        <%= @game.notes %>
+      <% end %>
+    </div>
+    <%= render GameCardComponent.new(game: @game, title: false, extra_classes: "mx-auto") %>
     <%= render GameBoxscoreComponent.new(game: @game) %>
   </div>
   <div class="text-center my-2 px-1">
