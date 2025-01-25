@@ -8,18 +8,10 @@
   <div class="flex justify-center" data-components--pick-target="bowl">
     <label
       class="relative flex cursor-pointer rounded-lg border-4 bg-white p-2 shadow-sm max-sm:size-36 sm:size-48"
-      data-components--pick-component-target="awayTeam"
+      data-components--pick-target="awayTeam"
+      data-picked=<%= @pick.team_id == @pick.game.away.id %>
     >
       <div class="flex flex-col mx-auto">
-        <input
-          type="radio"
-          id="<%= @pick.game.home.school %>"
-          name="pick"
-          class="sr-only" data-components--pick-target="awayRadio"
-          <% if @pick.team_id == @pick.game.away.id %>
-            checked="checked"
-          <% end %>
-        >
         <%= image_tag @pick.game.away.logos.first, class: "mx-auto max-sm:size-20 sm:size-36" %>
         <span class="font-semibold text-center">
           <%= @pick.game.away.school %>
@@ -33,17 +25,9 @@
     <label
       class="relative flex cursor-pointer rounded-lg border-4 bg-white p-2 shadow-sm max-sm:size-36 sm:size-48"
       data-components--pick-target="homeTeam"
+      data-picked=<%= @pick.team_id == @pick.game.home.id %>
     >
       <div class="flex flex-col mx-auto">
-        <input
-          type="radio"
-          id="<%= @pick.game.home.school %>"
-          name="pick"
-          class="sr-only" data-components--pick-target="homeRadio"
-          <% if @pick.team_id == @pick.game.home.id %>
-            checked="checked"
-          <% end %>
-        >
         <%= image_tag @pick.game.home.logos.first, class: "mx-auto max-sm:size-20 sm:size-36" %>
         <span class="font-semibold text-center">
           <%= @pick.game.home.school %>

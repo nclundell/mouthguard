@@ -4,10 +4,8 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = [
     "bowl",
-    "awayRadio",
     "awayTeam",
     "awayTeamCheckmark",
-    "homeRadio",
     "homeTeam",
     "homeTeamCheckmark"
   ]
@@ -22,7 +20,7 @@ export default class extends Controller {
   }
 
   set_away_hightlight () {
-    if (this.awayRadioTarget.checked) {
+    if (this.awayTeamTarget.dataset.picked === "true") {
       this.awayTeamTarget.classList.add("border-blue-500");
       this.awayTeamCheckmarkTarget.classList.remove("hidden");
     } else {
@@ -32,7 +30,7 @@ export default class extends Controller {
   }
 
   set_home_hightlight () {
-    if (this.homeRadioTarget.checked) {
+    if (this.homeTeamTarget.dataset.picked === "true") {
       this.homeTeamTarget.classList.add("border-blue-500");
       this.homeTeamCheckmarkTarget.classList.remove("hidden");
     } else {
