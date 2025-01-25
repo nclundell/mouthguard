@@ -15,7 +15,7 @@
         <div class="flex flex-col mx-auto">
           <%= @pick.radio_button :team_id,
             @pick.object.game.away.id,
-            class: "sr-only",
+            class: "hidden",
             data: { "components--form--pick-target": "awayRadio" }
           %>
           <%= image_tag @pick.object.game.away.logos.first %>
@@ -38,7 +38,7 @@
         <div class="flex flex-col mx-auto", data-user-picks-target="radio">
           <%= @pick.radio_button :team_id,
             @pick.object.game.home.id,
-            class: "sr-only",
+            class: "hidden",
             data: { "components--form--pick-target": "homeRadio" }
           %>
         <%= image_tag @pick.object.game.home.logos.first, class: "mx-auto" %>
