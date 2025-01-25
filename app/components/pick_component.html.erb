@@ -6,36 +6,40 @@
     </div>
   </div>
   <div class="flex justify-center" data-components--pick-target="bowl">
-    <label
-      class="relative flex cursor-pointer rounded-lg border-4 bg-white p-2 shadow-sm max-sm:size-36 sm:size-48"
-      data-components--pick-target="awayTeam"
-      data-picked=<%= @pick.team_id == @pick.game.away.id %>
-    >
-      <div class="flex flex-col mx-auto">
-        <%= image_tag @pick.game.away.logos.first, class: "mx-auto max-sm:size-20 sm:size-36" %>
-        <span class="font-semibold text-center">
-          <%= @pick.game.away.school %>
-        </span>
+    <div>
+      <label
+        class="relative flex rounded-lg border-4 bg-white p-2 shadow-sm size-40"
+        data-components--pick-target="awayTeam"
+        data-picked=<%= @pick.team_id == @pick.game.away.id %>
+      >
+        <div class="flex flex-col mx-auto">
+          <%= image_tag @pick.game.away.logos.first %>
+        </div>
+        <div class="absolute hidden" data-components--pick-target="awayTeamCheckmark">
+          <%= icon "check-circle", class: "text-blue-500 size-8", variant: "solid" %>
+        </div>
+      </label>
+      <div class="font-semibold text-center">
+        <%= @pick.game.away.school %>
       </div>
-      <div class="absolute hidden" data-components--pick-target="awayTeamCheckmark">
-        <%= icon "check-circle", class: "text-blue-500 size-8", variant: "solid" %>
-      </div>
-    </label>
+    </div>
     <span class="font-semibold content-center px-4">vs</span>
-    <label
-      class="relative flex cursor-pointer rounded-lg border-4 bg-white p-2 shadow-sm max-sm:size-36 sm:size-48"
-      data-components--pick-target="homeTeam"
-      data-picked=<%= @pick.team_id == @pick.game.home.id %>
-    >
-      <div class="flex flex-col mx-auto">
-        <%= image_tag @pick.game.home.logos.first, class: "mx-auto max-sm:size-20 sm:size-36" %>
-        <span class="font-semibold text-center">
-          <%= @pick.game.home.school %>
-        </span>
+    <div>
+      <label
+        class="relative flex rounded-lg border-4 bg-white p-2 shadow-sm size-40"
+        data-components--pick-target="homeTeam"
+        data-picked=<%= @pick.team_id == @pick.game.home.id %>
+      >
+        <div class="flex flex-col mx-auto">
+          <%= image_tag @pick.game.home.logos.first %>
+        </div>
+        <div class="absolute hidden" data-components--pick-target="homeTeamCheckmark">
+          <%= icon "check-circle", class: "text-blue-500 size-8", variant: "solid" %>
+        </div>
+      </label>
+      <div class="font-semibold text-center">
+        <%= @pick.game.home.school %>
       </div>
-      <div class="absolute hidden" data-components--pick-target="homeTeamCheckmark">
-        <%= icon "check-circle", class: "text-blue-500 size-8", variant: "solid" %>
-      </div>
-    </label>
+    </div>
   </div>
 </div>
