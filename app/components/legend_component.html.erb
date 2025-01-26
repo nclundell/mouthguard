@@ -1,17 +1,17 @@
 <div class="flex border-2 rounded <%= @extra_classes %>">
-  <div class="flex border-r-2 px-2">
+  <div class="flex border-r-2 px-1">
     <%= icon "trophy", class: "text-amber-400 size-10 my-auto", variant: "solid" %>
-    <div class="font-semibold my-auto text-2xl px-2">
+    <div class="font-semibold my-auto text-2xl px-1">
       <%= @legend["total_wins"] %>
     </div>
   </div>
-  <div class="flex rounded px-4 py-3">
+  <div class="flex rounded px-1 py-1">
     <div class="flex">
       <% @user = User.find(@legend["user_id"]) if @legend["user_id"] %>
       <% if @user.present? && @user.avatar.attached? %>
-        <%= image_tag @user.avatar, class: "size-10 rounded-full mx-2 my-auto" %>
+        <%= image_tag @user.avatar, class: "size-10 rounded-full ml-1 mr-2 my-auto" %>
       <% else %>
-        <%= icon "user-circle", class: "text-black size-10 mx-2 my-auto", variant: "solid" %>
+        <%= icon "user-circle", class: "text-black size-10 ml-1 mr-2 my-auto", variant: "solid" %>
       <% end %>
       <div class="flex flex-col w-60">
         <% if @user.present? %>
