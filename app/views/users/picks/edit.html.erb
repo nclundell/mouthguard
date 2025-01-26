@@ -12,7 +12,7 @@
       </div>
     <% end %>
 
-    <% if @available.blank? %>
+    <% unless @available.blank? %>
       <div class="max-sm:hidden relative">
         <div class="absolute right-0">
           <%= f.submit "Update Picks",
@@ -37,7 +37,7 @@
 
       <div class="flex flex-wrap justify-center">
         <%= f.fields_for :picks do |pf| %>
-          <% if @locked.include? pf.object %>
+          <% if @available.include? pf.object %>
             <%= render Form::PickComponent.new(pick: pf) %>
           <% end %>
         <% end %>
