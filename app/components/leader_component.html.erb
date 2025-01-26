@@ -1,0 +1,24 @@
+<div class="flex border-2 rounded <%= @extra_classes %>">
+  <div class="flex rounded px-4 py-3 w-72">
+    <div class="my-auto">
+      #<%= @user.rank %>
+    </div>
+    <div class="flex">
+      <% if @user.avatar.attached? %>
+        <%= image_tag @user.avatar, class: "size-6 rounded-full mx-2 my-auto" %>
+      <% else %>
+        <%= icon "user-circle", class: "text-black size-6 mx-2 my-auto", variant: "solid" %>
+      <% end %>
+      <div class="my-auto"><%= @user.name %></div>
+    </div>
+  </div>
+  <% if @user.can_win? %>
+    <div class="my-auto py-3 font-semibold text-center w-12 border-l-2 bg-green-300">
+      <%= @user.points %>
+    </div>
+  <% else %>
+    <div class="my-auto py-3 font-semibold text-center w-12 border-l-2 bg-red-300">
+      <%= @user.points %>
+    </div>
+  <% end %>
+</div>
