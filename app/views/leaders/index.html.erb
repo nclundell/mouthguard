@@ -1,4 +1,7 @@
 <div class="container flex flex-col items-center">
+  <div class="mb-4 text-4xl text-center">
+    <%= @season %> Leader Board
+  </div>
   <% @leaders.each do |user| %>
     <%= render LeaderComponent.new(user: user, extra_classes: "mb-4") %>
   <% end %>
