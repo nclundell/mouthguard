@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_05_233842) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_26_032738) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -90,6 +90,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_05_233842) do
     t.index ["venue_id"], name: "index_games_on_venue_id"
   end
 
+  create_table "legends", force: :cascade do |t|
+    t.integer "season"
+    t.string "name"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_legends_on_user_id"
+  end
+
   create_table "picks", force: :cascade do |t|
     t.integer "game_id", null: false
     t.integer "user_id", null: false
@@ -159,6 +168,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_05_233842) do
   add_foreign_key "games", "teams", column: "away_id"
   add_foreign_key "games", "teams", column: "home_id"
   add_foreign_key "games", "venues"
+  add_foreign_key "legends", "users"
   add_foreign_key "picks", "games"
   add_foreign_key "picks", "teams"
   add_foreign_key "picks", "users"

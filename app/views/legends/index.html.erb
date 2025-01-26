@@ -1,0 +1,9 @@
+<div class="container flex flex-col items-center">
+  <% @legends.each do |legend| %>
+    <%= render LegendComponent.new(
+      legend: legend,
+      extra_classes: "mb-4"
+    ) %>
+  <% end %>
+</div>
+
