@@ -1,5 +1,5 @@
 module ApplicationHelper
   def current_season
-    2024
+    2025
   end
 end
