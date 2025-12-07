@@ -3,6 +3,8 @@ include ApplicationHelper
 class Game < ApplicationRecord
   include Turbo::Broadcastable
 
+  after_create :populate_picks
+
   belongs_to :venue, optional: :true
   belongs_to :home, class_name: "Team"
   belongs_to :away, class_name: "Team"
@@ -45,6 +47,10 @@ class Game < ApplicationRecord
     est_start_date = start.to_time.localtime("-05:00").to_date
 
     est_date == est_start_date
+  end
+
+  def populate_picks
+    User.all.each { |u| Pick.find_or_create_by(user: u, game: self, season: season)}
   end
 
   def winner
