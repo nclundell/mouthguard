@@ -28,7 +28,9 @@ class LiveGameUpdateJob < ApplicationJob
     games = JSON.parse(response.body)
 
     games.each do |game_data|
-      game = Game.find_or_initialize_by(cfbd_id: game_data["id"])
+      game = Game.find_by(cfbd_id: game_data["id"])
+      return unless game.present?
+
       if game.is_live?
         game["period"]     = game_data["period"]
         game["clock"]      = game_data["clock"]
