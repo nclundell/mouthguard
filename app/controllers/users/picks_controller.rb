@@ -3,14 +3,14 @@ include ApplicationHelper
 class Users::PicksController < ApplicationController
   def index
     @user = User.find(params[:user_id])
-    @available = Pick.for_user(@user).select { |p| p unless p.reveal? }
-    @locked = Pick.for_user(@user).select { |p| p if p.reveal? }
+    @available = Pick.for_user(@user).for_season.select { |p| p unless p.reveal? }
+    @locked = Pick.for_user(@user).for_season.select { |p| p if p.reveal? }
   end
 
   def edit
     @user = User.find(params[:user_id])
-    @available = Pick.for_user(@user).select { |p| p unless p.reveal? }
-    @locked = Pick.for_user(@user).select { |p| p if p.reveal? }
+    @available = Pick.for_user(@user).for_season.select { |p| p unless p.reveal? }
+    @locked = Pick.for_user(@user).for_season.select { |p| p if p.reveal? }
   end
 
   def update

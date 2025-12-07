@@ -1,6 +1,6 @@
 class GamesController < ApplicationController
   def index
-    @games = Game.where(season: current_season)
+    @games = Game.this_season
   end
 
   def show
