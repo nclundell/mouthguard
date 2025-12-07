@@ -10,7 +10,7 @@ class Pick < ApplicationRecord
 
   scope :for_game, ->(game) { where(game: game) }
   scope :for_user, ->(user) { where(user: user) }
-  scope :for_season, ->(season = current_season) { where(season: season) }
+  scope :for_season, ->(season = current_season) { where(season: season).order('games.start') }
 
   def reveal?
     game.completed? || game.is_live?
