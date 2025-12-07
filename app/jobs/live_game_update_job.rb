@@ -5,10 +5,10 @@ class LiveGameUpdateJob < ApplicationJob
   queue_as :live_update
 
   def perform(*args)
-    puts "Updating #{current_season} live games..."
+    puts "Updating live games..."
 
     unless Game.this_season.live.count > 0
-      puts "No live #{current_season} games found, skipping update."
+      puts "No live games found, skipping update."
       return
     end
 
