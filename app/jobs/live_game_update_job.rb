@@ -5,12 +5,13 @@ class LiveGameUpdateJob < ApplicationJob
   queue_as :live_update
 
   def perform(*args)
-    unless Game.this_season.live.length > 0 || Game.this_season.incomplete.length > 0
-      puts "No #{current_season} games are live, skipping update."
+    puts "Updating #{current_season} live games..."
+
+    unless Game.this_season.live.count > 0
+      puts "No live #{current_season} games found, skipping update."
       return
     end
 
-    puts "Updating #{current_season} live games..."
 
     uri = URI("https://apinext.collegefootballdata.com/scoreboard?classification=fbs")
 
