@@ -63,7 +63,7 @@
           </div>
         <% end %>
         <div class="flex flex-col py-2 px-3">
-          <% unless game.reveal_picks? %>
+          <% if game.reveal_picks? %>
             <% @users.each do |user| %>
               <% pick = Pick.find_by(game: game, user: user) %>
               <div class="flex flex-row whitespace-nowrap text-sm h-10">
