@@ -47,27 +47,27 @@
   </div>
 
   <!-- Mobile Table -->
-  <div class="sm:hidden -mt-8 flex flex-col items-center">
+  <div class="sm:hidden -mt-8 flex flex-col">
     <div class="flex-row">
       <% @games.each do |game| %> 
         <%= link_to game_path(game), class: "sticky top-0" do %>
-          <div class="grow bg-slate-200 py-2 px-3">
-            <div class="flex flex-col text-left">
-              <div class="grow font-semibold">
+          <div class="bg-slate-200 py-2 px-3">
+            <div class="flex flex-row">
+              <span class="grow font-semibold text-left">
                 <%= game.notes %>
-              </div>
-              <div class="grow text-sm text-black/75">
+              </span>
+              <span class="grow text-sm text-right text-black/75">
                 <%= game.tv %> | <%= time_tag game.start, "data-local": "time", "data-format": "%b. %e @ %l:%M %p" %>
-              </div>
+              </span>
             </div>
           </div>
         <% end %>
         <div class="flex flex-col py-2 px-3">
-          <% if game.reveal_picks? %>
+          <% unless game.reveal_picks? %>
             <% @users.each do |user| %>
               <% pick = Pick.find_by(game: game, user: user) %>
               <div class="flex flex-row whitespace-nowrap text-sm h-10">
-                <div class="w-1/2 my-auto">
+                <div class="w-1/2 my-auto grow">
                   <%= user.name %> (<%= user.picks_correct %>)
                 </div>
                 <% unless game.winner.blank? %>
@@ -79,7 +79,7 @@
                     <% end %>
                   </div>
                 <% end %>
-                  <span class="my-auto"><%= pick&.team&.school %></span>
+                <span class="my-auto"><%= pick&.team&.school %></span>
               </div>
             <% end %>
           <% end %>
