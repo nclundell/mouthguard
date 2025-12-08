@@ -15,6 +15,7 @@ class Game < ApplicationRecord
   scope :completed, -> { where(completed: true) }
   scope :incomplete, -> { where.not(completed: true) }
   scope :this_season, -> { where(season: current_season).order(:start) }
+  scope :with_no_media, -> { where(tv: nil) }
   scope :live, -> {
     where(completed: false).
     where("start < ?", Time.now)

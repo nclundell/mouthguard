@@ -45,6 +45,11 @@ development:
     queue: data_loading
     schedule: every hour
 
+  load_game_media_data:
+    class: LoadGameMediaJob
+    queue: data_loading
+    schedule: every hour
+
   load_team_data:
     class: LoadTeamsJob
     queue: data_loading

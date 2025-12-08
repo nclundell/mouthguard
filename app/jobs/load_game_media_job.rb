@@ -7,6 +7,8 @@ class LoadGameMediaJob < ApplicationJob
   def perform(*args)
     puts "Loading Media Info for #{current_season} games..."
 
+    return if Game.this_season.with_no_media.blank?
+
     media_listings = JSON.parse(make_request.body)
     media_listings.each do |listing|
       game = Game.find_by(cfbd_id: listing["id"])

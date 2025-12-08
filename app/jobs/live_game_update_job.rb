@@ -16,24 +16,26 @@ class LiveGameUpdateJob < ApplicationJob
       game = Game.find_by(cfbd_id: game_data["id"])
       return unless game.present?
 
-      game["completed"]        = game_data["status"] == "completed" ? true : false
-      if game.is_live?
-        game["period"]     = game_data["period"]
-        game["clock"]      = game_data["clock"]
-        game["situation"]  = game_data["situation"]
-        game["possession"] = game_data["possession"]
-        game["last_play"]  = game_data["lastPlay"]
-        game["home_points"]      = game_data["homeTeam"]["points"]
-        game["home_line_scores"] = game_data["homeTeam"]["lineScores"]
-        game["away_points"]      = game_data["awayTeam"]["points"]
-        game["away_line_scores"] = game_data["awayTeam"]["lineScores"]
-      else
+      game["home_points"]      = game_data["homeTeam"]["points"]
+      game["home_line_scores"] = game_data["homeTeam"]["lineScores"]
+      game["away_points"]      = game_data["awayTeam"]["points"]
+      game["away_line_scores"] = game_data["awayTeam"]["lineScores"]
+      game["completed"] = game_data["status"] == "completed" ? true : false
+
+      if game["completed"]
         game["period"]     = nil
         game["clock"]      = nil
         game["situation"]  = nil
         game["possession"] = nil
         game["last_play"]  = nil
+      else
+        game["period"]     = game_data["period"]
+        game["clock"]      = game_data["clock"]
+        game["situation"]  = game_data["situation"]
+        game["possession"] = game_data["possession"]
+        game["last_play"]  = game_data["lastPlay"]
       end
+
       game.save!
     end
   end
