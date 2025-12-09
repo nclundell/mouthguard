@@ -36,7 +36,7 @@
       </div>
 
       <div class="flex flex-wrap justify-center">
-        <%= f.fields_for :picks do |pf| %>
+        <%= f.fields_for :picks, @available.sort_by { |pick| pick.game.start } do |pf| %>
           <% if @available.include? pf.object %>
             <%= render Form::PickComponent.new(pick: pf) %>
           <% end %>
