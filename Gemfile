@@ -30,6 +30,9 @@ gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
 
+# ActionMail backend
+gem "resend"
+
 gem "mission_control-jobs"
 
 # Reduces boot times through caching; required in config/boot.rb
