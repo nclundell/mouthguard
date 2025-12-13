@@ -9,9 +9,10 @@
     <% else %>
       <% @games.each do |game| %>
         <%= link_to game do %>
-          <div class="border-4 rounded border-neutral-400 w-80 m-4">
-            <%= render GameCardComponent.new(game: game) %>
-          </div>
+          <%= render GameCardComponent.new(
+            game: game,
+            extra_classes: "border-4 rounded border-neutral-400 m-4"
+          ) %>
         <% end %>
       <% end %>
     <%end%>
