@@ -5,7 +5,7 @@
     <div class="flex flex-row flex-wrap py-2 px-4 mb-2 border-b border-gray-300 sticky top-0 bg-white">
       <% @users.each do |user| %>
         <div class="font-semibold text-gray-900 text-left w-44">
-          <%= user.name %> (<%= user.picks_correct %>)
+          <%= user.name %> (<%= user.points_for_season %>)
         </div>
       <% end %>
     </div>
@@ -68,7 +68,7 @@
               <% pick = Pick.find_by(game: game, user: user) %>
               <div class="flex flex-row whitespace-nowrap text-sm h-10">
                 <div class="w-1/2 my-auto grow">
-                  <%= user.name %> (<%= user.picks_correct %>)
+                  <%= user.name %> (<%= user.points_for_season %>)
                 </div>
                 <% unless game.winner.blank? %>
                   <div class="flex flex-row my-auto">

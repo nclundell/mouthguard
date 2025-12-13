@@ -4,6 +4,7 @@ class Game < ApplicationRecord
   include Turbo::Broadcastable
 
   after_create :populate_picks
+  after_save :update_picks_correctness, if: :saved_change_to_completed?
 
   belongs_to :venue, optional: :true
   belongs_to :home, class_name: "Team"
@@ -50,6 +51,13 @@ class Game < ApplicationRecord
     est_date == est_start_date
   end
 
+  def update_picks_correctness
+    return unless completed
+
+     picks.where(team: winner).update_all(correct: true)
+     picks.where.not(team: winner).update_all(correct: false)
+  end
+
   def populate_picks
     User.all.each { |u| Pick.find_or_create_by(user: u, game: self, season: season)}
   end
@@ -57,6 +65,6 @@ class Game < ApplicationRecord
   def winner
     return unless completed
 
-    away_points > home_points ? away : home
+    @winner ||= away_points > home_points ? away : home
   end
 end

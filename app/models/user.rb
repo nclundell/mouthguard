@@ -17,6 +17,17 @@ class User < ApplicationRecord
 
   accepts_nested_attributes_for :picks
 
+  def can_win?
+    leaders = UserRankingService.leaders
+    return true if leaders.include? self
+    leader = leaders.first
+    return false if leader.blank?
+
+    max_possible_points = points_for_season + remaining_pick_difference(leader)
+
+    max_possible_points > leader.points_for_season
+  end
+
   def generate_picks
     Rails.logger.info("Generating picks for: #{email_address}")
 
@@ -33,8 +44,8 @@ class User < ApplicationRecord
     email_address
   end
 
-  def picks_correct
-    picks.select { |p| p.game.season == current_season && p.game.winner == p.team && p.team.present? }.count
+  def points_for_season(season = current_season)
+    picks.joins(:game).where(correct: true, games: { season: season }).count
   end
 
   def remaining_pick_difference(other_user)
@@ -47,42 +58,5 @@ class User < ApplicationRecord
     end
 
     count
-  end
-
-  def potential_pick_difference(other_user)
-    return false if other_user.blank?
-
-    played_difference = self.picks_correct - other_user.picks_correct
-    played_difference - remaining_pick_difference(other_user)
-  end
-
-  def can_win?
-    return true if User.leaders.include? self
-    self.potential_pick_difference(User.leaders.first) > 0
-  end
-
-  def self.leaders
-    User.rank.select { |user| user.rank == 1 }
-  end
-
-  def self.rank
-    prev = nil
-    ranked = []
-    User.sort_by_picks_correct.each_with_index do |user, i|
-      user.points = user.picks_correct
-      if prev.present? && prev.points == user.points
-        user.rank = prev.rank
-      else
-        user.rank = i + 1
-      end
-      prev = user
-      ranked.append(user)
-    end
-
-    ranked
-  end
-
-  def self.sort_by_picks_correct
-    all.sort_by { |user| -user.picks_correct }
   end
 end
