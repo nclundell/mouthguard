@@ -17,9 +17,9 @@ class LiveGameUpdateJob < ApplicationJob
       return unless game.present?
 
       game["home_points"]      = game_data["homeTeam"]["points"]
-      game["home_line_scores"] = game_data["homeTeam"]["lineScores"]
+      game["home_line_scores"] = game_data["homeTeam"]["lineScores"] || []
       game["away_points"]      = game_data["awayTeam"]["points"]
-      game["away_line_scores"] = game_data["awayTeam"]["lineScores"]
+      game["away_line_scores"] = game_data["awayTeam"]["lineScores"] || []
       game["completed"] = game_data["status"] == "completed" ? true : false
 
       if game["completed"]
