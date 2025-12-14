@@ -14,7 +14,7 @@ class LiveGameUpdateJob < ApplicationJob
       game["clock"]     = game_data["drives"].last["plays"].last["clock"]
       game["last_play"] = game_data["drives"].last["plays"].last["playText"]
       game["period"]    = game_data["drives"].last["plays"].last["period"]
-      game["completed"] = game["status"] == "completed" ? true : false
+      game["completed"] = game["status"] == "Final" ? true : false
 
       game_data["teams"].each do |team|
         if team["homeAway"] == "home"
