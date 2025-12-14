@@ -55,7 +55,7 @@
       </div>
       <div class="flex flex-col justify-center content-center home-team px-4">
         <div class="flex flex-row justify-center content-center">
-          <% if @game.possession == "home" %>
+          <% if @game.possession == @game.home.school %>
               <%= icon "chevron-double-right", class: "size-4 my-auto" %>
           <% else %>    
             <%= icon "chevron-double-right", class: "size-4 my-auto text-white" %>
