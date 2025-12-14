@@ -7,33 +7,23 @@ class LiveGameUpdateJob < ApplicationJob
   def perform(*args)
     puts "Updating live games..."
 
-    unless Game.this_season.live.count > 0
-      puts "No live games found, skipping update."
-      return
-    end
+    Game.live.each do |game|
+      game_data = JSON.parse(make_request(game).body)
 
-    JSON.parse(make_request.body).each do |game_data|
-      game = Game.find_by(cfbd_id: game_data["id"])
-      return unless game.present?
+      game["period"]     = game_data["period"]
+      game["clock"]      = game_data["clock"]
+      game["situation"]  = game_data["situation"]
+      game["possession"] = game_data["possession"]
+      game["completed"]  = game_data["status"] == "completed" ? true : false
 
-      game["home_points"]      = game_data["homeTeam"]["points"]
-      game["home_line_scores"] = game_data["homeTeam"]["lineScores"] || []
-      game["away_points"]      = game_data["awayTeam"]["points"]
-      game["away_line_scores"] = game_data["awayTeam"]["lineScores"] || []
-      game["completed"] = game_data["status"] == "completed" ? true : false
-
-      if game["completed"]
-        game["period"]     = nil
-        game["clock"]      = nil
-        game["situation"]  = nil
-        game["possession"] = nil
-        game["last_play"]  = nil
-      else
-        game["period"]     = game_data["period"]
-        game["clock"]      = game_data["clock"]
-        game["situation"]  = game_data["situation"]
-        game["possession"] = game_data["possession"]
-        game["last_play"]  = game_data["lastPlay"]
+      game_data["teams"].each do |team|
+        if team["homeAway"] == "home"
+          game["home_points"]      = team["points"]
+          game["home_line_scores"] = team["lineScores"]
+        else
+          game["away_points"]      = team["points"]
+          game["away_line_scores"] = team["lineScores"]
+        end
       end
 
       game.save!
@@ -42,11 +32,8 @@ class LiveGameUpdateJob < ApplicationJob
 
   private
 
-  def uri
-    @uri ||= URI("https://apinext.collegefootballdata.com/scoreboard?classification=fbs")
-  end
-
-  def make_request
+  def make_request(game)
+    uri = URI("https://api.collegefootballdata.com/live/plays?gameId=#{game.cfbd_id}")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
 
