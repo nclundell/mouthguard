@@ -87,7 +87,7 @@
     <%= render GameBoxscoreComponent.new(game: @game) %>
   </div>
   <div class="text-center my-2 px-1">
-    <% unless @game.last_play.blank? %>
+    <% if @game.is_live? %>
       <%= @game.last_play %>
     <% end %>
   </div>

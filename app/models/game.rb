@@ -31,11 +31,7 @@ class Game < ApplicationRecord
   end
 
   def is_live?
-    return false if completed
-    # return false if away_line_scores.nil?
-    # return false if home_line_scores.nil?
-
-    Time.now > start
+    completed ? false : Time.now > start
   end
 
   def is_completed?
