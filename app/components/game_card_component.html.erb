@@ -32,7 +32,7 @@
             <%= @game.away_points || 0 %>
           </div>
           <div class="grow my-auto">
-            <% if @game.possession == @game.away.school %>
+            <% if @game.possession == @game.away.school && @game.is_live? %>
               <%= icon "chevron-double-left", class: "size-6" %>
             <% else %>    
               <div class="size-6"></div>
@@ -43,7 +43,7 @@
       <td class="w-1/2">
         <div class="flex mr-4">
           <div class="grow my-auto">
-            <% if @game.possession == @game.home.school %>
+            <% if @game.possession == @game.home.school && @game.is_live? %>
               <%= icon "chevron-double-right", class: "size-6" %>
             <% else %>    
               <div class="size-6"></div>
