@@ -10,7 +10,6 @@ class LiveGameUpdateJob < ApplicationJob
     Game.live.each do |game|
       game_data = JSON.parse(make_request(game).body)
 
-      debugger
       game["status"]    = game_data["status"]
       game["clock"]     = game_data["drives"].last["plays"].last["clock"]
       game["last_play"] = game_data["drives"].last["plays"].last["playText"]
