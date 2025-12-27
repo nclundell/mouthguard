@@ -15,11 +15,11 @@ class LoadGamesJob < ApplicationJob
       game["attendance"]       = game_data["attendance"]
       game["venue_id"]         = Venue.find_by(cfbd_id: game_data["venueId"])&.id
       game["away_id"]          = Team.find_by(cfbd_id: game_data["awayId"])&.id
-      game["away_points"]      = game_data["awayTeam"]["points"] || 0
-      game["away_line_scores"] = game_data["awayTeam"]["lineScores"] || []
+      game["away_points"]      = game_data["awayTeam"]["points"] unless game_data["awayTeam"]["points"].blank?
+      game["away_line_scores"] = game_data["awayTeam"]["lineScores"] unless game_data["awayTeam"]["lineScores"].blank?
       game["home_id"]          = Team.find_by(cfbd_id: game_data["homeId"])&.id
-      game["home_points"]      = game_data["homeTeam"]["points"] || 0
-      game["home_line_scores"] = game_data["homeTeam"]["lineScores"] || []
+      game["home_points"]      = game_data["homeTeam"]["points"] unless game_data["homeTeam"]["points"].blank?
+      game["home_line_scores"] = game_data["homeTeam"]["lineScores"] unless game_data["homeTeam"]["lineScores"].blank?
       game["highlights"]       = game_data["highlights"]
       game["notes"]            = game_data["notes"].partition("Presented").first.partition(" - ").first.strip
       game["notes"].gsub!("College Football Playoff", "CFP")
