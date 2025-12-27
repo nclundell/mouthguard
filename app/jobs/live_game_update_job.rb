@@ -11,9 +11,9 @@ class LiveGameUpdateJob < ApplicationJob
       game_data = JSON.parse(make_request(game).body)
 
       game["status"]    = game_data["status"]
-      game["clock"]     = game_data["drives"].last["plays"].last["clock"]
-      game["last_play"] = game_data["drives"].last["plays"].last["playText"]
-      game["period"]    = game_data["drives"].last["plays"].last["period"]
+      game["clock"]     = game_data["drives"]&.last["plays"]&.last["clock"]
+      game["last_play"] = game_data["drives"]&.last["plays"]&.last["playText"]
+      game["period"]    = game_data["drives"]&.last["plays"]&.last["period"]
       game["completed"] = game["status"] == "Final" ? true : false
 
       game_data["teams"].each do |team|
