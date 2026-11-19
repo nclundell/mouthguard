@@ -14,6 +14,10 @@ module Cfbd
         get("teams")
       end
 
+      def venues
+        get("venues")
+      end
+
       private
 
       def get(path)

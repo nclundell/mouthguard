@@ -35,6 +35,21 @@ class CfbdRestTest < ActiveSupport::TestCase
     end
   end
 
+  test "fetches venues with the configured key" do
+    response = Net::HTTPOK.new("1.1", "200", "OK")
+    response.define_singleton_method(:body) { '[{"id":7,"name":"Example Stadium"}]' }
+
+    stub_const(Cfbd::Rest, :CFBD_API_KEY, "test-key") do
+      with_http_response(response) do |requests|
+        venues = Cfbd::Rest.venues
+        assert_equal 7, venues.first.id
+        assert_equal "Example Stadium", venues.first.name
+        assert_equal "/venues", requests.first.path
+        assert_equal "Bearer test-key", requests.first["Authorization"]
+      end
+    end
+  end
+
   test "reports unsuccessful responses without exposing the key" do
     response = Net::HTTPUnauthorized.new("1.1", "401", "Unauthorized")
 
