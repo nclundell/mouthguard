@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_19_014119) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_19_014121) do
   create_table "games", force: :cascade do |t|
     t.integer "cfbd_id", null: false
     t.integer "season"
@@ -40,6 +40,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_014119) do
     t.index ["cfbd_id"], name: "index_games_on_cfbd_id", unique: true
     t.index ["home_id"], name: "index_games_on_home_id"
     t.index ["venue_id"], name: "index_games_on_venue_id"
+  end
+
+  create_table "legends", force: :cascade do |t|
+    t.integer "season"
+    t.string "name"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_legends_on_user_id"
+  end
+
+  create_table "picks", force: :cascade do |t|
+    t.integer "game_id", null: false
+    t.integer "user_id", null: false
+    t.integer "team_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id"], name: "index_picks_on_game_id"
+    t.index ["team_id"], name: "index_picks_on_team_id"
+    t.index ["user_id"], name: "index_picks_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -97,5 +117,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_014119) do
   add_foreign_key "games", "teams", column: "away_id"
   add_foreign_key "games", "teams", column: "home_id"
   add_foreign_key "games", "venues"
+  add_foreign_key "legends", "users"
+  add_foreign_key "picks", "games"
+  add_foreign_key "picks", "teams"
+  add_foreign_key "picks", "users"
   add_foreign_key "sessions", "users"
 end

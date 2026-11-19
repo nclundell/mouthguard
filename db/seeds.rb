@@ -10,7 +10,17 @@
 require_relative "seeders/teams"
 require_relative "seeders/venues"
 require_relative "seeders/games"
+require_relative "seeders/legends"
+
+dev = Rails.application.credentials.dev
+User.find_or_create_by!(email_address: dev.email_address) do |user|
+  user.first_name = dev.first_name
+  user.last_name = dev.last_name
+  user.display_name = dev.first_name
+  user.password = dev.password
+end
 
 TeamsSeeder.seed!
 VenuesSeeder.seed!
 GamesSeeder.seed!
+LegendsSeeder.seed!
