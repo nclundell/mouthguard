@@ -20,11 +20,16 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="min-h-screen bg-gray-50 text-gray-900">
+    <% if authenticated? %>
+      <%= render "layouts/navbar" %>
+    <% end %>
+
+    <main class="mx-auto w-full max-w-6xl px-5 py-10 sm:py-12">
       <%= yield %>
     </main>
   </body>
