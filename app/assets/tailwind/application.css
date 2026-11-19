@@ -1,1 +1,13 @@
 @import "tailwindcss";
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme {
+  --color-brass-200: #efd5a1;
+  --color-brass-300: #dfc18a;
+  --color-brass-400: #c9a461;
+  --color-brass-700: #79581f;
+  --color-brass-800: #624718;
+}
+
+:root { color-scheme: light; }
+:root[data-theme=dark] { color-scheme: dark; }
