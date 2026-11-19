@@ -10,7 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_19_014118) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_19_014119) do
+  create_table "games", force: :cascade do |t|
+    t.integer "cfbd_id", null: false
+    t.integer "season"
+    t.datetime "start"
+    t.boolean "completed"
+    t.integer "attendance"
+    t.integer "venue_id"
+    t.integer "home_id"
+    t.integer "home_points"
+    t.json "home_line_scores"
+    t.integer "away_id"
+    t.integer "away_points"
+    t.json "away_line_scores"
+    t.string "highlights"
+    t.string "notes"
+    t.string "tv"
+    t.string "status"
+    t.string "period"
+    t.string "clock"
+    t.string "situation"
+    t.string "possession"
+    t.string "last_play"
+    t.boolean "playoff"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["away_id"], name: "index_games_on_away_id"
+    t.index ["cfbd_id"], name: "index_games_on_cfbd_id", unique: true
+    t.index ["home_id"], name: "index_games_on_home_id"
+    t.index ["venue_id"], name: "index_games_on_venue_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "ip_address"
@@ -63,5 +94,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_014118) do
     t.index ["cfbd_id"], name: "index_venues_on_cfbd_id", unique: true
   end
 
+  add_foreign_key "games", "teams", column: "away_id"
+  add_foreign_key "games", "teams", column: "home_id"
+  add_foreign_key "games", "venues"
   add_foreign_key "sessions", "users"
 end

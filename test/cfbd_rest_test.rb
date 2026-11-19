@@ -50,6 +50,25 @@ class CfbdRestTest < ActiveSupport::TestCase
     end
   end
 
+  test "fetches games with encoded filters, omitting blank values and without a body" do
+    response = Net::HTTPOK.new("1.1", "200", "OK")
+    response.define_singleton_method(:body) { '[{"id":55}]' }
+
+    with_http_response(response) do |requests|
+      assert_equal 55, Cfbd::Rest.games(year: 2026, week: nil, seasonType: "post season", classification: "fbs", empty: "").first.id
+      request = requests.first
+      assert_equal "/games", URI(request.path).path
+      assert_equal({ "year" => "2026", "seasonType" => "post season", "classification" => "fbs" },
+        URI.decode_www_form(URI(request.path).query).to_h)
+      assert_nil request.body
+      Cfbd::Rest.games(id: 55, year: " ")
+      assert_equal "/games", URI(requests.last.path).path
+      assert_equal({ "id" => "55" }, URI.decode_www_form(URI(requests.last.path).query).to_h)
+      Cfbd::Rest.games
+      assert_equal "/games", requests.last.path
+    end
+  end
+
   test "reports unsuccessful responses without exposing the key" do
     response = Net::HTTPUnauthorized.new("1.1", "401", "Unauthorized")
 

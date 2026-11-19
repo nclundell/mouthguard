@@ -9,6 +9,8 @@
 #   end
 require_relative "seeders/teams"
 require_relative "seeders/venues"
+require_relative "seeders/games"
 
 TeamsSeeder.seed!
 VenuesSeeder.seed!
+GamesSeeder.seed!

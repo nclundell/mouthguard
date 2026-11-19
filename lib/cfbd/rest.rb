@@ -18,10 +18,16 @@ module Cfbd
         get("venues")
       end
 
+      def games(**params)
+        get("games", params)
+      end
+
       private
 
-      def get(path)
+      def get(path, params = {})
         uri = URI("https://api.collegefootballdata.com/#{path}")
+        query = params.reject { |_, value| value.blank? }
+        uri.query = URI.encode_www_form(query) if query.any?
         request = Net::HTTP::Get.new(uri.request_uri)
         request["Authorization"] = "Bearer #{CFBD_API_KEY}"
 
