@@ -1,12 +1,16 @@
 require "test_helper"
+
 class CfbdRestTest < ActiveSupport::TestCase
   test "fetches account info with the configured key" do
     response = Net::HTTPOK.new("1.1", "200", "OK")
-    response.define_singleton_method(:body) { '{"name":"example","remaining":100}' }
+    response.define_singleton_method(:body) { '{"name":"example","remainingCalls":100,"features":{"graphQl":true}}' }
 
-    with_stub(Rails.application, :credentials, -> { Struct.new(:cfbd).new(Struct.new(:api_key).new("test-key")) }) do
+    stub_const(Cfbd::Rest, :CFBD_API_KEY, "test-key") do
       with_http_response(response) do |requests|
-        assert_equal({ "name" => "example", "remaining" => 100 }, Cfbd::Rest.info)
+        info = Cfbd::Rest.info
+        assert_equal "example", info.name
+        assert_equal 100, info.remainingCalls
+        assert_equal true, info.features.graphQl
         assert_equal 1, requests.size
         assert_equal "/info", requests.first.path
         assert_equal "Bearer test-key", requests.first["Authorization"]
@@ -14,17 +18,32 @@ class CfbdRestTest < ActiveSupport::TestCase
     end
   end
 
-  test "rejects missing keys without making a request" do
-    assert_raises(ArgumentError) { Cfbd::Rest.info(key: "") }
+  test "fetches teams with the configured key" do
+    response = Net::HTTPOK.new("1.1", "200", "OK")
+    response.define_singleton_method(:body) { '[{"id":1,"school":"Example"}]' }
+
+    stub_const(Cfbd::Rest, :CFBD_API_KEY, "test-key") do
+      with_http_response(response) do |requests|
+        teams = Cfbd::Rest.teams
+        assert_equal 1, teams.size
+        assert_equal 1, teams.first.id
+        assert_equal "Example", teams.first.school
+        assert_equal 1, requests.size
+        assert_equal "/teams", requests.first.path
+        assert_equal "Bearer test-key", requests.first["Authorization"]
+      end
+    end
   end
 
   test "reports unsuccessful responses without exposing the key" do
     response = Net::HTTPUnauthorized.new("1.1", "401", "Unauthorized")
 
-    with_http_response(response) do
-      error = assert_raises(RuntimeError) { Cfbd::Rest.info(key: "private-key") }
-      assert_match(/401/, error.message)
-      refute_includes error.message, "private-key"
+    stub_const(Cfbd::Rest, :CFBD_API_KEY, "private-key") do
+      with_http_response(response) do
+        error = assert_raises(RuntimeError) { Cfbd::Rest.info }
+        assert_match(/401/, error.message)
+        refute_includes error.message, "private-key"
+      end
     end
   end
 
