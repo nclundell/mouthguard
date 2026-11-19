@@ -1,61 +1,15 @@
+# examples:
+#   periodic_cleanup:
+#     class: CleanSoftDeletedRecordsJob
+#     queue: background
+#     args: [ 1000, { batch_size: 500 } ]
+#     schedule: every hour
+#   periodic_cleanup_with_command:
+#     command: "SoftDeletedRecord.due.delete_all"
+#     priority: 2
+#     schedule: at 5am every day
+
 production:
-  clean_up:
-    class: CleanUpJob
-    queue: default
-    schedule: every day at midnight
-
-  live_game_update:
-    class: LiveGameUpdateJob
-    queue: live_update
-    schedule: every 20 seconds
-
-  load_game_data:
-    class: LoadGamesJob
-    queue: data_loading
-    schedule: every hour
-
-  load_game_media_data:
-    class: LoadGameMediaJob
-    queue: data_loading
-    schedule: every hour
-
-  load_team_data:
-    class: LoadTeamsJob
-    queue: data_loading
-    schedule: every day at 3am
-    
-  load_venue_data:
-    class: LoadVenuesJob
-    queue: data_loading
-    schedule: every day at 3am
-
-development:
-  clean_up:
-    class: CleanUpJob
-    queue: default
-    schedule: every day at midnight
-
-  live_game_update:
-    class: LiveGameUpdateJob
-    queue: live_update
-    schedule: every 30 seconds
-
-  load_game_data:
-    class: LoadGamesJob
-    queue: data_loading
-    schedule: every hour
-
-  load_game_media_data:
-    class: LoadGameMediaJob
-    queue: data_loading
-    schedule: every hour
-
-  load_team_data:
-    class: LoadTeamsJob
-    queue: data_loading
-    schedule: every day at 3am
-    
-  load_venue_data:
-    class: LoadVenuesJob
-    queue: data_loading
-    schedule: every day at 3am
+  clear_solid_queue_finished_jobs:
+    command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
+    schedule: every hour at minute 12
