@@ -1,4 +1,5 @@
-<div class="flex flex-wrap items-center gap-2 text-sm">
-  <button type="button" data-theme-toggle aria-label="Switch to dark mode" class="min-h-11 rounded-md bg-brass-300 px-3 font-medium text-neutral-950 hover:bg-brass-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-300">Dark mode</button>
-  <button type="button" data-theme-system hidden class="min-h-11 rounded-md px-2 font-medium text-brass-200 underline hover:text-brass-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-300">Use system theme</button>
-</div>
+<button type="button" role="switch" data-theme-toggle aria-label="Dark Mode" aria-checked="false" class="flex min-h-11 w-full items-center justify-between gap-2 rounded-md px-3 text-sm font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-300">
+  <span>Dark Mode</span>
+  <%= icon "toggle-left", variant: "outline", class: "size-6 shrink-0 text-green-300", data: { theme_icon: "off" }, "aria-hidden": true %>
+  <%= icon "toggle-right", variant: "outline", class: "size-6 shrink-0 text-green-300", data: { theme_icon: "on" }, "aria-hidden": true, hidden: true %>
+</button>

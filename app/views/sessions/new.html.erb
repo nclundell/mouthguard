@@ -12,21 +12,21 @@
   <%= form_with url: session_url, class: "contents" do |form| %>
     <div class="my-5">
       <%= form.label :email_address, "Email address", class: "font-medium" %>
-      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "block shadow-sm rounded-md border border-brass-700 bg-white text-neutral-900 placeholder:text-neutral-500 focus:outline-2 focus:outline-brass-700 px-3 py-2 mt-2 w-full dark:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-400 dark:focus:outline-brass-300" %>
+      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "block shadow-sm rounded-md border border-green-800 bg-white text-neutral-900 placeholder:text-neutral-500 focus:outline-2 focus:outline-green-800 px-3 py-2 mt-2 w-full dark:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-400 dark:focus:outline-green-300" %>
     </div>
 
     <div class="my-5">
       <%= form.label :password, class: "font-medium" %>
-      <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72, class: "block shadow-sm rounded-md border border-brass-700 bg-white text-neutral-900 placeholder:text-neutral-500 focus:outline-2 focus:outline-brass-700 px-3 py-2 mt-2 w-full dark:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-400 dark:focus:outline-brass-300" %>
+      <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72, class: "block shadow-sm rounded-md border border-green-800 bg-white text-neutral-900 placeholder:text-neutral-500 focus:outline-2 focus:outline-green-800 px-3 py-2 mt-2 w-full dark:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-400 dark:focus:outline-green-300" %>
     </div>
 
     <div class="col-span-6 sm:flex sm:items-center sm:gap-4">
       <div class="inline">
-        <%= form.submit "Sign in", class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-brass-700 hover:bg-brass-800 text-white inline-block font-medium cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-700 dark:bg-brass-300 dark:text-neutral-950 dark:hover:bg-brass-200 dark:focus-visible:outline-brass-300" %>
+        <%= form.submit "Sign in", class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-green-800 hover:bg-green-900 text-white inline-block font-medium cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800 dark:bg-green-300 dark:text-neutral-950 dark:hover:bg-green-200 dark:focus-visible:outline-green-300" %>
       </div>
 
       <div class="mt-4 text-sm sm:mt-0">
-        <%= link_to "Forgot password?", new_password_path, class: "text-brass-800 underline hover:no-underline focus-visible:outline-2 focus-visible:outline-brass-700 dark:text-brass-300 dark:focus-visible:outline-brass-300" %>
+        <%= link_to "Forgot password?", new_password_path, class: "text-green-800 underline hover:no-underline focus-visible:outline-2 focus-visible:outline-green-800 dark:text-green-300 dark:focus-visible:outline-green-300" %>
       </div>
     </div>
   <% end %>

@@ -8,16 +8,16 @@
   <%= form_with url: password_path(params[:token]), method: :put, class: "contents" do |form| %>
     <div class="my-5">
       <%= form.label :password, "New password", class: "font-medium" %>
-      <%= form.password_field :password, required: true, autocomplete: "new-password", placeholder: "Enter new password", maxlength: 72, class: "block shadow-sm rounded-md border border-brass-700 bg-white text-neutral-900 placeholder:text-neutral-500 focus:outline-2 focus:outline-brass-700 px-3 py-2 mt-2 w-full dark:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-400 dark:focus:outline-brass-300" %>
+      <%= form.password_field :password, required: true, autocomplete: "new-password", placeholder: "Enter new password", maxlength: 72, class: "block shadow-sm rounded-md border border-green-800 bg-white text-neutral-900 placeholder:text-neutral-500 focus:outline-2 focus:outline-green-800 px-3 py-2 mt-2 w-full dark:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-400 dark:focus:outline-green-300" %>
     </div>
 
     <div class="my-5">
       <%= form.label :password_confirmation, "Confirm new password", class: "font-medium" %>
-      <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", placeholder: "Repeat new password", maxlength: 72, class: "block shadow-sm rounded-md border border-brass-700 bg-white text-neutral-900 placeholder:text-neutral-500 focus:outline-2 focus:outline-brass-700 px-3 py-2 mt-2 w-full dark:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-400 dark:focus:outline-brass-300" %>
+      <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", placeholder: "Repeat new password", maxlength: 72, class: "block shadow-sm rounded-md border border-green-800 bg-white text-neutral-900 placeholder:text-neutral-500 focus:outline-2 focus:outline-green-800 px-3 py-2 mt-2 w-full dark:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-400 dark:focus:outline-green-300" %>
     </div>
 
     <div class="inline">
-      <%= form.submit "Save", class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-brass-700 hover:bg-brass-800 text-white inline-block font-medium cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-700 dark:bg-brass-300 dark:text-neutral-950 dark:hover:bg-brass-200 dark:focus-visible:outline-brass-300" %>
+      <%= form.submit "Save", class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-green-800 hover:bg-green-900 text-white inline-block font-medium cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800 dark:bg-green-300 dark:text-neutral-950 dark:hover:bg-green-200 dark:focus-visible:outline-green-300" %>
     </div>
   <% end %>
 </div>

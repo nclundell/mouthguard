@@ -17,20 +17,17 @@
     const theme = preference || (system.matches ? "dark" : "light")
     document.documentElement.dataset.theme = theme
     document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
-      const next = theme === "dark" ? "light" : "dark"
-      button.textContent = `${next[0].toUpperCase()}${next.slice(1)} mode`
-      button.setAttribute("aria-label", `Switch to ${next} mode`)
-    })
-    document.querySelectorAll("[data-theme-system]").forEach((button) => {
-      button.hidden = !preference
+      const isDark = theme === "dark"
+      button.setAttribute("aria-checked", String(isDark))
+      button.querySelector("[data-theme-icon=off]").toggleAttribute("hidden", isDark)
+      button.querySelector("[data-theme-icon=on]").toggleAttribute("hidden", !isDark)
     })
   }
 
   function savePreference(value) {
     preference = value
     try {
-      if (value) localStorage.setItem(key, value)
-      else localStorage.removeItem(key)
+      localStorage.setItem(key, value)
     } catch {
       // Browsers may disable storage; the choice still works for this page.
     }
@@ -46,11 +43,14 @@
     }
   })
   document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return
+
     if (event.target.closest("[data-theme-toggle]")) {
       savePreference(document.documentElement.dataset.theme === "dark" ? "light" : "dark")
-    } else if (event.target.closest("[data-theme-system]")) {
-      savePreference(null)
     }
+    document.querySelectorAll("details[data-close-on-outside][open]").forEach((menu) => {
+      if (!menu.contains(event.target)) menu.open = false
+    })
   })
   document.addEventListener("turbo:load", applyTheme)
   document.addEventListener("DOMContentLoaded", applyTheme)

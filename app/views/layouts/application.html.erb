@@ -31,8 +31,11 @@
     <% else %>
       <header class="bg-black bg-linear-to-b from-neutral-800 to-black px-5 py-3">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4">
-          <span class="text-xl font-bold tracking-tight text-brass-300">Mouthguard</span>
-          <%= render "layouts/theme_controls" %>
+          <span class="text-xl font-bold tracking-tight text-green-300">Mouthguard</span>
+          <div class="flex flex-wrap items-center gap-3">
+            <%= render "layouts/theme_controls" %>
+            <%= link_to "Sign In", new_session_path, class: "flex min-h-11 items-center rounded-md border border-green-300 px-3 text-sm font-medium text-green-200 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-300" %>
+          </div>
         </div>
       </header>
     <% end %>

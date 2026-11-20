@@ -1,8 +1,12 @@
 Rails.application.routes.draw do
-  mount RailsIcons::Engine, at: '/rails_icons'
+  mount RailsIcons::Engine, at: "/rails_icons"
   resource :session
   resources :passwords, param: :token
   root "dashboard#index"
+  get "picks", to: "picks#index"
+  resources :games, only: [ :index, :show ]
+  get "leaders", to: "leaders#index"
+  get "legends", to: "legends#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
