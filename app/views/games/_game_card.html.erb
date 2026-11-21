@@ -20,7 +20,7 @@
     </div>
 
     <% if game.start %>
-      <time datetime="<%= game.start.iso8601 %>" class="mt-4 block text-center text-sm text-neutral-600 dark:text-neutral-300"><%= game.start.strftime("%b %-d, %Y at %-I:%M %p") %></time>
+      <time datetime="<%= game.start.iso8601 %>" data-controller="local-time" class="mt-4 block text-center text-sm text-neutral-600 dark:text-neutral-300"><%= game.start.strftime("%b %-d, %Y at %-I:%M %p") %></time>
     <% end %>
     <% if game.tv.present? %>
       <span class="mt-2 block text-center text-sm text-neutral-600 dark:text-neutral-300"><%= game.tv %></span>

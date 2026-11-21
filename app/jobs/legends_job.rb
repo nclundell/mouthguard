@@ -1,4 +1,4 @@
-class LegendsSeeder
+class LegendsJob < ApplicationJob
   WINNERS = {
     2009 => "Nathan Lundell",
     2010 => "Karen Lundell",
@@ -19,7 +19,7 @@ class LegendsSeeder
     2025 => "Karen Lundell"
   }.freeze
 
-  def self.seed!
+  def perform
     Legend.transaction do
       WINNERS.each do |season, name|
         legend = Legend.find_or_initialize_by(season: season)

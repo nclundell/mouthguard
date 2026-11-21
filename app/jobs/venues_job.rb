@@ -1,5 +1,5 @@
-class VenuesSeeder
-  def self.seed!
+class VenuesJob < ApplicationJob
+  def perform
     Venue.transaction do
       Cfbd::Rest.venues.each do |source|
         venue = Venue.find_or_initialize_by(cfbd_id: source.id)

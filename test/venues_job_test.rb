@@ -1,8 +1,7 @@
 require "test_helper"
-require_relative "../db/seeders/venues"
 require "ostruct"
 
-class VenuesSeederTest < ActiveSupport::TestCase
+class VenuesJobTest < ActiveSupport::TestCase
   test "maps CFBD venues and updates existing records when run again" do
     source = OpenStruct.new(
       id: 42,
@@ -18,7 +17,7 @@ class VenuesSeederTest < ActiveSupport::TestCase
       dome: false
     )
     with_rest_venues([ source ]) do
-      assert_difference("Venue.count", 1) { VenuesSeeder.seed! }
+      assert_difference("Venue.count", 1) { VenuesJob.perform_now }
 
       saved = Venue.find_by!(cfbd_id: 42)
       assert_equal "Example Stadium", saved.name
@@ -34,7 +33,7 @@ class VenuesSeederTest < ActiveSupport::TestCase
 
       source.name = "Renamed Stadium"
       source.constructionYear = 1981
-      assert_no_difference("Venue.count") { VenuesSeeder.seed! }
+      assert_no_difference("Venue.count") { VenuesJob.perform_now }
       assert_equal saved.id, Venue.find_by!(cfbd_id: 42).id
       assert_equal "Renamed Stadium", saved.reload.name
       assert_equal 1981, saved.construction_year
@@ -50,7 +49,7 @@ class VenuesSeederTest < ActiveSupport::TestCase
     ]
     with_rest_venues(sources) do
       assert_no_difference("Venue.count") do
-        error = assert_raises(ActiveRecord::NotNullViolation) { VenuesSeeder.seed! }
+        error = assert_raises(ActiveRecord::NotNullViolation) { VenuesJob.perform_now }
         assert_match(/cfbd_id/, error.message)
       end
     end

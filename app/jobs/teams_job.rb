@@ -1,5 +1,5 @@
-class TeamsSeeder
-  def self.seed!
+class TeamsJob < ApplicationJob
+  def perform
     Team.transaction do
       Cfbd::Rest.teams.each do |source|
         team = Team.find_or_initialize_by(cfbd_id: source.id)

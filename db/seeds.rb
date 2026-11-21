@@ -7,11 +7,6 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
-require_relative "seeders/teams"
-require_relative "seeders/venues"
-require_relative "seeders/games"
-require_relative "seeders/legends"
-
 dev = Rails.application.credentials.dev
 User.find_or_create_by!(email_address: dev.email_address) do |user|
   user.first_name = dev.first_name
@@ -20,7 +15,7 @@ User.find_or_create_by!(email_address: dev.email_address) do |user|
   user.password = dev.password
 end
 
-TeamsSeeder.seed!
-VenuesSeeder.seed!
-GamesSeeder.seed!
-LegendsSeeder.seed!
+TeamsJob.perform_now
+VenuesJob.perform_now
+GamesJob.perform_now
+LegendsJob.perform_now

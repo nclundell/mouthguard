@@ -1,8 +1,7 @@
 require "test_helper"
-require_relative "../db/seeders/teams"
 require "ostruct"
 
-class TeamsSeederTest < ActiveSupport::TestCase
+class TeamsJobTest < ActiveSupport::TestCase
   test "maps CFBD teams and updates existing records when run again" do
     team = OpenStruct.new(
       id: 42,
@@ -16,7 +15,7 @@ class TeamsSeederTest < ActiveSupport::TestCase
       logos: [ "https://example.com/logo.png" ]
     )
     with_rest_teams([ team ]) do
-      assert_difference("Team.count", 1) { TeamsSeeder.seed! }
+      assert_difference("Team.count", 1) { TeamsJob.perform_now }
 
       saved = Team.find_by!(cfbd_id: 42)
       assert_equal "Example State", saved.school
@@ -30,7 +29,7 @@ class TeamsSeederTest < ActiveSupport::TestCase
 
       team.school = "Renamed State"
       team.alternateNames = [ "Renamed" ]
-      assert_no_difference("Team.count") { TeamsSeeder.seed! }
+      assert_no_difference("Team.count") { TeamsJob.perform_now }
       assert_equal saved.id, Team.find_by!(cfbd_id: 42).id
       assert_equal "Renamed State", saved.reload.school
       assert_equal [ "Renamed" ], saved.alternate_names
@@ -40,7 +39,7 @@ class TeamsSeederTest < ActiveSupport::TestCase
   test "rejects a team without a CFBD ID without inserting a row" do
     with_rest_teams([ OpenStruct.new(school: "Unknown State") ]) do
       assert_no_difference("Team.count") do
-        error = assert_raises(ActiveRecord::NotNullViolation) { TeamsSeeder.seed! }
+        error = assert_raises(ActiveRecord::NotNullViolation) { TeamsJob.perform_now }
         assert_match(/cfbd_id/, error.message)
       end
     end
@@ -55,7 +54,7 @@ class TeamsSeederTest < ActiveSupport::TestCase
     ]
     with_rest_teams(sources) do
       assert_no_difference("Team.count") do
-        error = assert_raises(ActiveRecord::NotNullViolation) { TeamsSeeder.seed! }
+        error = assert_raises(ActiveRecord::NotNullViolation) { TeamsJob.perform_now }
         assert_match(/cfbd_id/, error.message)
       end
     end

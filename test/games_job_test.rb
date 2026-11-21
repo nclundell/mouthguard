@@ -1,8 +1,7 @@
 require "test_helper"
-require_relative "../db/seeders/games"
 require "ostruct"
 
-class GamesSeederTest < ActiveSupport::TestCase
+class GamesJobTest < ActiveSupport::TestCase
   test "maps postseason games to local teams and venues and updates them on reseed" do
     home = Team.create!(cfbd_id: 501, school: "Home")
     away = Team.create!(cfbd_id: 502, school: "Away")
@@ -12,11 +11,12 @@ class GamesSeederTest < ActiveSupport::TestCase
       completed: false, attendance: 70000, venueId: 503, homeId: 501, awayId: 502,
       homePoints: 0, awayPoints: 17, homeLineScores: [ 0, 0 ], awayLineScores: [ 7, 10 ],
       highlights: "https://example.com/highlights", notes: "College Football Playoff - Presented by Example",
+      playoff: OpenStruct.new(round: "Quarterfinal"),
       tv: "ESPN", status: "In Progress", period: "2", clock: "10:00",
       situation: "1st & 10", possession: "Home", lastPlay: "Run"
     )
     with_rest_games([ source ]) do |params|
-      assert_difference("Game.count", 1) { GamesSeeder.seed! }
+      assert_difference("Game.count", 1) { GamesJob.perform_now }
       assert_equal({ year: Current.season, seasonType: "postseason", classification: "fbs" }, params.first)
       game = Game.find_by!(cfbd_id: 504)
       assert_equal 2026, game.season
@@ -48,6 +48,7 @@ class GamesSeederTest < ActiveSupport::TestCase
       source.homePoints = 21
       source.venueId = nil
       source.notes = nil
+      source.playoff = nil
       source.tv = nil
       source.status = nil
       source.period = nil
@@ -55,7 +56,7 @@ class GamesSeederTest < ActiveSupport::TestCase
       source.situation = nil
       source.possession = nil
       source.lastPlay = nil
-      assert_no_difference("Game.count") { GamesSeeder.seed! }
+      assert_no_difference("Game.count") { GamesJob.perform_now }
       assert_equal game.id, Game.find_by!(cfbd_id: 504).id
       assert_equal 21, game.reload.home_points
       assert_nil game.venue
@@ -71,9 +72,20 @@ class GamesSeederTest < ActiveSupport::TestCase
     end
   end
 
+  test "uses playoff metadata rather than notes to identify playoff games" do
+    sources = [
+      OpenStruct.new(id: 609, notes: "Bowl Game", playoff: OpenStruct.new(round: "Quarterfinal")),
+      OpenStruct.new(id: 610, notes: "CFP Bowl", playoff: nil)
+    ]
+    with_rest_games(sources) { GamesJob.perform_now }
+
+    assert_equal true, Game.find_by!(cfbd_id: 609).playoff
+    assert_equal false, Game.find_by!(cfbd_id: 610).playoff
+  end
+
   test "allows blank team IDs for undecided matchups" do
     source = OpenStruct.new(id: 605, homeId: " ", awayId: nil, notes: "TBD")
-    with_rest_games([ source ]) { GamesSeeder.seed! }
+    with_rest_games([ source ]) { GamesJob.perform_now }
 
     game = Game.find_by!(cfbd_id: 605)
     assert_nil game.home
@@ -90,7 +102,7 @@ class GamesSeederTest < ActiveSupport::TestCase
 
     with_rest_games(sources) do
       assert_no_difference("Game.count") do
-        error = assert_raises(ActiveRecord::RecordNotFound) { GamesSeeder.seed! }
+        error = assert_raises(ActiveRecord::RecordNotFound) { GamesJob.perform_now }
         assert_match(/home Team.*9999/, error.message)
       end
     end
@@ -101,7 +113,7 @@ class GamesSeederTest < ActiveSupport::TestCase
     sources.last.awayId = 9998
     with_rest_games(sources) do
       assert_no_difference("Game.count") do
-        error = assert_raises(ActiveRecord::RecordNotFound) { GamesSeeder.seed! }
+        error = assert_raises(ActiveRecord::RecordNotFound) { GamesJob.perform_now }
         assert_match(/away Team.*9998/, error.message)
       end
     end
@@ -118,7 +130,7 @@ class GamesSeederTest < ActiveSupport::TestCase
     ]
     with_rest_games(sources) do
       assert_no_difference("Game.count") do
-        assert_raises(ActiveRecord::NotNullViolation) { GamesSeeder.seed! }
+        assert_raises(ActiveRecord::NotNullViolation) { GamesJob.perform_now }
       end
     end
     assert_equal "Original", existing.reload.notes

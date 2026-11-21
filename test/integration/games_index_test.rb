@@ -31,7 +31,8 @@ class GamesIndexTest < ActionDispatch::IntegrationTest
             assert_select "span + span", text: "42"
           end
         end
-        assert_select "time.text-center[datetime=?]", start.iso8601, text: /Dec 20, 2025 at 6:30 PM/
+        assert_select "time.text-center[data-controller='local-time'][datetime=?]", start.iso8601,
+                      text: /Dec 20, 2025 at 6:30 PM/
         assert_select "span.text-center", text: "ESPN", count: 1
       end
     end

@@ -1,5 +1,5 @@
-class GamesSeeder
-  def self.seed!
+class GamesJob < ApplicationJob
+  def perform
     games = Cfbd::Rest.games(year: Current.season, seasonType: "postseason", classification: "fbs")
 
     Game.transaction do
@@ -22,14 +22,16 @@ class GamesSeeder
           away_line_scores: source.awayLineScores,
           highlights: source.highlights,
           notes: notes,
-          playoff: notes.include?("CFP")
+          playoff: source.playoff.present?
         )
         game.save!
       end
     end
   end
 
-  def self.team_for(id, side)
+  private
+
+  def team_for(id, side)
     return if id.blank?
 
     Team.find_by(cfbd_id: id) ||
