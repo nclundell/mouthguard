@@ -8,11 +8,11 @@
   <%= form_with url: passwords_path, class: "contents" do |form| %>
     <div class="my-5">
       <%= form.label :email_address, "Email address", class: "font-medium" %>
-      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "block shadow-sm rounded-md border border-green-800 bg-white text-neutral-900 placeholder:text-neutral-500 focus:outline-2 focus:outline-green-800 px-3 py-2 mt-2 w-full dark:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-400 dark:focus:outline-green-300" %>
+      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "block shadow-sm rounded-md border border-pine-950 bg-white text-neutral-900 placeholder:text-neutral-500 focus:outline-2 focus:outline-pine-950 px-3 py-2 mt-2 w-full dark:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-400 dark:focus:outline-pine-400" %>
     </div>
 
     <div class="inline">
-      <%= form.submit "Email reset instructions", class: "w-full sm:w-auto text-center rounded-lg px-3.5 py-2.5 bg-green-800 hover:bg-green-900 text-white inline-block font-medium cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800 dark:bg-green-300 dark:text-neutral-950 dark:hover:bg-green-200 dark:focus-visible:outline-green-300" %>
+      <%= form.submit "Email reset instructions", class: "w-full sm:w-auto text-center rounded-lg px-3.5 py-2.5 bg-pine-900 hover:bg-pine-950 text-white inline-block font-medium cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-950 dark:bg-pine-700 dark:text-neutral-100 dark:hover:bg-pine-600 dark:focus-visible:outline-pine-400" %>
     </div>
   <% end %>
 </div>

@@ -1,0 +1,29 @@
+<%= link_to game_path(game), class: "flex h-full min-w-0 flex-col rounded-xl border border-pine-600/30 bg-white p-5 text-neutral-900 shadow-sm transition hover:border-pine-600 hover:bg-pine-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-700 dark:border-pine-500/40 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:border-pine-400 dark:hover:bg-neutral-700 dark:focus-visible:outline-pine-400" do %>
+  <h2 class="text-center text-lg font-semibold text-pine-950 dark:text-pine-400"><%= game.notes.presence || "Game" %></h2>
+
+  <div class="mt-auto pt-4">
+    <div class="grid grid-cols-2 gap-4">
+      <% [[game.away, game.away_points], [game.home, game.home_points]].each do |team, points| %>
+        <div class="flex min-w-0 flex-col items-center gap-2 text-center">
+          <% if team&.logos&.first.present? %>
+            <% logo = team.logos.find { |url| url.include?("/logos/") } || team.logos.first %>
+            <% dark_logo = team.logos.find { |url| url == logo.sub("/logos/", "/logos-dark/") } if logo.include?("/logos/") %>
+            <%= image_tag logo, alt: "", class: "size-10 object-contain #{'block dark:hidden' if dark_logo}" %>
+            <%= image_tag dark_logo, alt: "", class: "hidden size-10 object-contain dark:block" if dark_logo %>
+          <% end %>
+          <span class="min-w-0 break-words font-medium"><%= team&.school.presence || "TBD" %></span>
+          <% unless points.nil? %>
+            <span class="text-lg font-semibold"><%= points %></span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <% if game.start %>
+      <time datetime="<%= game.start.iso8601 %>" class="mt-4 block text-center text-sm text-neutral-600 dark:text-neutral-300"><%= game.start.strftime("%b %-d, %Y at %-I:%M %p") %></time>
+    <% end %>
+    <% if game.tv.present? %>
+      <span class="mt-2 block text-center text-sm text-neutral-600 dark:text-neutral-300"><%= game.tv %></span>
+    <% end %>
+  </div>
+<% end %>

@@ -15,6 +15,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
 
     follow_redirect!
     assert_notice "reset instructions sent"
+    assert_select "#notice[role=status].bg-pine-100.text-pine-900.dark\\:bg-pine-800.dark\\:text-neutral-100", text: /reset instructions sent/
   end
 
   test "create for an unknown user redirects but sends no mail" do

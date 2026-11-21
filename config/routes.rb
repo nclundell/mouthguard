@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   mount RailsIcons::Engine, at: "/rails_icons"
   resource :session
+  resource :profile, only: [ :show, :edit, :update ]
   resources :passwords, param: :token
   root "dashboard#index"
   get "picks", to: "picks#index"

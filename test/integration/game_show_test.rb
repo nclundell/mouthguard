@@ -8,7 +8,7 @@ class GameShowTest < ActionDispatch::IntegrationTest
     get game_path(game)
 
     assert_response :success
-    assert_select "main > h1.border-green-800.dark\\:border-green-300", text: "Game", count: 1
+    assert_select "main > h1.border-pine-950.dark\\:border-pine-500", text: "Game", count: 1
   end
 
   test "missing game returns not found" do

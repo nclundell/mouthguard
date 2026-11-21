@@ -4,7 +4,7 @@
   <% end %>
 
   <% if notice = flash[:notice] %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-800 font-medium rounded-lg inline-block dark:bg-green-950 dark:text-green-200" role="status" id="notice"><%= notice %></p>
+    <p class="py-2 px-3 bg-pine-100 mb-5 text-pine-900 font-medium rounded-lg inline-block dark:bg-pine-800 dark:text-neutral-100" role="status" id="notice"><%= notice %></p>
   <% end %>
 
   <h1 class="font-bold text-4xl">Sign in</h1>
@@ -12,21 +12,21 @@
   <%= form_with url: session_url, class: "contents" do |form| %>
     <div class="my-5">
       <%= form.label :email_address, "Email address", class: "font-medium" %>
-      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "block shadow-sm rounded-md border border-green-800 bg-white text-neutral-900 placeholder:text-neutral-500 focus:outline-2 focus:outline-green-800 px-3 py-2 mt-2 w-full dark:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-400 dark:focus:outline-green-300" %>
+      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "block shadow-sm rounded-md border border-pine-950 bg-white text-neutral-900 placeholder:text-neutral-500 focus:outline-2 focus:outline-pine-950 px-3 py-2 mt-2 w-full dark:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-400 dark:focus:outline-pine-400" %>
     </div>
 
     <div class="my-5">
       <%= form.label :password, class: "font-medium" %>
-      <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72, class: "block shadow-sm rounded-md border border-green-800 bg-white text-neutral-900 placeholder:text-neutral-500 focus:outline-2 focus:outline-green-800 px-3 py-2 mt-2 w-full dark:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-400 dark:focus:outline-green-300" %>
+      <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72, class: "block shadow-sm rounded-md border border-pine-950 bg-white text-neutral-900 placeholder:text-neutral-500 focus:outline-2 focus:outline-pine-950 px-3 py-2 mt-2 w-full dark:border-neutral-400 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-400 dark:focus:outline-pine-400" %>
     </div>
 
     <div class="col-span-6 sm:flex sm:items-center sm:gap-4">
       <div class="inline">
-        <%= form.submit "Sign in", class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-green-800 hover:bg-green-900 text-white inline-block font-medium cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800 dark:bg-green-300 dark:text-neutral-950 dark:hover:bg-green-200 dark:focus-visible:outline-green-300" %>
+        <%= form.submit "Sign in", class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-pine-900 hover:bg-pine-950 text-white inline-block font-medium cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-950 dark:bg-pine-700 dark:text-neutral-100 dark:hover:bg-pine-600 dark:focus-visible:outline-pine-400" %>
       </div>
 
       <div class="mt-4 text-sm sm:mt-0">
-        <%= link_to "Forgot password?", new_password_path, class: "text-green-800 underline hover:no-underline focus-visible:outline-2 focus-visible:outline-green-800 dark:text-green-300 dark:focus-visible:outline-green-300" %>
+        <%= link_to "Forgot password?", new_password_path, class: "text-pine-900 underline hover:no-underline focus-visible:outline-2 focus-visible:outline-pine-950 dark:text-neutral-100 dark:focus-visible:outline-pine-400" %>
       </div>
     </div>
   <% end %>

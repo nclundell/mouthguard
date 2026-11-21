@@ -1,0 +1,16 @@
+<div class="mx-auto max-w-2xl">
+  <% if notice = flash[:notice] %>
+    <p role="status" class="mb-6 rounded-md border border-pine-900 bg-pine-900 px-4 py-3 text-neutral-100 dark:border-pine-600 dark:bg-pine-800 dark:text-neutral-100"><%= notice %></p>
+  <% end %>
+
+  <h1 class="border-l-4 border-pine-950 pl-4 text-3xl font-bold tracking-tight text-neutral-900 dark:border-pine-500 dark:text-neutral-100">My Profile</h1>
+  <dl class="mt-8 divide-y divide-pine-950/20 rounded-lg border border-pine-950/30 bg-white px-5 dark:divide-pine-500/40 dark:border-pine-500/60 dark:bg-neutral-900">
+    <% { "Email address" => @user.email_address, "First name" => @user.first_name, "Last name" => @user.last_name, "Display name" => @user.display_name }.each do |label, value| %>
+      <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="font-medium text-neutral-600 dark:text-neutral-300"><%= label %></dt>
+        <dd class="mt-1 break-words sm:col-span-2 sm:mt-0"><%= value.presence || "—" %></dd>
+      </div>
+    <% end %>
+  </dl>
+  <%= link_to "Edit Profile", edit_profile_path, class: "mt-6 inline-flex min-h-11 items-center rounded-md bg-pine-900 px-4 font-medium text-white hover:bg-pine-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-950 dark:bg-pine-700 dark:text-neutral-100 dark:hover:bg-pine-600 dark:focus-visible:outline-pine-400" %>
+</div>

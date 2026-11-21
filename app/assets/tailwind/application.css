@@ -1,5 +1,16 @@
 @import "tailwindcss";
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
+@theme {
+  --color-pine-100: #e4eee9;
+  --color-pine-400: #77a995;
+  --color-pine-500: #5b927d;
+  --color-pine-600: #437d68;
+  --color-pine-700: #346552;
+  --color-pine-800: #28513f;
+  --color-pine-900: #1e4032;
+  --color-pine-950: #142f25;
+}
+
 :root { color-scheme: light; }
 :root[data-theme=dark] { color-scheme: dark; }

@@ -8,7 +8,7 @@ class PagesTest < ActionDispatch::IntegrationTest
       get public_send("#{page}_path")
 
       assert_response :success
-      assert_select "main > h1.border-green-800.dark\\:border-green-300", text: title, count: 1
+      assert_select "main > h1.border-pine-950.dark\\:border-pine-500", text: title, count: 1
       assert_select "nav[aria-label='Main navigation'].hidden.sm\\:flex a[href=?]", public_send("#{page}_path"), text: title, count: 1
       assert_select "nav[aria-label='Mobile navigation'] a[href=?]", public_send("#{page}_path"), text: title, count: 1
     end
