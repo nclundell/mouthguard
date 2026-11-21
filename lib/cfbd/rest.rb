@@ -22,6 +22,10 @@ module Cfbd
         get("games", params)
       end
 
+      def scoreboard
+        get("scoreboard")
+      end
+
       private
 
       def get(path, params = {})

@@ -15,7 +15,10 @@ class GamesIndexTest < ActionDispatch::IntegrationTest
     get games_path
 
     assert_response :success
-    assert_select "main a.flex.flex-col.h-full[href=?]", game_path(game), count: 1 do
+    assert_select "turbo-cable-stream-source[channel='Turbo::StreamsChannel']", count: 1 do |sources|
+      assert_equal "games", Turbo.signed_stream_verifier.verified(sources.first["signed-stream-name"])
+    end
+    assert_select "main a#game_#{game.id}.flex.flex-col.h-full[href=?]", game_path(game), count: 1 do
       assert_select "h2.text-center", text: "Championship"
       assert_select "div.mt-auto", count: 1 do
         assert_select "div.grid.grid-cols-2", count: 1 do

@@ -25,6 +25,8 @@ class GamesJob < ApplicationJob
           playoff: source.playoff.present?
         )
         game.save!
+
+        game.seed_picks
       end
     end
   end

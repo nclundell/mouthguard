@@ -10,6 +10,9 @@
 #     schedule: at 5am every day
 
 production:
+  live_games:
+    class: LiveGamesJob
+    schedule: every 20 seconds
   seed_teams:
     class: TeamsJob
     schedule: "0 2 1 * *"

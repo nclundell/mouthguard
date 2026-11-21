@@ -69,6 +69,20 @@ class CfbdRestTest < ActiveSupport::TestCase
     end
   end
 
+  test "fetches the REST scoreboard with server-side authentication" do
+    response = Net::HTTPOK.new("1.1", "200", "OK")
+    response.define_singleton_method(:body) { '[{"id":55,"status":"in_progress"}]' }
+
+    stub_const(Cfbd::Rest, :CFBD_API_KEY, "test-key") do
+      with_http_response(response) do |requests|
+        assert_equal "in_progress", Cfbd::Rest.scoreboard.first.status
+        assert_equal "/scoreboard", requests.first.path
+        assert_equal "Bearer test-key", requests.first["Authorization"]
+        assert_nil requests.first.body
+      end
+    end
+  end
+
   test "reports unsuccessful responses without exposing the key" do
     response = Net::HTTPUnauthorized.new("1.1", "401", "Unauthorized")
 
