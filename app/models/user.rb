@@ -7,6 +7,12 @@ class User < ApplicationRecord
   normalizes :email_address, with: ->(e) { e.strip.downcase }
   validates :email_address, presence: true, uniqueness: true
   validates :email_address, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
+  
+  def name
+    return display_name unless display_name.blank?
+
+    [ first_name, last_name ].join(' ') || email_address
+  end
 
   def full_picks
     picks.joins(:game)

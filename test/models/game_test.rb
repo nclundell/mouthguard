@@ -41,4 +41,60 @@ class GameTest < ActiveSupport::TestCase
       assert_equal [ started.id, starting_now.id ], Game.live.order(:id).pluck(:id)
     end
   end
+
+  test "winner is available only for completed games with known unequal scores" do
+    away = Team.create!(cfbd_id: 250, school: "Away")
+    home = Team.create!(cfbd_id: 251, school: "Home")
+    game = Game.new(away: away, home: home, completed: true, away_points: 21, home_points: 14)
+
+    assert_equal away, game.winner
+    game.home_points = 28
+    assert_equal home, game.winner
+    game.completed = false
+    assert_nil game.winner
+    game.completed = nil
+    assert_nil game.winner
+    game.completed = true
+    game.home_points = nil
+    assert_nil game.winner
+    game.home_points = 21
+    assert_nil game.winner
+    game.home_points = 28
+    game.home = nil
+    assert_nil game.winner
+  end
+
+  test "result changes settle, reverse and reset all existing picks" do
+    away = Team.create!(cfbd_id: 260)
+    home = Team.create!(cfbd_id: 261)
+    game = Game.create!(cfbd_id: 262, away: away, home: home)
+    away_pick = Pick.create!(game: game, user: users(:one), team: away)
+    home_pick = Pick.create!(game: game, user: users(:two), team: home)
+
+    assert_nil away_pick.reload.correct
+    game.update!(completed: true, away_points: 21, home_points: 14)
+    assert_equal true, away_pick.reload.correct
+    assert_equal false, home_pick.reload.correct
+
+    game.update!(home_points: 28)
+    assert_equal false, away_pick.reload.correct
+    assert_equal true, home_pick.reload.correct
+
+    game.update!(away: nil)
+    assert_equal false, away_pick.reload.correct
+    assert_equal true, home_pick.reload.correct
+    game.update!(home: nil)
+    assert_nil away_pick.reload.correct
+    assert_nil home_pick.reload.correct
+
+    game.update!(home: home, away: away, home_points: 21)
+    assert_nil away_pick.reload.correct
+    game.update!(home_points: nil)
+    assert_nil home_pick.reload.correct
+    game.update!(home_points: 14)
+    assert_equal true, away_pick.reload.correct
+    game.update!(completed: false)
+    assert_nil away_pick.reload.correct
+    assert_nil home_pick.reload.correct
+  end
 end

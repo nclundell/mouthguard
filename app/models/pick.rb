@@ -5,14 +5,16 @@ class Pick < ApplicationRecord
 
   validate :team_plays_in_game
 
-  scope :open, -> {
-    joins(:game)
-    .where("games.season = ?", Current.season)
-    .where("games.start IS NULL OR games.start > ?", Time.current)
-  }
+  scope :correct, -> { where(correct: true) }
+  scope :locked, -> { joins(:game).merge(Game.locked) }
+  scope :open, -> { joins(:game).merge(Game.open) }
 
   def locked?
-    game.start.present? && game.start <= Time.current
+    game.locked?
+  end
+
+  def open?
+    game.open?
   end
 
   private

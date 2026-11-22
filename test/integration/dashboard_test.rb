@@ -113,7 +113,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
     assert_select "details.hidden.sm\\:block > summary", text: /#{Regexp.escape(user.email_address)}/
   end
 
-  test "long account names stay within the desktop menu" do
+  test "long account names stay within the account menus" do
     user = users(:one)
     name = ("Very long account name " * 12).strip
     user.update!(display_name: name)
@@ -126,6 +126,10 @@ class DashboardTest < ActionDispatch::IntegrationTest
         assert_select "span.min-w-0.flex-1.truncate[title=?]", name, text: name
       end
       assert_select "details > div.absolute.right-0.w-56[class~='max-w-[calc(100vw-2.5rem)]']"
+    end
+    assert_select "details.sm\\:hidden > div > div > div.flex.items-center.gap-2" do
+      assert_select "> svg.size-6.shrink-0[aria-hidden=true]", count: 1
+      assert_select "> span.min-w-0.flex-1.truncate[title=?]", name, text: name
     end
   end
 

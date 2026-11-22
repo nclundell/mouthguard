@@ -82,6 +82,97 @@ class GamesIndexTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "filters offer unique current-season titles and teams with unchecked options and card IDs" do
+    away = Team.create!(cfbd_id: Team.maximum(:cfbd_id).to_i + 1, school: "Away School", conference: "Atlantic")
+    home = Team.create!(cfbd_id: away.cfbd_id + 1, school: "Home School", conference: "Pacific")
+    twin = Team.create!(cfbd_id: home.cfbd_id + 1, school: "Home School", conference: "Pacific")
+    first = Game.create!(cfbd_id: Game.maximum(:cfbd_id).to_i + 1, season: Current.season,
+                         notes: "Shared Bowl", away: away, home: home)
+    second = Game.create!(cfbd_id: first.cfbd_id + 1, season: Current.season,
+                          notes: "Shared Bowl", away: away, home: twin)
+    unnamed = Game.create!(cfbd_id: second.cfbd_id + 1, season: Current.season, notes: " ")
+    Game.create!(cfbd_id: unnamed.cfbd_id + 1, season: Current.season - 1,
+                 notes: "Old Bowl", away: Team.create!(cfbd_id: twin.cfbd_id + 1, school: "Old Team", conference: "Old Conference"))
+    sign_in_as users(:one)
+
+    assert_no_difference "Game.count" do
+      get games_path
+    end
+
+    assert_response :success
+    assert_select "[data-controller='games-filter'][data-action*='keydown.esc->games-filter#close']", count: 1
+    assert_select "[data-games-filter-target='controls'][class~='hidden'][class~='sm:flex']", count: 1
+    assert_select "[data-games-filter-target='cards']", count: 1
+    { "bowl" => "bowls", "team" => "teams", "conference" => "conferences" }.each do |axis, plural|
+      assert_select "label[for='games-#{axis}-search']", text: axis.capitalize, count: 1
+      assert_select "input#games-#{axis}-search[type=search][placeholder='Search #{plural}'][aria-label='Search #{plural}'][aria-controls='games-#{axis}-options'][aria-expanded=false][class~='w-40'][data-action*='input->games-filter#search']", count: 1
+      assert_select "#games-#{axis}-options[hidden][data-games-filter-target='#{axis}Dropdown']", count: 1
+      assert_select "[data-games-filter-target='#{axis}Count']", text: "All"
+      assert_select "button[aria-label='Clear #{axis} filter'][disabled][hidden].hidden", count: 1
+      assert_select "[data-games-filter-target='#{axis}Option'] input[checked]", count: 0
+    end
+    assert_select "[data-games-filter-target='bowlOption']", text: "Shared Bowl", count: 1
+    assert_select "[data-games-filter-target='bowlOption'] input[value='Game']", count: 1
+    assert_select "[data-games-filter-target='bowlOption']", text: "Old Bowl", count: 0
+    assert_select "[data-games-filter-target='teamOption'] input[value='#{away.id}']", count: 1
+    [ home, twin ].each do |team|
+      assert_select "[data-games-filter-target='teamOption']", text: "Home School (#{team.id})", count: 1
+      assert_select "[data-games-filter-target='teamOption'] input[value='#{team.id}']", count: 1
+    end
+    assert_select "[data-games-filter-target='teamOption']", text: "Old Team", count: 0
+    assert_select "[data-games-filter-target='teamOption'][hidden] input[type=checkbox][data-action='change->games-filter#update']", count: 3
+    %w[Atlantic Pacific].each do |conference|
+      assert_select "[data-games-filter-target='conferenceOption'] input[value='#{conference}']", count: 1
+    end
+    assert_select "[data-games-filter-target='conferenceOption'] input[value='Old Conference']", count: 0
+    assert_select "[data-games-filter-target='conferenceOption'][hidden] input[type=checkbox][data-action='change->games-filter#update']", count: 2
+    assert_select "a#game_#{first.id}[data-games-filter-target=gameCard][data-bowl-title='Shared Bowl'][data-away-team-id='#{away.id}'][data-away-team-school='Away School'][data-away-team-conference='Atlantic'][data-home-team-id='#{home.id}'][data-home-team-school='Home School'][data-home-team-conference='Pacific']", count: 1
+    assert_select "a#game_#{second.id}[data-games-filter-target=gameCard][data-bowl-title='Shared Bowl'][data-away-team-id='#{away.id}'][data-home-team-id='#{twin.id}']", count: 1
+    assert_select "a#game_#{unnamed.id}[data-games-filter-target=gameCard][data-bowl-title='Game']", count: 1
+    assert_select "a#game_#{unnamed.id}[data-away-team-id]:not([data-away-team-id=''])", count: 0
+    assert_select "a#game_#{unnamed.id}[data-away-team-conference=''][data-home-team-conference='']", count: 1
+  end
+
+  test "fallback Team labels are disambiguated against actual Team schools" do
+    unnamed = Team.create!(cfbd_id: Team.maximum(:cfbd_id).to_i + 1, school: "")
+    named = Team.create!(cfbd_id: unnamed.cfbd_id + 1, school: "Team")
+    game = Game.create!(cfbd_id: Game.maximum(:cfbd_id).to_i + 1, season: Current.season,
+                        away: unnamed, home: named)
+    sign_in_as users(:one)
+
+    get games_path
+
+    [ unnamed, named ].each do |team|
+      assert_select "[data-games-filter-target='teamOption']", text: "Team (#{team.id})", count: 1
+      assert_select "a#game_#{game.id}[data-#{team == unnamed ? 'away' : 'home'}-team-id='#{team.id}'][data-#{team == unnamed ? 'away' : 'home'}-team-school='Team']", count: 1
+    end
+  end
+
+  test "blank conferences do not become filter options" do
+    team = Team.create!(cfbd_id: Team.maximum(:cfbd_id).to_i + 1, school: "Independent", conference: "  ")
+    game = Game.create!(cfbd_id: Game.maximum(:cfbd_id).to_i + 1, season: Current.season, home: team)
+    sign_in_as users(:one)
+
+    get games_path
+
+    assert_select "[data-games-filter-target='conferenceOption']", count: 0
+    assert_select "a#game_#{game.id}[data-home-team-conference=''][data-away-team-conference='']", count: 1
+  end
+
+  test "replacement card exposes updated title and team data" do
+    old_team = Team.create!(cfbd_id: Team.maximum(:cfbd_id).to_i + 1, school: "Old Team")
+    new_team = Team.create!(cfbd_id: old_team.cfbd_id + 1, school: "New Team", conference: "New Conference")
+    game = Game.create!(cfbd_id: Game.maximum(:cfbd_id).to_i + 1, season: Current.season,
+                        notes: "Old Bowl", home: old_team)
+    game.update!(notes: "New Bowl", home: new_team)
+
+    card = Nokogiri::HTML.fragment(ApplicationController.render(partial: "games/game_card", locals: { game: game }))
+    assert_equal "New Bowl", card.at_css("a")["data-bowl-title"]
+    assert_equal new_team.id.to_s, card.at_css("a")["data-home-team-id"]
+    assert_equal "New Team", card.at_css("a")["data-home-team-school"]
+    assert_equal "New Conference", card.at_css("a")["data-home-team-conference"]
+  end
+
   test "anonymous visitors are redirected to sign in" do
     get games_path
 

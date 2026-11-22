@@ -1,6 +1,73 @@
 <h1 class="border-l-4 border-pine-950 pl-4 text-3xl font-bold tracking-tight text-neutral-900 dark:border-pine-500 dark:text-neutral-100">Games</h1>
 
 <%= turbo_stream_from "games" %>
-<div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-  <%= render partial: "game_card", collection: @games, as: :game %>
+<div data-controller="games-filter" data-action="keydown.esc->games-filter#close">
+  <div class="mt-6 hidden flex-wrap gap-3 sm:flex" data-games-filter-target="controls">
+    <div class="relative min-w-0">
+      <div class="flex min-w-0 items-center gap-2">
+        <label for="games-bowl-search" class="shrink-0 text-sm font-medium">Bowl</label>
+        <input id="games-bowl-search" type="search" autocomplete="off" placeholder="Search bowls" aria-label="Search bowls" aria-controls="games-bowl-options" aria-expanded="false" data-games-filter-target="bowlSearch" data-action="input->games-filter#search focus->games-filter#search" class="min-w-0 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
+      </div>
+      <div class="flex items-center gap-1">
+        <span class="text-xs text-neutral-500" data-games-filter-target="bowlCount">All</span>
+        <button type="button" aria-label="Clear bowl filter" title="Clear bowl filter" data-games-filter-target="bowlClear" data-action="click->games-filter#clear" disabled hidden class="hidden shrink-0 text-sm text-pine-700 disabled:opacity-50 dark:text-pine-400"><%= icon "x", variant: "outline", class: "size-4", "aria-hidden": true %></button>
+      </div>
+      <div id="games-bowl-options" hidden data-games-filter-target="bowlDropdown" class="absolute left-0 z-30 mt-1 w-full min-w-44 rounded-lg border border-neutral-200 bg-white p-2 shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
+        <div class="max-h-60 overflow-y-auto">
+          <% @bowl_titles.each do |title| %>
+            <label hidden class="hidden flex items-center gap-2 py-1 text-sm" data-games-filter-target="bowlOption">
+              <input type="checkbox" value="<%= title %>" data-action="change->games-filter#update" class="size-4 accent-pine-700">
+              <%= title %>
+            </label>
+          <% end %>
+          <p hidden data-games-filter-target="bowlNoMatches" class="text-sm text-neutral-500">No matching bowls</p>
+        </div>
+      </div>
+    </div>
+    <div class="relative min-w-0">
+      <div class="flex min-w-0 items-center gap-2">
+        <label for="games-team-search" class="shrink-0 text-sm font-medium">Team</label>
+        <input id="games-team-search" type="search" autocomplete="off" placeholder="Search teams" aria-label="Search teams" aria-controls="games-team-options" aria-expanded="false" data-games-filter-target="teamSearch" data-action="input->games-filter#search focus->games-filter#search" class="min-w-0 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
+      </div>
+      <div class="flex items-center gap-1">
+        <span class="text-xs text-neutral-500" data-games-filter-target="teamCount">All</span>
+        <button type="button" aria-label="Clear team filter" title="Clear team filter" data-games-filter-target="teamClear" data-action="click->games-filter#clear" disabled hidden class="hidden shrink-0 text-sm text-pine-700 disabled:opacity-50 dark:text-pine-400"><%= icon "x", variant: "outline", class: "size-4", "aria-hidden": true %></button>
+      </div>
+      <div id="games-team-options" hidden data-games-filter-target="teamDropdown" class="absolute right-0 z-30 mt-1 w-full min-w-44 rounded-lg border border-neutral-200 bg-white p-2 shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
+        <div class="max-h-60 overflow-y-auto">
+          <% @teams.each do |team| %>
+            <label hidden class="hidden flex items-center gap-2 py-1 text-sm" data-games-filter-target="teamOption">
+              <input type="checkbox" value="<%= team.id %>" data-action="change->games-filter#update" class="size-4 accent-pine-700">
+              <%= @team_labels.fetch(team.id) %>
+            </label>
+          <% end %>
+          <p hidden data-games-filter-target="teamNoMatches" class="text-sm text-neutral-500">No matching teams</p>
+        </div>
+      </div>
+    </div>
+    <div class="relative min-w-0">
+      <div class="flex min-w-0 items-center gap-2">
+        <label for="games-conference-search" class="shrink-0 text-sm font-medium">Conference</label>
+        <input id="games-conference-search" type="search" autocomplete="off" placeholder="Search conferences" aria-label="Search conferences" aria-controls="games-conference-options" aria-expanded="false" data-games-filter-target="conferenceSearch" data-action="input->games-filter#search focus->games-filter#search" class="min-w-0 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
+      </div>
+      <div class="flex items-center gap-1">
+        <span class="text-xs text-neutral-500" data-games-filter-target="conferenceCount">All</span>
+        <button type="button" aria-label="Clear conference filter" title="Clear conference filter" data-games-filter-target="conferenceClear" data-action="click->games-filter#clear" disabled hidden class="hidden shrink-0 text-sm text-pine-700 disabled:opacity-50 dark:text-pine-400"><%= icon "x", variant: "outline", class: "size-4", "aria-hidden": true %></button>
+      </div>
+      <div id="games-conference-options" hidden data-games-filter-target="conferenceDropdown" class="absolute right-0 z-30 mt-1 w-full min-w-44 rounded-lg border border-neutral-200 bg-white p-2 shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
+        <div class="max-h-60 overflow-y-auto">
+          <% @conferences.each do |conference| %>
+            <label hidden class="hidden flex items-center gap-2 py-1 text-sm" data-games-filter-target="conferenceOption">
+              <input type="checkbox" value="<%= conference %>" data-action="change->games-filter#update" class="size-4 accent-pine-700">
+              <%= conference %>
+            </label>
+          <% end %>
+          <p hidden data-games-filter-target="conferenceNoMatches" class="text-sm text-neutral-500">No matching conferences</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div data-games-filter-target="cards" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <%= render partial: "game_card", collection: @games, as: :game %>
+  </div>
 </div>
