@@ -1,24 +1,23 @@
 <% account_name = Current.user.display_name.presence || [Current.user.first_name, Current.user.last_name].compact_blank.join(" ").presence || Current.user.email_address %>
 <div class="hidden min-w-0 max-w-full items-center gap-3 sm:flex">
   <details data-close-on-outside class="relative hidden min-w-0 max-w-full sm:block">
-    <summary class="flex min-h-11 min-w-0 max-w-full cursor-pointer list-none items-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm font-medium text-neutral-100 hover:border-pine-500 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500 [&::-webkit-details-marker]:hidden">
+    <summary class="flex h-11 w-40 cursor-pointer list-none items-center gap-2 rounded-md border border-transparent px-3 text-sm font-medium text-neutral-100 hover:border-pine-500 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500 [&::-webkit-details-marker]:hidden">
       <% if Current.user.avatar.attached? %>
         <%= image_tag Current.user.avatar, alt: "", class: "size-6 shrink-0 rounded-full object-cover" %>
       <% else %>
         <%= icon "user-circle", variant: "outline", class: "size-6 shrink-0", "aria-hidden": true %>
       <% end %>
-      <span class="min-w-0 max-w-48 truncate" title="<%= account_name %>"><%= account_name %></span>
+      <span class="min-w-0 flex-1 truncate" title="<%= account_name %>"><%= account_name %></span>
       <%= icon "chevron-down", variant: "outline", class: "size-4 shrink-0", "aria-hidden": true %>
     </summary>
     <div class="absolute right-0 top-full z-20 mt-2 w-56 max-w-[calc(100vw-2.5rem)] rounded-md border border-pine-600 bg-black p-2 text-sm text-neutral-100 shadow-lg">
       <%= link_to "My Profile", profile_path, class: "flex min-h-11 items-center rounded-md px-3 font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500" %>
-      <%= render "layouts/theme_controls" %>
       <%= button_to "Sign out", session_path, method: :delete, class: "min-h-11 w-full rounded-md px-3 text-left font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500" %>
     </div>
   </details>
 </div>
 <details data-close-on-outside class="sm:hidden">
-  <summary class="flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-md px-3 text-sm font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500">
+  <summary class="flex size-11 cursor-pointer items-center justify-center rounded-md text-sm font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500">
     <%= icon "menu-2", variant: "outline" %>
     <span class="sr-only">Open navigation menu</span>
   </summary>
@@ -30,9 +29,6 @@
         <% end %>
       </nav>
       <%= link_to "My Profile", profile_path, class: "flex min-h-11 items-center rounded-md px-3 font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500" %>
-      <div class="mt-1">
-        <%= render "layouts/theme_controls" %>
-      </div>
       <%= button_to "Sign out", session_path, method: :delete, form_class: "mt-1", class: "min-h-11 w-full rounded-md px-3 text-left text-sm font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500" %>
     </div>
   </div>
