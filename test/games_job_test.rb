@@ -16,7 +16,9 @@ class GamesJobTest < ActiveSupport::TestCase
       situation: "1st & 10", possession: "Home", lastPlay: "Run"
     )
     with_rest_games([ source ]) do |params|
-      assert_difference("Game.count", 1) { GamesJob.perform_now }
+      assert_no_difference("Pick.count") do
+        assert_difference("Game.count", 1) { GamesJob.perform_now }
+      end
       assert_equal({ year: Current.season, seasonType: "postseason", classification: "fbs" }, params.first)
       game = Game.find_by!(cfbd_id: 504)
       assert_equal 2026, game.season
@@ -56,7 +58,7 @@ class GamesJobTest < ActiveSupport::TestCase
       source.situation = nil
       source.possession = nil
       source.lastPlay = nil
-      assert_no_difference("Game.count") { GamesJob.perform_now }
+      assert_no_difference([ "Game.count", "Pick.count" ]) { GamesJob.perform_now }
       assert_equal game.id, Game.find_by!(cfbd_id: 504).id
       assert_equal 21, game.reload.home_points
       assert_nil game.venue

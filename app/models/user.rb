@@ -8,7 +8,14 @@ class User < ApplicationRecord
   validates :email_address, presence: true, uniqueness: true
   validates :email_address, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
 
+  def full_picks
+    picks.joins(:game)
+    .merge(Game.current)
+    .includes(game: [ :away, :home ])
+    .order("games.start", "games.id")
+  end
+
   def seed_picks
-    Game.current.each { |game| Pick.find_or_create_by(game: game, user: self)} 
+    Game.current.each { |game| picks.find_or_create_by(game: game) }
   end
 end

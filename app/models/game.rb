@@ -13,10 +13,6 @@ class Game < ApplicationRecord
     .where("status IS NULL OR status != ?", "completed")
   }
 
-  def seed_picks
-    User.find_each { |user| Pick.find_or_create_by(game: self, user: user) }
-  end
-
   private
 
   def broadcast_game

@@ -1,0 +1,45 @@
+<% game = pick.game %>
+<% locked = pick.locked? %>
+<article class="rounded-xl bg-white p-5 text-neutral-900 shadow-sm dark:bg-neutral-800 dark:text-neutral-100">
+  <div class="relative">
+    <h2 class="px-8 text-center text-lg font-semibold text-pine-950 dark:text-pine-400"><%= game.notes.presence || "Game" %></h2>
+    <% if locked %>
+      <span role="img" aria-label="Picks locked" class="absolute right-0 top-0 text-neutral-600 dark:text-neutral-300">
+        <%= icon "lock", variant: "outline", class: "size-6", "aria-hidden": true %>
+      </span>
+    <% end %>
+  </div>
+  <%= form_with url: my_pick_path(pick), method: :patch, class: "mt-4 grid grid-cols-2 gap-3" do %>
+    <% [game.away, game.home].each do |team| %>
+      <% selected = team && pick.team_id == team.id %>
+      <% logo = team&.logos&.find { |url| url.include?("/logos/") } || team&.logos&.first %>
+      <% dark_logo = team&.logos&.find { |url| url == logo.sub("/logos/", "/logos-dark/") } if logo&.include?("/logos/") %>
+      <% if team && !locked %>
+        <button type="submit" name="team_id" value="<%= team.id %>" aria-pressed="<%= selected ? 'true' : 'false' %>" class="relative flex min-w-0 flex-col items-center gap-2 rounded-lg border-2 p-3 text-center font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-700 dark:focus-visible:outline-pine-400 <%= selected ? 'border-pine-700 bg-pine-100 dark:border-pine-400 dark:bg-pine-950' : 'border-transparent hover:border-pine-600 dark:hover:border-pine-400' %>">
+          <%= image_tag logo, alt: "", class: "size-10 object-contain #{'block dark:hidden' if dark_logo}" if logo.present? %>
+          <%= image_tag dark_logo, alt: "", class: "hidden size-10 object-contain dark:block" if dark_logo %>
+          <span class="break-words"><%= team.school.presence || "TBD" %></span>
+          <% if selected %>
+            <span role="img" aria-label="Picked" class="absolute right-2 top-2 text-pine-700 dark:text-pine-400">
+              <%= icon "circle-check", variant: "outline", class: "size-6", "aria-hidden": true %>
+            </span>
+          <% end %>
+        </button>
+      <% else %>
+        <div class="relative flex min-w-0 flex-col items-center gap-2 rounded-lg border-2 p-3 text-center font-medium <%= selected ? 'border-pine-700 bg-pine-100 dark:border-pine-400 dark:bg-pine-950' : 'border-transparent' %>">
+          <%= image_tag logo, alt: "", class: "size-10 object-contain #{'block dark:hidden' if dark_logo}" if logo.present? %>
+          <%= image_tag dark_logo, alt: "", class: "hidden size-10 object-contain dark:block" if dark_logo %>
+          <span class="break-words"><%= team&.school.presence || "TBD" %></span>
+          <% if selected %>
+            <span role="img" aria-label="Picked" class="absolute right-2 top-2 text-pine-700 dark:text-pine-400">
+              <%= icon "circle-check", variant: "outline", class: "size-6", "aria-hidden": true %>
+            </span>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+  <% if game.start %>
+    <time datetime="<%= game.start.iso8601 %>" data-controller="local-time" class="mt-4 block text-center text-sm text-neutral-600 dark:text-neutral-300"><%= game.start.strftime("%b %-d, %Y at %-I:%M %p") %></time>
+  <% end %>
+</article>

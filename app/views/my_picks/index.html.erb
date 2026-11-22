@@ -1,0 +1,5 @@
+<h1 class="border-l-4 border-pine-950 pl-4 text-3xl font-bold tracking-tight text-neutral-900 dark:border-pine-500 dark:text-neutral-100">My Picks</h1>
+
+<div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+  <%= render partial: "pick_card", collection: @picks, as: :pick %>
+</div>

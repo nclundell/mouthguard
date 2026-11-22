@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   root "dashboard#index"
   get "picks", to: "picks#index"
+  get "my_picks", to: "my_picks#index"
+  patch "my_picks/:id", to: "my_picks#update", as: :my_pick
   resources :games, only: [ :index, :show ]
   get "leaders", to: "leaders#index"
   get "legends", to: "legends#index"
