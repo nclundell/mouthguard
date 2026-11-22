@@ -6,6 +6,7 @@ class Game < ApplicationRecord
 
   after_update_commit :broadcast_game, if: :saved_changes?
 
+  scope :current, -> { where(season: Current.season) }
   scope :live, -> {
     where("start <= ?", Time.current)
     .where(completed: [ false, nil ])
