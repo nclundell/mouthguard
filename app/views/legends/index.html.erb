@@ -1,1 +1,30 @@
-<h1 class="border-l-4 border-pine-950 pl-4 text-3xl font-bold tracking-tight text-neutral-900 dark:border-pine-500 dark:text-neutral-100">Legends</h1>
+<div class="mx-auto max-w-2xl">
+  <h1 class="border-l-4 border-pine-950 pl-4 text-3xl font-bold tracking-tight text-neutral-900 dark:border-pine-500 dark:text-neutral-100">Legends</h1>
+
+  <% if @legends.empty? %>
+    <p class="mt-8 text-center text-neutral-600 dark:text-neutral-300">No champions yet.</p>
+  <% else %>
+    <section class="mt-8 space-y-4" aria-label="Champions">
+      <% @legends.each do |legend| %>
+        <% winner_name = legend[:user]&.name.presence || legend[:name].presence || "Unknown winner" %>
+        <article class="flex items-center gap-4 rounded-lg border border-neutral-200 bg-white/80 p-4 shadow-sm dark:border-neutral-700 dark:bg-neutral-800/80">
+          <div class="flex shrink-0 items-center gap-1 border-r border-neutral-200 pr-4 dark:border-neutral-700">
+            <%= icon "bacon-deodorant", library: :custom, class: "size-9 text-amber-500", data: { icon: "bacon-deodorant" }, "aria-hidden": true %>
+            <span data-wins class="text-xl font-bold" aria-label="<%= pluralize(legend[:total_wins], 'win') %>"><%= legend[:total_wins] %></span>
+          </div>
+          <div class="flex min-w-0 items-center gap-3">
+            <% if legend[:user]&.avatar&.attached? %>
+              <%= image_tag legend[:user].avatar, alt: "Avatar for #{winner_name}", class: "size-10 shrink-0 rounded-full object-cover" %>
+            <% else %>
+              <%= icon "user-circle", variant: "outline", class: "size-10 shrink-0 text-neutral-500 dark:text-neutral-300", "aria-hidden": true %>
+            <% end %>
+            <div class="min-w-0">
+              <h2 class="break-words font-semibold"><%= winner_name %></h2>
+              <p data-seasons class="text-sm text-neutral-600 dark:text-neutral-300"><%= legend[:seasons].any? ? legend[:seasons].join(", ") : "Season unavailable" %></p>
+            </div>
+          </div>
+        </article>
+      <% end %>
+    </section>
+  <% end %>
+</div>

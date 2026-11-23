@@ -1,5 +1,6 @@
 RailsIcons.configure do |config|
   config.default_library = "tabler"
+  config.custom_library :custom
   # config.default_variant = "" # Set a default variant for all libraries
 
   # Override Tabler defaults

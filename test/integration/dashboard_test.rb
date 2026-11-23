@@ -28,6 +28,8 @@ class DashboardTest < ActionDispatch::IntegrationTest
     assert_select "header.border-b", 0
     assert_select "details > div.bg-black:not(.border):not(.border-neutral-800):not(.bg-linear-to-b):not(.from-neutral-900):not(.to-black):not(.shadow-lg)"
     assert_select "header a.text-neutral-100[class~='hover:text-pine-400']", text: "Mouthguard"
+    assert_select "header a[href=?] > svg[data-icon=mouthguard][aria-hidden=true] + span", root_path, text: "Mouthguard", count: 1
+    assert_select "header a[href=?] > svg.size-8.text-amber-500[viewBox='0 0 24 24'][fill=currentColor] path[d='M2 5a2 2 0 0 1 4 0v4a6 6 0 0 0 12 0V5a2 2 0 0 1 4 0v4A10 10 0 0 1 2 9V5Z']", root_path, count: 1
     assert_select "h1.border-pine-950.dark\\:border-pine-500", text: "Dashboard"
     assert_select "head script[src*='theme']", 1
     assert_select "header [data-theme-toggle][type=button][role=switch][aria-label='Dark Mode'][title='Toggle dark mode'][aria-checked=false]", 1
@@ -137,6 +139,20 @@ class DashboardTest < ActionDispatch::IntegrationTest
     get root_path
 
     assert_redirected_to new_session_path
+  end
+
+  test "mouthguard asset leaves size and color to the view" do
+    assert_not File.exist?(Rails.root.join("app/assets/svg/icons/tabler/filled/mouthguard.svg"))
+    asset = Nokogiri::XML(File.read(Rails.root.join("app/assets/svg/icons/custom/mouthguard.svg"))) { |config| config.strict }
+    svg = asset.root
+
+    assert_equal "0 0 24 24", svg["viewBox"]
+    assert_equal "currentColor", svg["fill"]
+    assert_nil svg["width"]
+    assert_nil svg["height"]
+    assert_nil svg["class"]
+    assert_equal "M2 5a2 2 0 0 1 4 0v4a6 6 0 0 0 12 0V5a2 2 0 0 1 4 0v4A10 10 0 0 1 2 9V5Z", svg.at_xpath("./*[local-name()='path']")["d"]
+    refute_match(/#[0-9a-fA-F]{3,8}\b|\b(?:white|black|amber)\b/, asset.to_xml)
   end
 
   test "anonymous sign in and password forms offer theme controls and dark inputs" do

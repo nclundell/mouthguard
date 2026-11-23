@@ -1,7 +1,10 @@
 <header class="relative bg-black bg-linear-to-b from-neutral-800 to-black text-white">
   <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-4">
     <div class="flex items-center gap-8">
-      <%= link_to "Mouthguard", root_path, class: "text-xl font-bold tracking-tight text-neutral-100 hover:text-pine-400 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-400" %>
+      <%= link_to root_path, class: "flex items-center gap-2 text-xl font-bold tracking-tight text-neutral-100 hover:text-pine-400 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-400" do %>
+        <%= icon "mouthguard", library: :custom, class: "size-8 text-amber-500", data: { icon: "mouthguard" }, "aria-hidden": true %>
+        <span>Mouthguard</span>
+      <% end %>
       <nav aria-label="Main navigation" class="hidden sm:flex items-center gap-4">
         <% {
             "Games" => games_path,
