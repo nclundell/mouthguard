@@ -1,1 +1,32 @@
-<h1 class="border-l-4 border-pine-950 pl-4 text-3xl font-bold tracking-tight text-neutral-900 dark:border-pine-500 dark:text-neutral-100">Leaders</h1>
+<div class="mx-auto max-w-2xl">
+  <h1 class="border-l-4 border-pine-950 pl-4 text-3xl font-bold tracking-tight text-neutral-900 dark:border-pine-500 dark:text-neutral-100"><%= @season %> Leader Board</h1>
+
+  <% if @leaders.empty? %>
+    <p class="mt-8 text-center text-neutral-600 dark:text-neutral-300">No leaders yet.</p>
+  <% else %>
+    <% contenders = @leaders.select(&:can_win) %>
+    <% sole_contender = contenders.first if contenders.one? %>
+    <section class="mt-8 space-y-4" aria-label="Leaderboard">
+      <% @leaders.each do |leader| %>
+        <article class="flex min-w-0 items-center gap-3 rounded-lg border border-neutral-200 bg-white/80 p-3 shadow-sm sm:gap-4 sm:p-4 dark:border-neutral-700 dark:bg-neutral-800/80">
+          <span class="shrink-0 font-semibold text-neutral-600 dark:text-neutral-300" aria-label="Rank <%= leader.rank %>">#<%= leader.rank %></span>
+          <div class="relative size-10 shrink-0">
+            <% if leader.equal?(sole_contender) %>
+              <%= icon "crown", variant: "filled", class: "absolute -top-2 -left-2 z-10 size-5 -rotate-45 text-amber-500", data: { icon: "crown" }, "aria-hidden": true %>
+            <% end %>
+            <% if leader.user.avatar.attached? %>
+              <%= image_tag leader.user.avatar, alt: "Avatar for #{leader.name}", class: "size-10 rounded-full object-cover" %>
+            <% else %>
+              <%= icon "user-circle", variant: "outline", class: "size-10 text-neutral-500 dark:text-neutral-300", "aria-hidden": true %>
+            <% end %>
+          </div>
+          <h2 class="min-w-0 flex-1 break-words font-semibold"><%= leader.name %></h2>
+          <div class="flex h-16 w-24 shrink-0 flex-col items-center justify-center rounded-md px-3 py-2 text-center font-semibold <%= leader.can_win ? 'bg-green-100 text-green-900 dark:bg-green-900 dark:text-green-100' : 'bg-red-100 text-red-900 dark:bg-red-900 dark:text-red-100' %>">
+            <span class="block text-xs"><%= leader.can_win ? "Can win" : "Eliminated" %></span>
+            <span aria-label="<%= pluralize(leader.points, 'point') %>"><%= leader.points %></span>
+          </div>
+        </article>
+      <% end %>
+    </section>
+  <% end %>
+</div>
