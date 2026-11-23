@@ -16,16 +16,37 @@ class GameTest < ActiveSupport::TestCase
     assert_equal "14", streams.first.at_css("template a#game_#{game.id} span.text-lg").text
   end
 
+  test "broadcasts the updated hero to the game's stream" do
+    game = Game.create!(cfbd_id: 102, notes: "Before", start: 1.hour.ago)
+
+    streams = capture_turbo_stream_broadcasts(game) do
+      game.update!(notes: "After", away_points: 7, home_points: 14, status: "completed")
+    end
+
+    assert_equal 1, streams.size
+    assert_equal "replace", streams.first["action"]
+    assert_equal "game_hero_#{game.id}", streams.first["target"]
+    hero = streams.first.at_css("template section#game_hero_#{game.id}")
+    assert_equal "After", hero.at_css("#matchup-title").text
+    assert_equal "7", hero.at_css("[data-matchup] tbody tr:first-child td:last-child").text
+    assert_equal "14", hero.at_css("[data-matchup] tbody tr:last-child td:last-child").text
+    assert_equal "Final", hero.at_css("[data-game-status]").text
+    assert_nil streams.first.at_css("template [data-picks-side]")
+  end
+
   test "does not broadcast unchanged or rolled-back updates" do
     game = Game.create!(cfbd_id: 101, notes: "Before")
 
-    assert_turbo_stream_broadcasts "games", count: 0 do
-      game.update!(notes: "Before")
-      Game.transaction do
-        game.update!(notes: "Discarded")
-        raise ActiveRecord::Rollback
+    hero_streams = capture_turbo_stream_broadcasts(game) do
+      assert_turbo_stream_broadcasts "games", count: 0 do
+        game.update!(notes: "Before")
+        Game.transaction do
+          game.update!(notes: "Discarded")
+          raise ActiveRecord::Rollback
+        end
       end
     end
+    assert_empty hero_streams
     assert_equal "Before", game.reload.notes
   end
 

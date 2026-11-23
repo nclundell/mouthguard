@@ -1,6 +1,19 @@
 require "test_helper"
 
 class GameShowTest < ActionDispatch::IntegrationTest
+  test "subscribes to the game stream and renders a replaceable hero" do
+    game = Game.create!(cfbd_id: 92_013)
+    sign_in_as users(:one)
+
+    get game_path(game)
+
+    assert_response :success
+    assert_select "turbo-cable-stream-source[channel='Turbo::StreamsChannel']", count: 1 do |sources|
+      assert_equal game.to_gid_param, Turbo.signed_stream_verifier.verified(sources.first["signed-stream-name"])
+    end
+    assert_select "[data-picks-layout] > section#game_hero_#{game.id}[aria-labelledby='matchup-title']", count: 1
+  end
+
   test "future game hides picks and picker identities in desktop panels" do
     away = Team.create!(cfbd_id: 92_001, school: "Secret Away")
     home = Team.create!(cfbd_id: 92_002, school: "Secret Home")

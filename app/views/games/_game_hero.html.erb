@@ -1,0 +1,84 @@
+<% status = if game.completed? || game.status == "completed"
+              "Final"
+            elsif game.start && game.start <= Time.current
+              "Live"
+            else
+              "Upcoming"
+            end %>
+<% status_text = status == "Live" ? [ "Live", ("Period #{game.period}" if game.period.present?), game.clock.presence ].compact.join(" · ") : status %>
+<% scored = !game.away_points.nil? && !game.home_points.nil? %>
+<% away_periods = game.away_line_scores.is_a?(Array) ? game.away_line_scores : [] %>
+<% home_periods = game.home_line_scores.is_a?(Array) ? game.home_line_scores : [] %>
+<% period_count = [away_periods.length, home_periods.length].max %>
+
+<section id="game_hero_<%= game.id %>" aria-labelledby="matchup-title" class="min-w-0 overflow-hidden rounded-2xl border border-pine-600/30 bg-white shadow-sm dark:border-pine-500/40 dark:bg-neutral-800">
+  <div data-matchup-header class="border-b border-pine-600/20 bg-pine-100/60 px-5 py-6 text-center dark:border-pine-500/30 dark:bg-pine-950/40 sm:px-8 sm:py-8">
+    <h1 id="matchup-title" class="text-2xl font-bold tracking-tight text-pine-950 dark:text-neutral-100 sm:text-3xl"><%= game.notes.presence || "Game" %></h1>
+    <% if game.start %>
+      <time data-kickoff datetime="<%= game.start.iso8601 %>" data-controller="local-time" class="mt-2 block text-sm text-neutral-600 dark:text-neutral-300"><%= game.start.strftime("%b %-d, %Y at %-I:%M %p") %></time>
+    <% else %>
+      <p data-kickoff class="mt-2 text-sm text-neutral-600 dark:text-neutral-300">Kickoff TBD</p>
+    <% end %>
+  </div>
+
+  <div data-matchup-content class="min-w-0">
+    <div class="px-4 py-8 sm:px-8 sm:py-12">
+      <div class="grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)] items-center gap-2 sm:gap-6">
+        <% [[ "away", game.away ], [ "home", game.home ]].each do |side, team| %>
+          <% if side == "home" %>
+            <div data-matchup class="min-w-0 overflow-x-auto text-center">
+              <% if period_count.positive? || scored %>
+                <table aria-label="Box score" class="mx-auto w-max border-collapse text-xs tabular-nums text-neutral-700 dark:text-neutral-200 sm:text-sm">
+                  <thead>
+                    <tr class="border-b border-pine-600/30 dark:border-pine-500/40">
+                      <th scope="col" class="px-1 py-1 text-left sm:px-2"><span class="sr-only">Team</span></th>
+                      <% period_count.times do |index| %>
+                        <th scope="col" class="px-1 py-1 text-center font-semibold sm:px-2"><%= index < 4 ? index + 1 : (index == 4 ? "OT" : "#{index - 3}OT") %></th>
+                      <% end %>
+                      <th scope="col" aria-label="Total" class="border-l border-pine-600/30 px-1 py-1 font-bold dark:border-pine-500/40 sm:px-2">T</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% [[game.away, away_periods, game.away_points], [game.home, home_periods, game.home_points]].each do |team, periods, points| %>
+                      <tr class="border-b border-pine-600/20 last:border-0 dark:border-pine-500/30">
+                        <th scope="row" class="max-w-24 truncate px-1 py-1.5 text-left font-semibold sm:px-2"><%= team&.abbreviation.presence || team&.school.presence&.truncate(12) || "TBD" %></th>
+                        <% period_count.times do |index| %>
+                          <td class="px-1 py-1.5 text-center sm:px-2"><%= periods[index].nil? ? "–" : periods[index] %></td>
+                        <% end %>
+                        <td class="border-l border-pine-600/30 px-1 py-1.5 text-center font-bold text-pine-950 dark:border-pine-500/40 dark:text-neutral-100 sm:px-2"><%= points.nil? ? "–" : points %></td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              <% else %>
+                <span class="text-2xl font-black tracking-tight text-pine-700 dark:text-pine-400 sm:text-4xl">VS</span>
+              <% end %>
+              <p data-game-status class="mt-3 text-sm font-bold uppercase tracking-widest <%= status == 'Live' ? 'text-pine-700 dark:text-pine-400' : 'text-neutral-600 dark:text-neutral-300' %>"><%= status_text %></p>
+            </div>
+          <% end %>
+          <div data-team="<%= side %>" class="flex min-w-0 flex-col items-center gap-3 text-center">
+            <% logos = team&.logos&.select { |url| url.is_a?(String) && url.present? } || [] %>
+            <% if logos.any? %>
+              <% logo = logos.find { |url| url.include?("/logos/") } || logos.first %>
+              <% dark_logo = logos.find { |url| url == logo.sub("/logos/", "/logos-dark/") } if logo.include?("/logos/") %>
+              <%= image_tag logo, alt: "", class: "size-16 object-contain sm:size-24 #{'block dark:hidden' if dark_logo}" %>
+              <%= image_tag dark_logo, alt: "", class: "hidden size-16 object-contain dark:block sm:size-24" if dark_logo %>
+            <% else %>
+              <div class="flex size-16 items-center justify-center rounded-full bg-pine-100 text-xl font-bold text-pine-700 dark:bg-pine-950 dark:text-pine-400 sm:size-24 sm:text-3xl" aria-hidden="true"><%= team&.school.presence&.first || "?" %></div>
+            <% end %>
+            <div class="min-w-0">
+              <p class="text-xs font-semibold uppercase tracking-widest text-neutral-500 dark:text-neutral-400"><%= side %></p>
+              <h2 class="mt-1 break-words text-base font-bold text-neutral-900 dark:text-neutral-100 sm:text-xl"><%= team&.school.presence || "TBD" %></h2>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <% if game.tv.present? %>
+        <div class="mt-8 border-t border-pine-600/20 pt-6 text-center dark:border-pine-500/30">
+          <p data-broadcast class="text-sm font-medium text-neutral-600 dark:text-neutral-300"><%= game.tv %></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
