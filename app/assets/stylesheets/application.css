@@ -1,4 +1,16 @@
 /* Site-wide styles can be added here when utility classes are insufficient. */
+@font-face {
+  font-family: "Permanent Marker";
+  src: url("permanent_marker/PermanentMarker-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+.font-marker {
+  font-family: "Permanent Marker", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
+}
+
 [data-picks-filter-target][hidden] {
   display: none !important;
 }
