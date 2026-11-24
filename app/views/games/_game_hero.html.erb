@@ -6,10 +6,6 @@
               "Upcoming"
             end %>
 <% status_text = status == "Live" ? [ "Live", ("Period #{game.period}" if game.period.present?), game.clock.presence ].compact.join(" · ") : status %>
-<% scored = !game.away_points.nil? && !game.home_points.nil? %>
-<% away_periods = game.away_line_scores.is_a?(Array) ? game.away_line_scores : [] %>
-<% home_periods = game.home_line_scores.is_a?(Array) ? game.home_line_scores : [] %>
-<% period_count = [away_periods.length, home_periods.length].max %>
 
 <section id="game_hero_<%= game.id %>" aria-labelledby="matchup-title" class="min-w-0 overflow-hidden rounded-2xl border border-pine-600/30 bg-white shadow-sm dark:border-pine-500/40 dark:bg-neutral-800">
   <div data-matchup-header class="border-b border-pine-600/20 bg-pine-100/60 px-5 py-6 text-center dark:border-pine-500/30 dark:bg-pine-950/40 sm:px-8 sm:py-8">
@@ -27,32 +23,7 @@
         <% [[ "away", game.away ], [ "home", game.home ]].each do |side, team| %>
           <% if side == "home" %>
             <div data-matchup class="min-w-0 overflow-x-auto text-center">
-              <% if period_count.positive? || scored %>
-                <table aria-label="Box score" class="mx-auto w-max border-collapse text-xs tabular-nums text-neutral-700 dark:text-neutral-200 sm:text-sm">
-                  <thead>
-                    <tr class="border-b border-pine-600/30 dark:border-pine-500/40">
-                      <th scope="col" class="px-1 py-1 text-left sm:px-2"><span class="sr-only">Team</span></th>
-                      <% period_count.times do |index| %>
-                        <th scope="col" class="px-1 py-1 text-center font-semibold sm:px-2"><%= index < 4 ? index + 1 : (index == 4 ? "OT" : "#{index - 3}OT") %></th>
-                      <% end %>
-                      <th scope="col" aria-label="Total" class="border-l border-pine-600/30 px-1 py-1 font-bold dark:border-pine-500/40 sm:px-2">T</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% [[game.away, away_periods, game.away_points], [game.home, home_periods, game.home_points]].each do |team, periods, points| %>
-                      <tr class="border-b border-pine-600/20 last:border-0 dark:border-pine-500/30">
-                        <th scope="row" class="max-w-24 truncate px-1 py-1.5 text-left font-semibold sm:px-2"><%= team&.abbreviation.presence || team&.school.presence&.truncate(12) || "TBD" %></th>
-                        <% period_count.times do |index| %>
-                          <td class="px-1 py-1.5 text-center sm:px-2"><%= periods[index].nil? ? "–" : periods[index] %></td>
-                        <% end %>
-                        <td class="border-l border-pine-600/30 px-1 py-1.5 text-center font-bold text-pine-950 dark:border-pine-500/40 dark:text-neutral-100 sm:px-2"><%= points.nil? ? "–" : points %></td>
-                      </tr>
-                    <% end %>
-                  </tbody>
-                </table>
-              <% else %>
-                <span class="text-2xl font-black tracking-tight text-pine-700 dark:text-pine-400 sm:text-4xl">VS</span>
-              <% end %>
+              <%= render "games/box_score", game: game %>
               <p data-game-status class="mt-3 text-sm font-bold uppercase tracking-widest <%= status == 'Live' ? 'text-pine-700 dark:text-pine-400' : 'text-neutral-600 dark:text-neutral-300' %>"><%= status_text %></p>
             </div>
           <% end %>

@@ -34,15 +34,35 @@ class GameTest < ActiveSupport::TestCase
     assert_nil streams.first.at_css("template [data-picks-side]")
   end
 
+  test "broadcasts dashboard scoreboard replacement independently of games cards" do
+    game = Game.create!(cfbd_id: 104, season: Current.season, notes: "Before", start: 1.hour.ago)
+
+    streams = capture_turbo_stream_broadcasts("dashboard_games") do
+      game.update!(notes: "After", away_points: 7, home_points: 14, completed: true)
+    end
+
+    assert_equal 1, streams.size
+    assert_equal "replace", streams.first["action"]
+    assert_equal "game_#{game.id}", streams.first["target"]
+    card = streams.first.at_css("template a#game_#{game.id}")
+    assert_equal "After", card.at_css("h3").text
+    assert_equal "final", card["data-scoreboard-status"]
+    assert_equal game.start.iso8601, card["data-scoreboard-kickoff"]
+    assert_equal [ "7", "14" ], card.css("tbody td:last-child").map(&:text)
+    assert_nil card.at_css("[data-games-filter-target]")
+  end
+
   test "does not broadcast unchanged or rolled-back updates" do
     game = Game.create!(cfbd_id: 101, notes: "Before")
 
     hero_streams = capture_turbo_stream_broadcasts(game) do
       assert_turbo_stream_broadcasts "games", count: 0 do
-        game.update!(notes: "Before")
-        Game.transaction do
-          game.update!(notes: "Discarded")
-          raise ActiveRecord::Rollback
+        assert_turbo_stream_broadcasts "dashboard_games", count: 0 do
+          game.update!(notes: "Before")
+          Game.transaction do
+            game.update!(notes: "Discarded")
+            raise ActiveRecord::Rollback
+          end
         end
       end
     end

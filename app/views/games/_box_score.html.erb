@@ -1,0 +1,29 @@
+<% away_periods = game.away_line_scores.is_a?(Array) ? game.away_line_scores : [] %>
+<% home_periods = game.home_line_scores.is_a?(Array) ? game.home_line_scores : [] %>
+<% period_count = [away_periods.length, home_periods.length].max %>
+<% if period_count.positive? || (!game.away_points.nil? && !game.home_points.nil?) || (local_assigns[:show_partial_scores] && (!game.away_points.nil? || !game.home_points.nil?)) %>
+  <table aria-label="Box score" class="mx-auto w-max border-collapse text-xs tabular-nums text-neutral-700 dark:text-neutral-200 sm:text-sm">
+    <thead>
+      <tr class="border-b border-pine-600/30 dark:border-pine-500/40">
+        <th scope="col" class="px-1 py-1 text-left sm:px-2"><span class="sr-only">Team</span></th>
+        <% period_count.times do |index| %>
+          <th scope="col" class="px-1 py-1 text-center font-semibold sm:px-2"><%= index < 4 ? index + 1 : (index == 4 ? "OT" : "#{index - 3}OT") %></th>
+        <% end %>
+        <th scope="col" aria-label="Total" class="border-l border-pine-600/30 px-1 py-1 font-bold dark:border-pine-500/40 sm:px-2">T</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% [[game.away, away_periods, game.away_points], [game.home, home_periods, game.home_points]].each do |team, periods, points| %>
+        <tr class="border-b border-pine-600/20 last:border-0 dark:border-pine-500/30">
+          <th scope="row" class="max-w-24 truncate px-1 py-1.5 text-left font-semibold sm:px-2"><%= team&.abbreviation.presence || team&.school.presence&.truncate(12) || "TBD" %></th>
+          <% period_count.times do |index| %>
+            <td class="px-1 py-1.5 text-center sm:px-2"><%= periods[index].nil? ? "–" : periods[index] %></td>
+          <% end %>
+          <td class="border-l border-pine-600/30 px-1 py-1.5 text-center font-bold text-pine-950 dark:border-pine-500/40 dark:text-neutral-100 sm:px-2"><%= points.nil? ? "–" : points %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <span class="text-2xl font-black tracking-tight text-pine-700 dark:text-pine-400 sm:text-4xl">VS</span>
+<% end %>

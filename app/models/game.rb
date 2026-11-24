@@ -44,6 +44,7 @@ class Game < ApplicationRecord
 
   def broadcast_game
     broadcast_replace_to "games", target: self, partial: "games/game_card", locals: { game: self }
+    broadcast_replace_to "dashboard_games", target: self, partial: "dashboard/scoreboard_game", locals: { game: self }
     broadcast_replace_to self, target: "game_hero_#{id}", partial: "games/game_hero", locals: { game: self }
   end
 end

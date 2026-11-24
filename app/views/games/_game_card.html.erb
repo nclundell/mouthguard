@@ -1,5 +1,17 @@
-<%= link_to game_path(game), id: dom_id(game), data: { games_filter_target: "gameCard", bowl_title: game.notes.presence || "Game", home_team_id: game.home_id, away_team_id: game.away_id, home_team_school: game.home&.school.presence || "Team", away_team_school: game.away&.school.presence || "Team", home_team_conference: game.home&.conference.presence || "", away_team_conference: game.away&.conference.presence || "" }, class: "flex h-full min-w-0 flex-col rounded-xl border border-pine-600/30 bg-white p-5 text-neutral-900 shadow-sm transition hover:border-pine-600 hover:bg-pine-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-700 dark:border-pine-500/40 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:border-pine-400 dark:hover:bg-neutral-700 dark:focus-visible:outline-pine-400" do %>
+<% scoreboard_status = if game.completed? || game.status == "completed"
+                         "final"
+                       elsif game.start && game.start <= Time.current
+                         "live"
+                       else
+                         "upcoming"
+                       end %>
+<%= link_to game_path(game), id: dom_id(game), data: { games_filter_target: "gameCard", scoreboard_status: scoreboard_status, scoreboard_kickoff: game.start&.iso8601, bowl_title: game.notes.presence || "Game", home_team_id: game.home_id, away_team_id: game.away_id, home_team_school: game.home&.school.presence || "Team", away_team_school: game.away&.school.presence || "Team", home_team_conference: game.home&.conference.presence || "", away_team_conference: game.away&.conference.presence || "" }, class: "flex h-full min-w-0 flex-col rounded-xl border border-pine-600/30 bg-white p-5 text-neutral-900 shadow-sm transition hover:border-pine-600 hover:bg-pine-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-700 dark:border-pine-500/40 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:border-pine-400 dark:hover:bg-neutral-700 dark:focus-visible:outline-pine-400" do %>
   <h2 class="text-center text-lg font-semibold text-pine-950 dark:text-pine-400"><%= game.notes.presence || "Game" %></h2>
+  <% if scoreboard_status == "final" %>
+    <span data-game-status class="mt-2 text-center text-xs font-bold uppercase tracking-widest text-neutral-600 dark:text-neutral-300">Final</span>
+  <% elsif scoreboard_status == "live" %>
+    <span data-game-status class="mt-2 text-center text-xs font-bold uppercase tracking-widest text-pine-700 dark:text-pine-400"><%= [ "Live", ("Period #{game.period}" if game.period.present?), game.clock.presence ].compact.join(" · ") %></span>
+  <% end %>
 
   <div class="mt-auto pt-4">
     <div class="grid grid-cols-2 gap-4">

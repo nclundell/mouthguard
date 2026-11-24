@@ -1,6 +1,214 @@
 require "test_helper"
 
 class DashboardTest < ActionDispatch::IntegrationTest
+  test "scoreboard keeps kickoff chronology while featuring the earliest live game" do
+    now = Time.current
+    later_live = dashboard_game("Later live", start: now - 1.hour, period: "3", clock: "08:40")
+    earliest_live = dashboard_game("Earliest live", start: now - 3.hours, period: "2", clock: "04:12")
+    upcoming = dashboard_game("Upcoming", start: now + 1.day)
+    final = dashboard_game("Final", start: now - 1.day, completed: true)
+    older_final = dashboard_game("Older final", start: now - 2.days, completed: true)
+    recent_final = dashboard_game("Recent final", start: now - 2.hours, status: "completed")
+    dashboard_game("Other season", start: now - 4.hours, season: Current.season - 1)
+    sign_in_as users(:one)
+
+    get root_path
+
+    assert_response :success
+    assert_select "turbo-cable-stream-source[channel='Turbo::StreamsChannel']", 1 do |sources|
+      assert_equal "dashboard_games", Turbo.signed_stream_verifier.verified(sources.first["signed-stream-name"])
+    end
+    assert_select "[data-controller=game-carousel] [data-game-carousel-target=track] > [data-game-carousel-target=slide]" do |slides|
+      assert_equal [older_final, final, earliest_live, recent_final, later_live, upcoming].map { |game| "game_#{game.id}" },
+                   slides.map { |slide| slide.at_css("a")["id"] }
+      assert_equal [ "game_#{earliest_live.id}" ], slides.select { |slide| slide["data-featured"] == "true" }.map { |slide| slide.at_css("a")["id"] }
+      assert slides.all? { |slide| slide["class"].split.include?("self-center") }
+      assert slides.all? { |slide| (slide["class"].split & %w[ring-2 ring-pine-700 ring-offset-2 dark:ring-pine-400 dark:ring-offset-neutral-900]).empty? }
+    end
+    assert_select "#game_#{earliest_live.id} [data-game-status]", text: /Live · Period 2 · 04:12/
+    assert_select "#game_#{final.id} [data-game-status]", text: "Final"
+    assert_select "#game_#{earliest_live.id}.block:not(.h-full)" do
+      assert_select "div.mt-3.flex.items-center.justify-center > div.overflow-x-auto", count: 1
+    end
+    assert_select "[data-game-carousel-target=slide] [data-games-filter-target]", count: 0
+    assert_select "[data-game-carousel-target=slide] span", text: "VS", count: 6
+    { earliest_live => "live", later_live => "live", upcoming => "upcoming", final => "final", older_final => "final", recent_final => "final" }.each do |game, status|
+      assert_select "#game_#{game.id}[data-scoreboard-status=?][data-scoreboard-kickoff=?]", status, game.start.iso8601
+    end
+    assert_select "[data-game-carousel-target=context][data-scoreboard-context]", text: /Live now/
+    assert_select "button[aria-label='Previous game'][data-action='game-carousel#previous']", 1
+    assert_select "button[aria-label='Next game'][data-action='game-carousel#next']", 1
+    assert_select "[data-game-carousel-control].absolute.top-1\\/2", count: 2
+    assert_select "[aria-hidden=true].pointer-events-none.absolute", count: 2
+    assert_select "[data-game-carousel-target=track][tabindex=0][aria-label='Games scoreboard'].overflow-x-auto.py-1", 1
+    assert_select "a[href=?]", my_picks_path, text: /My Picks/
+    assert_select "a[href=?]", games_path, text: /All games/
+    assert_select "a[href=?]", leaders_path, text: /Leaders/
+  end
+
+  test "scoreboard focuses next upcoming when no games are live" do
+    future = dashboard_game("Next up", start: 1.day.from_now)
+    dashboard_game("Later", start: 2.days.from_now)
+    unknown = dashboard_game("TBD")
+    finished = dashboard_game("Finished", start: 1.day.ago, status: "completed")
+    sign_in_as users(:one)
+
+    get root_path
+
+    assert_select "[data-game-carousel-target=slide] a" do |cards|
+      assert_equal [ "Finished", "Next up", "Later", "TBD" ], cards.map { |card| card.at_css("h3").text }
+    end
+    assert_select "[data-featured=true] > #game_#{future.id}", count: 1
+    assert_select "#game_#{unknown.id}[data-scoreboard-status=upcoming]:not([data-scoreboard-kickoff])"
+    assert_select "#game_#{finished.id}[data-scoreboard-status=final]"
+    assert_select "[data-scoreboard-context]", text: /Next up/
+  end
+
+  test "scoreboard truncates long bowl names while retaining the full title" do
+    name = "A Very Long Bowl Name That Would Otherwise Wrap Across Multiple Lines"
+    game = dashboard_game(name, start: 1.day.from_now)
+    sign_in_as users(:one)
+
+    get root_path
+
+    assert_select "#game_#{game.id} h3.truncate[title=?]", name, text: name
+  end
+
+  test "scoreboard puts unscheduled games last and breaks equal kickoffs by id" do
+    kickoff = 1.day.from_now
+    first = dashboard_game("First", start: kickoff)
+    second = dashboard_game("Second", start: kickoff)
+    unknown = dashboard_game("Unknown")
+    sign_in_as users(:one)
+
+    get root_path
+
+    assert_select "[data-game-carousel-target=slide] a" do |cards|
+      assert_equal [first, second, unknown].map { |game| "game_#{game.id}" }, cards.map { |card| card["id"] }
+    end
+  end
+
+  test "scoreboard focuses newest final when only completed games remain" do
+    dashboard_game("Older final", start: 2.days.ago, completed: true)
+    dashboard_game("Newest final", start: 1.day.ago, completed: true)
+    dashboard_game("Unknown final", completed: true)
+    sign_in_as users(:one)
+
+    get root_path
+
+    assert_select "[data-game-carousel-target=slide] a" do |cards|
+      assert_equal [ "Older final", "Newest final", "Unknown final" ], cards.map { |card| card.at_css("h3").text }
+    end
+    assert_select "[data-featured=true] a", text: /Newest final/, count: 1
+  end
+
+  test "replacement card changes scoreboard metadata from live to final" do
+    game = dashboard_game("Finishing game", start: 2.hours.ago)
+    sign_in_as users(:one)
+    get root_path
+
+    assert_select "#game_#{game.id}[data-scoreboard-status=live]"
+    game.update!(completed: true)
+    card = Nokogiri::HTML.fragment(ApplicationController.render(partial: "dashboard/scoreboard_game", locals: { game: game })).at_css("a")
+
+    assert_equal "game_#{game.id}", card["id"]
+    assert_equal "final", card["data-scoreboard-status"]
+    assert_equal game.start.iso8601, card["data-scoreboard-kickoff"]
+    assert_equal "Final", card.at_css("[data-game-status]").text
+  end
+
+  test "scoreboard renders overtime periods and totals without duplicate scores" do
+    away = Team.create!(cfbd_id: Team.maximum(:cfbd_id).to_i + 1, school: "Away", abbreviation: "AWY")
+    home = Team.create!(cfbd_id: away.cfbd_id + 1, school: "Home", abbreviation: "HME")
+    game = dashboard_game("Overtime Bowl", away: away, home: home, completed: true,
+                          away_line_scores: [ 7, 0, 3, 10, 3, 2 ], home_line_scores: [ 0, 7, 7, 3, 6 ],
+                          away_points: 25, home_points: 23, start: 1.day.ago)
+    sign_in_as users(:one)
+
+    get root_path
+
+    assert_select "#game_#{game.id}" do
+      assert_select "h3", text: "Overtime Bowl"
+      assert_select "table[aria-label='Box score']" do
+        assert_select "thead th", text: "OT"
+        assert_select "thead th", text: "2OT"
+        assert_select "tbody tr:first-child", text: /AWY\s*7\s*0\s*3\s*10\s*3\s*2\s*25/
+        assert_select "tbody tr:last-child", text: /HME\s*0\s*7\s*7\s*3\s*6\s*–\s*23/
+      end
+      assert_select "[data-game-status]", text: "Final"
+      assert_select "span.text-lg", count: 0
+    end
+  end
+
+  test "scoreboard flanks the box score with decorative theme-aware team logos" do
+    away = Team.create!(cfbd_id: Team.maximum(:cfbd_id).to_i + 1, school: "Away", abbreviation: "AWY",
+                        logos: [ "https://example.com/logos-dark/away.png", "https://example.com/logos/away.png" ])
+    home = Team.create!(cfbd_id: away.cfbd_id + 1, school: "Home", abbreviation: "HME",
+                        logos: [ "https://example.com/logos/home.png", "https://example.com/logos-dark/home.png" ])
+    game = dashboard_game("Logo Bowl", away: away, home: home, away_points: 7, home_points: 10)
+    sign_in_as users(:one)
+
+    get root_path
+
+    assert_select "#game_#{game.id} .flex.items-center.justify-center" do |rows|
+      row = rows.first
+      assert_equal %w[IMG IMG DIV IMG IMG], row.element_children.map(&:name).map(&:upcase)
+      assert_equal %w[AWY HME], row.css("table tbody th[scope=row]").map(&:text)
+      [ [ "away", 0 ], [ "home", 3 ] ].each do |side, index|
+        normal, dark = row.element_children[index, 2]
+        assert_equal "https://example.com/logos/#{side}.png", normal["src"]
+        assert_includes normal["class"].split, "dark:hidden"
+        assert_equal "https://example.com/logos-dark/#{side}.png", dark["src"]
+        assert_includes dark["class"].split, "dark:block"
+        assert_equal "", normal["alt"]
+        assert_equal "", dark["alt"]
+      end
+    end
+  end
+
+  test "scoreboard omits absent logos without placeholders" do
+    away = Team.create!(cfbd_id: Team.maximum(:cfbd_id).to_i + 1, school: "Away", logos: [])
+    home = Team.create!(cfbd_id: away.cfbd_id + 1, school: "Home",
+                        logos: [ "https://example.com/logos/home.png" ])
+    game = dashboard_game("One Logo", away: away, home: home)
+    sign_in_as users(:one)
+
+    get root_path
+
+    assert_select "#game_#{game.id} .flex.items-center.justify-center" do |rows|
+      assert_equal %w[DIV IMG], rows.first.element_children.map(&:name).map(&:upcase)
+      assert_equal "VS", rows.first.at_css("div span").text
+      assert_equal "https://example.com/logos/home.png", rows.first.at_css("img")["src"]
+    end
+  end
+
+  test "scoreboard shows totals only or VS with missing teams and line scores" do
+    scored = dashboard_game("Scores only", away_points: 0, home_points: 14)
+    unknown = dashboard_game("No scores")
+    sign_in_as users(:one)
+
+    get root_path
+
+    assert_select "#game_#{scored.id} table[aria-label='Box score']" do
+      assert_select "thead th[scope=col]", count: 2
+      assert_select "tbody th[scope=row]", text: "TBD", count: 2
+      assert_select "tbody tr:first-child td", text: "0"
+      assert_select "tbody tr:last-child td", text: "14"
+    end
+    assert_select "#game_#{unknown.id} span", text: "VS"
+    assert_select "#game_#{unknown.id} [data-game-status]", text: "Kickoff TBD"
+  end
+
+  test "scoreboard has an empty state when the current season has no games" do
+    sign_in_as users(:one)
+
+    get root_path
+
+    assert_select "[data-game-carousel-target=track]", 0
+    assert_select "[data-scoreboard-empty]", text: /No games yet/
+    assert_select "[data-scoreboard-empty] a[href=?]", games_path
+  end
+
   test "desktop navigation lists picks before games" do
     sign_in_as users(:one)
 
@@ -192,5 +400,11 @@ class DashboardTest < ActionDispatch::IntegrationTest
     assert_select "input[name='password'].dark\\:bg-neutral-800.dark\\:border-neutral-400.dark\\:text-neutral-100.dark\\:placeholder\\:text-neutral-400", 1
     assert_select "input[name='password_confirmation'].dark\\:bg-neutral-800.dark\\:border-neutral-400.dark\\:text-neutral-100.dark\\:placeholder\\:text-neutral-400", 1
     assert_select "input[type=submit].bg-pine-900.dark\\:bg-pine-700.dark\\:text-neutral-100:not(.bg-linear-to-b):not(.shadow-sm)", 1
+  end
+
+  private
+
+  def dashboard_game(notes, **attributes)
+    Game.create!({ cfbd_id: Game.maximum(:cfbd_id).to_i + 1, season: Current.season, notes: notes }.merge(attributes))
   end
 end
