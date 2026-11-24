@@ -3,7 +3,8 @@ module ApplicationCable
     identified_by :current_user
 
     def connect
-      set_current_user || reject_unauthorized_connection
+      # Guests need the scoreboard; any new channel must authorize its own subscriptions.
+      set_current_user
     end
 
     private

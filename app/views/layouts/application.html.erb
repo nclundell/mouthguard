@@ -25,20 +25,8 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="min-h-screen bg-amber-50 bg-linear-to-b from-amber-50 to-[#f5efdf] text-neutral-900 dark:bg-neutral-950 dark:from-neutral-900 dark:to-neutral-950 dark:text-neutral-100">
-    <% if authenticated? %>
-      <%= render "layouts/navbar" %>
-    <% else %>
-      <header class="bg-black bg-linear-to-b from-neutral-800 to-black px-5 py-3">
-        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4">
-          <span class="text-xl font-bold tracking-tight text-neutral-100">Mouthguard</span>
-          <div class="flex flex-wrap items-center gap-3">
-            <%= render "layouts/theme_controls" %>
-            <%= link_to "Sign In", new_session_path, class: "flex h-11 w-40 items-center justify-center rounded-md border border-pine-600 px-3 text-sm font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500" %>
-          </div>
-        </div>
-      </header>
-    <% end %>
+  <body data-cable-session="<%= Current.session.id if authenticated? %>" class="min-h-screen bg-amber-50 bg-linear-to-b from-amber-50 to-[#f5efdf] text-neutral-900 dark:bg-neutral-950 dark:from-neutral-900 dark:to-neutral-950 dark:text-neutral-100">
+    <%= render "layouts/navbar" %>
 
     <main class="mx-auto w-full max-w-6xl px-5 py-10 sm:py-12">
       <%= yield %>

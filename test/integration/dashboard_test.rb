@@ -291,7 +291,11 @@ class DashboardTest < ActionDispatch::IntegrationTest
 
     get root_path
 
-    assert_redirected_to new_session_path
+    assert_response :success
+    assert_select "header nav[aria-label='Main navigation'] a[href=?]", games_path, text: "Games"
+    assert_select "header details.hidden.sm\\:block", count: 0
+    assert_select "header details.sm\\:hidden", count: 1
+    assert_select "header a[href=?]", new_session_path, text: "Sign In", count: 2
   end
 
   test "desktop account summary displays an attached avatar before the name" do
@@ -308,6 +312,27 @@ class DashboardTest < ActionDispatch::IntegrationTest
       assert_select "span.truncate", text: user.email_address
     end
     assert_select "details.sm\\:hidden > summary svg path[d='M4 6l16 0']", count: 1
+  end
+
+  test "signed-in mobile menu retains account actions below public navigation" do
+    users(:one).update!(display_name: "Pat Example")
+    sign_in_as users(:one)
+
+    get root_path
+
+    assert_response :success
+    assert_select "details.sm\\:hidden" do
+      assert_select "nav[aria-label='Mobile navigation'] > a" do |links|
+        assert_equal %w[Picks Games Leaders Legends], links.map(&:text)
+      end
+      assert_select "nav + br + hr + br + div.flex.items-center", text: /Pat Example/
+      assert_select "a[href=?]", profile_path, text: "My Profile"
+      assert_select "a[href=?]", my_picks_path, text: "My Picks"
+      assert_select "form[action=?] button", session_path, text: "Sign Out"
+      assert_select "a[href=?]", new_session_path, count: 0
+    end
+    assert_select "details.hidden.sm\\:block > summary", text: /Pat Example/
+    assert_select "header a[href=?]", new_session_path, count: 0
   end
 
   test "account menu uses full name or email when display name is absent" do
@@ -343,10 +368,49 @@ class DashboardTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "anonymous visitor is redirected to sign in" do
+  test "anonymous visitor sees the public dashboard and shared navigation" do
+    game = dashboard_game("Visitor Bowl", start: 1.day.from_now)
+
     get root_path
 
-    assert_redirected_to new_session_path
+    assert_response :success
+    assert_select "h2#scoreboard-heading", text: "Scoreboard"
+    assert_select "#game_#{game.id} h3", text: "Visitor Bowl"
+    assert_select "turbo-cable-stream-source[channel='Turbo::StreamsChannel']", 1 do |sources|
+      assert_equal "dashboard_games", Turbo.signed_stream_verifier.verified(sources.first["signed-stream-name"])
+    end
+    assert_select "header a[href=?] > svg[data-icon=mouthguard][aria-hidden=true] + span", root_path, text: "Mouthguard", count: 1
+    assert_select "header nav[aria-label='Main navigation'] > a" do |links|
+      assert_equal %w[Games Picks Leaders Legends], links.map(&:text)
+    end
+    assert_select "header [data-theme-toggle]", count: 1
+    assert_select "header > div.flex-wrap > div.items-center.gap-2 > div.sm\\:flex a.h-11.w-40[href=?]", new_session_path, text: "Sign In", count: 1
+    assert_select "header details.hidden.sm\\:block", count: 0
+    assert_select "header details.sm\\:hidden", count: 1 do
+      assert_select "summary span.sr-only", text: "Open navigation menu"
+      assert_select "nav[aria-label='Mobile navigation'] > a" do |links|
+        assert_equal %w[Picks Games Leaders Legends], links.map(&:text)
+      end
+      assert_select "nav + br + hr + br + a[href=?]", new_session_path, text: "Sign In", count: 1
+      assert_select "a[href=?]", profile_path, count: 0
+      assert_select "a[href=?]", my_picks_path, count: 0
+      assert_select "form[action=?]", session_path, count: 0
+    end
+  end
+
+  test "cable session marker changes across sign in and sign out" do
+    get root_path
+    assert_select "body[data-cable-session='']"
+
+    post session_path, params: { email_address: users(:one).email_address, password: "password" }
+    assert_response :redirect
+    get root_path
+    assert_select "body[data-cable-session=?]", users(:one).sessions.last.id.to_s
+
+    delete session_path
+    assert_response :redirect
+    get root_path
+    assert_select "body[data-cable-session='']"
   end
 
   test "mouthguard asset leaves size and color to the view" do
@@ -374,13 +438,12 @@ class DashboardTest < ActionDispatch::IntegrationTest
     assert_select "body.bg-amber-50.dark\\:bg-neutral-950"
     assert_select "header.bg-black.bg-linear-to-b.from-neutral-800.to-black:not(.shadow-md):not([class~='shadow-black/25'])"
     assert_select "header.border-b", 0
-    assert_select "header span.text-neutral-100", text: "Mouthguard"
-    assert_select "header a.h-11.w-40.justify-center.border-pine-600.text-neutral-100[href=?]", new_session_path, text: "Sign In"
-    assert_select "header div.flex-wrap" do
+    assert_select "header a[href=?] > svg[data-icon=mouthguard] + span", root_path, text: "Mouthguard"
+    assert_select "header div.flex-wrap > div.items-center.gap-2" do
       assert_select "> [data-theme-toggle].size-11[class*='focus-visible:'][role=switch]", 1
       assert_select "[data-theme-icon=off][aria-hidden=true]:not([hidden]) path[d='M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454l0 .008']", 1
       assert_select "[data-theme-icon=on][aria-hidden=true][hidden] path[d='M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0']", 1
-      assert_select "a[href=?]", new_session_path, text: "Sign In"
+      assert_select "div.sm\\:flex a[href=?]", new_session_path, text: "Sign In"
     end
     assert_select "header [data-theme-toggle].bg-pine-400", 0
     assert_select "input[name='email_address'].dark\\:bg-neutral-800.dark\\:border-neutral-400.dark\\:text-neutral-100.dark\\:placeholder\\:text-neutral-400", 1

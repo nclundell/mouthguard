@@ -1,4 +1,5 @@
 <div class="hidden min-w-0 max-w-full items-center gap-3 sm:flex">
+  <% if authenticated? %>
   <details data-close-on-outside class="relative hidden min-w-0 max-w-full sm:block">
     <summary class="flex h-11 w-40 cursor-pointer list-none items-center gap-2 rounded-md border border-transparent px-3 text-sm font-medium text-neutral-100 hover:border-pine-500 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500 [&::-webkit-details-marker]:hidden">
       <% if Current.user.avatar.attached? %>
@@ -15,6 +16,9 @@
       <%= button_to "Sign Out", session_path, method: :delete, class: "min-h-11 w-full rounded-md px-3 text-left font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500" %>
     </div>
   </details>
+  <% else %>
+    <%= link_to "Sign In", new_session_path, class: "flex h-11 w-40 items-center justify-center rounded-md border border-pine-600 px-3 text-sm font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500" %>
+  <% end %>
 </div>
 <details data-close-on-outside class="sm:hidden">
   <summary class="flex size-11 cursor-pointer items-center justify-center rounded-md text-sm font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500">
@@ -31,6 +35,7 @@
       </br>
       <hr class="border-neutral-700">
       </br>
+      <% if authenticated? %>
       <div class="flex min-h-11 min-w-0 items-center gap-2 px-3 text-sm font-medium">
         <% if Current.user.avatar.attached? %>
           <%= image_tag Current.user.avatar, alt: "", class: "size-6 shrink-0 rounded-full object-cover" %>
@@ -42,6 +47,9 @@
       <%= link_to "My Profile", profile_path, class: "flex min-h-11 items-center rounded-md px-3 font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500" %>
       <%= link_to "My Picks", my_picks_path, class: "flex min-h-11 items-center rounded-md px-3 font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500" %>
       <%= button_to "Sign Out", session_path, method: :delete, form_class: "mt-1", class: "min-h-11 w-full rounded-md px-3 text-left text-sm font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500" %>
+      <% else %>
+        <%= link_to "Sign In", new_session_path, class: "flex min-h-11 items-center rounded-md px-3 font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500" %>
+      <% end %>
     </div>
   </div>
 </details>

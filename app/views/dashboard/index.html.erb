@@ -1,7 +1,7 @@
 <section class="mt-8" aria-labelledby="scoreboard-heading" data-controller="game-carousel">
   <div class="flex flex-wrap items-end justify-between gap-4">
     <div>
-      <p class="text-xs font-bold uppercase tracking-[0.2em] text-pine-700 dark:text-pine-400">The bowl season</p>
+      <p class="text-sm font-bold uppercase tracking-[0.2em] text-pine-700 dark:text-pine-400">The bowl season</p>
       <h2 id="scoreboard-heading" class="mt-1 text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">Scoreboard</h2>
       <% if @games.any? %>
         <p data-scoreboard-context data-game-carousel-target="context" class="mt-1 text-sm text-neutral-600 dark:text-neutral-300"><%= @scoreboard_context %></p>
@@ -13,7 +13,7 @@
   <% if @games.any? %>
     <%= turbo_stream_from "dashboard_games" %>
     <div class="relative mt-5">
-      <div data-game-carousel-target="track" role="region" aria-label="Games scoreboard" tabindex="0" class="flex snap-x snap-mandatory gap-4 overflow-x-auto px-12 py-1 scroll-px-12 focus-visible:outline-2 focus-visible:outline-pine-700">
+      <div data-game-carousel-target="track" role="region" aria-label="Games scoreboard" tabindex="0" class="flex snap-x snap-mandatory gap-4 overflow-x-auto px-12 py-2 scroll-px-12 focus-visible:outline-2 focus-visible:outline-pine-700">
         <% @games.each do |game| %>
           <div data-game-carousel-target="slide" data-featured="<%= game == @featured_game %>" class="w-[min(80vw,20rem)] shrink-0 snap-start self-center rounded-xl">
             <%= render "dashboard/scoreboard_game", game: game %>
@@ -51,3 +51,5 @@
     <% end %>
   </div>
 </section>
+
+<% console %>
