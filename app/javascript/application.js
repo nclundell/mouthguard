@@ -14,3 +14,5 @@ document.addEventListener("turbo:before-render", async (event) => {
     }
   }
 })
+
+import "lexxy"
