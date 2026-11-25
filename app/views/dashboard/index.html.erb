@@ -52,4 +52,4 @@
   </div>
 </section>
 
-<% console %>
+<%= render "shared/comments", comments: @comments, comment: @comment, form_url: comments_path(page: (@comment_page if @comment_page > 1)), page_path: root_path, page: @comment_page, has_older_comments: @has_older_comments, stream_name: "dashboard_comments" if authenticated? %>

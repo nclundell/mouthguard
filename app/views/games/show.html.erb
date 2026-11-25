@@ -1,6 +1,9 @@
 <%= turbo_stream_from @game %>
 <div data-picks-layout class="grid grid-cols-1 items-start gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,3fr)_minmax(0,1fr)] lg:gap-5">
   <%= render "pick_side", side: "away", visible: @picks_visible, names: @pick_names_by_side&.fetch(:away) %>
-  <%= render "game_hero", game: @game %>
+  <div data-game-content class="min-w-0">
+    <%= render "game_hero", game: @game %>
+    <%= render "shared/comments", comments: @comments, comment: @comment, form_url: game_comments_path(@game, page: (@comment_page if @comment_page > 1)), page_path: game_path(@game), page: @comment_page, has_older_comments: @has_older_comments, stream_name: "game_comments_#{@game.id}" %>
+  </div>
   <%= render "pick_side", side: "home", visible: @picks_visible, names: @pick_names_by_side&.fetch(:home) %>
 </div>

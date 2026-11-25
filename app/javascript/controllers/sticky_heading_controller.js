@@ -18,6 +18,7 @@ export default class extends Controller {
   update() {
     const naturalTop = this.element.getBoundingClientRect().top + parseFloat(getComputedStyle(this.element).paddingTop)
     const headingTop = this.headingTarget.getBoundingClientRect().top
-    this.headingTarget.classList.toggle("shadow-sm", naturalTop < 0 && headingTop === 0)
+    const stickyTop = parseFloat(getComputedStyle(this.headingTarget).top) || 0
+    this.headingTarget.classList.toggle("shadow-sm", naturalTop < stickyTop && headingTop === stickyTop)
   }
 }

@@ -37,6 +37,15 @@ class Turbo::StreamsChannelTest < ActionCable::Channel::TestCase
     assert_no_streams
   end
 
+  test "guest cannot subscribe to signed comments streams" do
+    stub_connection(current_user: nil)
+    [ "dashboard_comments", "game_comments_123" ].each do |stream|
+      subscribe signed_stream_name: Turbo::StreamsChannel.signed_stream_name([ stream ])
+      assert subscription.rejected?
+      assert_no_streams
+    end
+  end
+
   test "guest cannot subscribe with an invalid signature" do
     stub_connection(current_user: nil)
     subscribe signed_stream_name: "dashboard_games"

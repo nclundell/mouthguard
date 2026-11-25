@@ -3,6 +3,7 @@ class Game < ApplicationRecord
   belongs_to :home, class_name: "Team", optional: true
   belongs_to :away, class_name: "Team", optional: true
   has_many :picks, dependent: :destroy
+  has_many :comments, dependent: :destroy
 
   after_update :update_pick_correctness
   after_update_commit :broadcast_game, if: :saved_changes?

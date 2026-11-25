@@ -1,0 +1,15 @@
+<div id="comments_feed">
+  <ol id="comments_list" class="mt-5 space-y-4">
+    <%= render partial: "shared/comment", collection: comments %>
+  </ol>
+  <% if comments.empty? %>
+    <p id="comments_empty" class="mt-5 text-sm text-neutral-600 dark:text-neutral-300">No comments yet. Start the conversation.</p>
+  <% end %>
+
+  <% if page > 1 || has_older_comments %>
+    <nav aria-label="Comments pages" class="mt-4 flex gap-4 text-sm font-semibold text-pine-800 dark:text-pine-400">
+      <%= link_to "Newer", page == 2 ? "#{page_path}#comments" : "#{page_path}?page=#{page - 1}#comments" if page > 1 %>
+      <%= link_to "Older", "#{page_path}?page=#{page + 1}#comments" if has_older_comments %>
+    </nav>
+  <% end %>
+</div>

@@ -1,4 +1,5 @@
 class GamesController < ApplicationController
+  include CommentsPagination
   def index
     @games = Game.where(season: Current.season).includes(:home, :away).order(:start).to_a
     @bowl_titles = @games.map { |game| game.notes.presence || "Game" }.uniq
@@ -14,6 +15,8 @@ class GamesController < ApplicationController
 
   def show
     @game = Game.find(params[:id])
+    load_comments(@game.comments)
+    @comment = Comment.new
     @picks_visible = @game.locked?
     return unless @picks_visible
 

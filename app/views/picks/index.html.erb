@@ -102,7 +102,7 @@
 <div class="mt-6 divide-y divide-neutral-200 rounded-lg border border-neutral-200 bg-white dark:divide-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 sm:hidden">
   <% @games.each do |game| %>
     <section id="mobile_<%= dom_id(game) %>" class="px-3 py-3" data-controller="sticky-heading" data-picks-filter-target="gameCard" data-game-id="<%= game.id %>" data-bowl-title="<%= game.notes.presence || "Game" %>">
-      <h2 class="sticky top-0 z-10 -mx-3 bg-white px-3 font-semibold text-pine-950 dark:bg-neutral-800 dark:text-pine-400" data-sticky-heading-target="heading"><%= game.notes.presence || "Game" %></h2>
+      <h2 class="picks-mobile-heading sticky z-10 -mx-3 bg-white px-3 font-semibold text-pine-950 dark:bg-neutral-800 dark:text-pine-400" data-sticky-heading-target="heading"><%= game.notes.presence || "Game" %></h2>
       <% if @locked_game_ids.include?(game.id) %>
         <p data-picks-filter-target="emptyMessage" class="mt-2 text-sm text-neutral-500 dark:text-neutral-400 <%= "hidden" if @visible_users.any? %>"><%= @users.empty? ? "No picks yet" : "No users selected" %></p>
         <% @users.each do |user| %>

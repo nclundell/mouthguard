@@ -220,6 +220,13 @@ class DashboardTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "navbar has mobile sticky classes and remains before main" do
+    get root_path
+
+    assert_response :success
+    assert_select "body > header[data-controller='navbar-height'].sticky.top-0.z-30[class~='sm:static'] + main", 1
+  end
+
   test "authenticated user sees brand navigation and can sign out" do
     users(:one).update!(display_name: "Pat Example")
     sign_in_as users(:one)
@@ -232,7 +239,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
     assert_select "main.bg-linear-to-b", 0
     assert_select "body.dark\\:bg-neutral-950.dark\\:text-neutral-100"
     assert_select "h1.dark\\:text-neutral-100", text: "Dashboard"
-    assert_select "header.relative.bg-black.bg-linear-to-b.from-neutral-800.to-black:not(.shadow-md):not([class~='shadow-black/25'])"
+    assert_select "header.sticky.top-0.z-30[class~='sm:static'].bg-black.bg-linear-to-b.from-neutral-800.to-black:not(.shadow-md):not([class~='shadow-black/25'])", 1
     assert_select "header.border-b", 0
     assert_select "details > div.bg-black:not(.border):not(.border-neutral-800):not(.bg-linear-to-b):not(.from-neutral-900):not(.to-black):not(.shadow-lg)"
     assert_select "header a.text-neutral-100[class~='hover:text-pine-400']", text: "Mouthguard"
@@ -375,6 +382,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h2#scoreboard-heading", text: "Scoreboard"
+    assert_select "head link[rel=stylesheet][href*='lexxy']", count: 1
     assert_select "#game_#{game.id} h3", text: "Visitor Bowl"
     assert_select "turbo-cable-stream-source[channel='Turbo::StreamsChannel']", 1 do |sources|
       assert_equal "dashboard_games", Turbo.signed_stream_verifier.verified(sources.first["signed-stream-name"])

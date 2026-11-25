@@ -63,6 +63,10 @@ class PicksTest < ActionDispatch::IntegrationTest
       assert_select "tr#game_#{@unknown.id} td", text: "Picks hidden until kickoff"
     end
     assert_select "section#mobile_game_#{@locked.id} [data-picks-filter-target='userEntry']", count: 2
+    assert_select "section[data-controller='sticky-heading'] h2.picks-mobile-heading.sticky.z-10:not(.top-0)[data-sticky-heading-target='heading']",
+                  count: 4
+    stylesheet = File.read(Rails.root.join("app/assets/stylesheets/application.css"))
+    assert_match(/\.picks-mobile-heading\s*\{\s*top:\s*var\(--navbar-height,\s*0px\);/, stylesheet)
     assert_select "section#mobile_game_#{@future.id} [data-picks-filter-target='userEntry']", count: 0
     assert_select "section#mobile_game_#{@unknown.id} [data-picks-filter-target='userEntry']", count: 0
     assert_select "main", text: /Old Bowl/, count: 0

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  post "/rails/active_storage/direct_uploads", to: "image_direct_uploads#create"
   mount RailsIcons::Engine, at: "/rails_icons"
   resource :session
   resource :registration, only: [ :new, :create ]
@@ -8,7 +9,10 @@ Rails.application.routes.draw do
   get "picks", to: "picks#index"
   get "my_picks", to: "my_picks#index"
   patch "my_picks/:id", to: "my_picks#update", as: :my_pick
-  resources :games, only: [ :index, :show ]
+  resources :comments, only: [ :create ]
+  resources :games, only: [ :index, :show ] do
+    resources :comments, only: [ :create ]
+  end
   get "leaders", to: "leaders#index"
   get "legends", to: "legends#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

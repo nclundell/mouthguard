@@ -46,6 +46,7 @@ module Authentication
     end
 
     def terminate_session
+      ActionCable.server.remote_connections.where(current_user: Current.user, session_id: Current.session.id).disconnect
       Current.session.destroy
       cookies.delete(:session_id)
     end

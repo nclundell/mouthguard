@@ -8,10 +8,14 @@ class GameShowTest < ActionDispatch::IntegrationTest
     get game_path(game)
 
     assert_response :success
-    assert_select "turbo-cable-stream-source[channel='Turbo::StreamsChannel']", count: 1 do |sources|
-      assert_equal game.to_gid_param, Turbo.signed_stream_verifier.verified(sources.first["signed-stream-name"])
+    assert_select "turbo-cable-stream-source[channel='Turbo::StreamsChannel']", count: 2 do |sources|
+      assert_equal [ game.to_gid_param, "game_comments_#{game.id}" ],
+                   sources.map { |source| Turbo.signed_stream_verifier.verified(source["signed-stream-name"]) }
     end
-    assert_select "[data-picks-layout] > section#game_hero_#{game.id}[aria-labelledby='matchup-title']", count: 1
+    assert_select "[data-picks-layout] > [data-game-content][class~='min-w-0']:nth-child(2)" do
+      assert_select "> section#game_hero_#{game.id}[aria-labelledby='matchup-title']:first-child + section[data-comments]", count: 1
+    end
+    assert_select "[data-picks-layout] > section[data-comments]", count: 0
   end
 
   test "future game hides picks and picker identities in desktop panels" do
@@ -69,11 +73,14 @@ class GameShowTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "[data-picks-layout][class*='grid-cols-1'][class*='lg:grid-cols-']" do
       assert_select "> [data-picks-side='away'][aria-label='Away picks'][class~='hidden'][class~='lg:block']:first-child", count: 1
-      assert_select "> section[aria-labelledby='matchup-title'][class*='rounded-2xl'][class*='border'][class*='bg-white']:nth-child(2)" do
-        assert_select "> [data-matchup-header]:first-child + [data-matchup-content]", count: 1
-        assert_select "> [data-matchup-header] > #matchup-title", count: 1
-        assert_select "> [data-matchup-header] > [data-kickoff]", count: 1
-        assert_select "> [data-matchup-content] [data-matchup]", count: 1
+      assert_select "> [data-game-content]:nth-child(2)" do
+        assert_select "> section[aria-labelledby='matchup-title'][class*='rounded-2xl'][class*='border'][class*='bg-white']:first-child" do
+          assert_select "> [data-matchup-header]:first-child + [data-matchup-content]", count: 1
+          assert_select "> [data-matchup-header] > #matchup-title", count: 1
+          assert_select "> [data-matchup-header] > [data-kickoff]", count: 1
+          assert_select "> [data-matchup-content] [data-matchup]", count: 1
+        end
+        assert_select "> section[data-comments]:last-child", count: 1
         assert_select "[data-picks-side]", count: 0
       end
       assert_select "> [data-picks-side='home'][aria-label='Home picks'][class~='hidden'][class~='lg:block']:last-child", count: 1

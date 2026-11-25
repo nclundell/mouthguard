@@ -5,6 +5,7 @@ class ApplicationCable::ConnectionTest < ActionCable::Connection::TestCase
     connect
 
     assert_nil connection.current_user
+    assert_nil connection.session_id
   end
 
   test "signed-in users retain their identity" do
@@ -15,6 +16,7 @@ class ApplicationCable::ConnectionTest < ActionCable::Connection::TestCase
     connect
 
     assert_equal user, connection.current_user
+    assert_equal session.id, connection.session_id
   end
 
   test "invalid session cookies do not authenticate a connection" do
@@ -23,5 +25,6 @@ class ApplicationCable::ConnectionTest < ActionCable::Connection::TestCase
     connect
 
     assert_nil connection.current_user
+    assert_nil connection.session_id
   end
 end

@@ -32,5 +32,6 @@
     <main class="mx-auto w-full max-w-6xl px-5 py-10 sm:py-12">
       <%= yield %>
     </main>
+    <% console if Rails.env.development? %>
   </body>
 </html>
