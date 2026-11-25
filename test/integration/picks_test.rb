@@ -88,18 +88,20 @@ class PicksTest < ActionDispatch::IntegrationTest
       assert_select "[data-picks-filter-target='gameCard']", count: 0
     end
     assert_select "label[for=bowl-search], label[for=user-search]", count: 0
-    assert_select "input#bowl-search[type=search][placeholder='Search bowls'][aria-label='Search bowls'][aria-controls=bowl-options][aria-expanded=false][class~='w-40'][class~='max-w-full'][data-action*='input->picks-filter#search']", count: 1
-    assert_select "input#user-search[type=search][placeholder='Search users'][aria-label='Search users'][aria-controls=user-options][aria-expanded=false][class~='w-40'][class~='max-w-full'][data-action*='input->picks-filter#search']", count: 1
-    assert_select "[data-picks-filter-target='bowlClear'], [data-picks-filter-target='userClear'], [data-picks-filter-target='bowlCount'], [data-picks-filter-target='userCount']", count: 0
-    assert_select "button[aria-label^='Clear']", count: 0
+    assert_select "input#bowl-search[type=search][placeholder='Filter Bowls'][aria-label='Filter Bowls'][aria-controls=bowl-options][aria-expanded=false][class~='w-40'][class~='max-w-full'][data-action*='input->picks-filter#search']", count: 1
+    assert_select "input#user-search[type=search][placeholder='Filter Users'][aria-label='Filter Users'][aria-controls=user-options][aria-expanded=false][class~='w-40'][class~='max-w-full'][data-action*='input->picks-filter#search']", count: 1
+    assert_select "[data-picks-filter-target='bowlCount'], [data-picks-filter-target='userCount']", count: 0
     %w[bowl user].each do |axis|
       assert_select "##{axis}-search.rounded.border.border-neutral-300.bg-white.dark\\:border-neutral-600.dark\\:bg-neutral-900", count: 1
       assert_select "##{axis}-options[hidden][data-picks-filter-target=#{axis}Dropdown].rounded.border.border-neutral-300.bg-white.dark\\:border-neutral-600.dark\\:bg-neutral-900", count: 1
       assert_select "##{axis}-options[class~='mt-1'][class~='p-2'][class~='shadow-lg']", count: 1
-      assert_select "div.relative.min-w-0 > div.flex.min-w-0 > input##{axis}-search[class~='w-40'][class~='max-w-full'][class~='min-w-44']", count: 1
+      assert_select "div.relative.min-w-0 > input##{axis}-search[class~='w-40'][class~='max-w-full'][class~='min-w-44']:not([class~='pr-7'])", count: 1
       alignment = axis == "bowl" ? "left-0" : "right-0"
       assert_select "div.relative.min-w-0 > div##{axis}-options[class~='w-full'][class~='#{alignment}'][class~='min-w-44']", count: 1
     end
+    assert_select "[data-picks-filter-target='controls'] > button:last-child[hidden][type=button][aria-label='Clear all filters'][data-picks-filter-target='clearAll'][data-action='click->picks-filter#clearAll'] svg.size-4 path[d='M18 6l-12 12'] + path[d='M6 6l12 12']", count: 1
+    assert_select "button[data-axis]", count: 0
+    assert_no_match(/::-webkit-search-cancel-button/, File.read(Rails.root.join("app/assets/stylesheets/application.css")))
     assert_select "[data-picks-filter-target='bowlOption'][hidden] input[type=checkbox][data-action='change->picks-filter#update']", count: 3
     assert_select "[data-picks-filter-target='userOption'][hidden] input[type=checkbox][data-action='change->picks-filter#update']", count: 2
     assert_select "[data-picks-filter-target='bowlOption'] input[checked]", count: 0
@@ -119,7 +121,8 @@ class PicksTest < ActionDispatch::IntegrationTest
     assert_select "form[method=get]", count: 0
 
     get picks_path, params: { selected_user_ids: [ "", users(:two).id.to_s, "999999" ] }
-    assert_select "[data-picks-filter-target='bowlClear'], [data-picks-filter-target='userClear'], [data-picks-filter-target='bowlCount'], [data-picks-filter-target='userCount']", count: 0
+    assert_select "[data-picks-filter-target='bowlCount'], [data-picks-filter-target='userCount']", count: 0
+    assert_select "button[data-picks-filter-target='clearAll'][hidden]", count: 1
     assert_select "[data-picks-filter-target='userOption'] input[type=checkbox][checked]", count: 1
     assert_select "thead th.hidden", text: "First Fan", count: 1
     assert_select "thead th", text: "Second Fan", count: 1

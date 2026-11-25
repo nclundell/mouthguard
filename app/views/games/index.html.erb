@@ -4,9 +4,7 @@
 <div data-controller="games-filter" data-action="keydown.esc->games-filter#close">
   <div class="mt-6 hidden flex-wrap gap-3 sm:flex" data-games-filter-target="controls">
     <div class="relative min-w-0">
-      <div class="flex min-w-0 items-center gap-2">
-        <input id="games-bowl-search" type="search" autocomplete="off" placeholder="Search bowls" aria-label="Search bowls" aria-controls="games-bowl-options" aria-expanded="false" data-games-filter-target="bowlSearch" data-action="input->games-filter#search focus->games-filter#search" class="min-w-44 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
-      </div>
+      <input id="games-bowl-search" type="search" autocomplete="off" placeholder="Filter Bowls" aria-label="Filter Bowls" aria-controls="games-bowl-options" aria-expanded="false" data-games-filter-target="bowlSearch" data-action="input->games-filter#search focus->games-filter#search" class="min-w-44 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
       <div id="games-bowl-options" hidden data-games-filter-target="bowlDropdown" class="absolute left-0 z-30 mt-1 w-full min-w-44 rounded border border-neutral-300 bg-white p-2 shadow-lg dark:border-neutral-600 dark:bg-neutral-900">
         <div class="max-h-60 overflow-y-auto">
           <% @bowl_titles.each do |title| %>
@@ -20,9 +18,7 @@
       </div>
     </div>
     <div class="relative min-w-0">
-      <div class="flex min-w-0 items-center gap-2">
-        <input id="games-team-search" type="search" autocomplete="off" placeholder="Search teams" aria-label="Search teams" aria-controls="games-team-options" aria-expanded="false" data-games-filter-target="teamSearch" data-action="input->games-filter#search focus->games-filter#search" class="min-w-44 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
-      </div>
+      <input id="games-team-search" type="search" autocomplete="off" placeholder="Filter Teams" aria-label="Filter Teams" aria-controls="games-team-options" aria-expanded="false" data-games-filter-target="teamSearch" data-action="input->games-filter#search focus->games-filter#search" class="min-w-44 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
       <div id="games-team-options" hidden data-games-filter-target="teamDropdown" class="absolute right-0 z-30 mt-1 w-full min-w-44 rounded border border-neutral-300 bg-white p-2 shadow-lg dark:border-neutral-600 dark:bg-neutral-900">
         <div class="max-h-60 overflow-y-auto">
           <% @teams.each do |team| %>
@@ -36,9 +32,7 @@
       </div>
     </div>
     <div class="relative min-w-0">
-      <div class="flex min-w-0 items-center gap-2">
-        <input id="games-conference-search" type="search" autocomplete="off" placeholder="Search conferences" aria-label="Search conferences" aria-controls="games-conference-options" aria-expanded="false" data-games-filter-target="conferenceSearch" data-action="input->games-filter#search focus->games-filter#search" class="min-w-44 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
-      </div>
+      <input id="games-conference-search" type="search" autocomplete="off" placeholder="Filter Conferences" aria-label="Filter Conferences" aria-controls="games-conference-options" aria-expanded="false" data-games-filter-target="conferenceSearch" data-action="input->games-filter#search focus->games-filter#search" class="min-w-44 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
       <div id="games-conference-options" hidden data-games-filter-target="conferenceDropdown" class="absolute right-0 z-30 mt-1 w-full min-w-44 rounded border border-neutral-300 bg-white p-2 shadow-lg dark:border-neutral-600 dark:bg-neutral-900">
         <div class="max-h-60 overflow-y-auto">
           <% @conferences.each do |conference| %>
@@ -51,6 +45,9 @@
         </div>
       </div>
     </div>
+    <button type="button" hidden aria-label="Clear all filters" data-games-filter-target="clearAll" data-action="click->games-filter#clearAll" class="rounded border border-neutral-300 bg-white px-2 py-1 text-sm text-neutral-600 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-300">
+      <%= icon "x", class: "size-4" %>
+    </button>
   </div>
   <div data-games-filter-target="cards" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
     <%= render partial: "game_card", collection: @games, as: :game %>

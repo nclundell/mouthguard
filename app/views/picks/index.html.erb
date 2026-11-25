@@ -3,9 +3,7 @@
 <div data-controller="picks-filter" data-action="keydown.esc->picks-filter#close">
   <div class="mt-6 hidden gap-3 sm:flex" data-picks-filter-target="controls">
     <div class="relative min-w-0">
-      <div class="flex min-w-0 items-center gap-2">
-        <input id="bowl-search" type="search" autocomplete="off" placeholder="Search bowls" aria-label="Search bowls" aria-controls="bowl-options" aria-expanded="false" data-picks-filter-target="bowlSearch" data-action="input->picks-filter#search focus->picks-filter#search" class="min-w-44 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
-      </div>
+      <input id="bowl-search" type="search" autocomplete="off" placeholder="Filter Bowls" aria-label="Filter Bowls" aria-controls="bowl-options" aria-expanded="false" data-picks-filter-target="bowlSearch" data-action="input->picks-filter#search focus->picks-filter#search" class="min-w-44 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
       <div id="bowl-options" hidden data-picks-filter-target="bowlDropdown" class="absolute left-0 z-30 mt-1 w-full min-w-44 rounded border border-neutral-300 bg-white p-2 shadow-lg dark:border-neutral-600 dark:bg-neutral-900">
         <div class="max-h-60 overflow-y-auto">
           <% @bowl_titles.each do |title| %>
@@ -19,9 +17,7 @@
       </div>
     </div>
     <div class="relative min-w-0">
-      <div class="flex min-w-0 items-center gap-2">
-        <input id="user-search" type="search" autocomplete="off" placeholder="Search users" aria-label="Search users" aria-controls="user-options" aria-expanded="false" data-picks-filter-target="userSearch" data-action="input->picks-filter#search focus->picks-filter#search" class="min-w-44 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
-      </div>
+      <input id="user-search" type="search" autocomplete="off" placeholder="Filter Users" aria-label="Filter Users" aria-controls="user-options" aria-expanded="false" data-picks-filter-target="userSearch" data-action="input->picks-filter#search focus->picks-filter#search" class="min-w-44 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
       <div id="user-options" hidden data-picks-filter-target="userDropdown" class="absolute right-0 z-30 mt-1 w-full min-w-44 rounded border border-neutral-300 bg-white p-2 shadow-lg dark:border-neutral-600 dark:bg-neutral-900">
         <div class="max-h-60 overflow-y-auto">
           <% @users.each do |user| %>
@@ -34,6 +30,9 @@
         </div>
       </div>
     </div>
+    <button type="button" hidden aria-label="Clear all filters" data-picks-filter-target="clearAll" data-action="click->picks-filter#clearAll" class="rounded border border-neutral-300 bg-white px-2 py-1 text-sm text-neutral-600 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-300">
+      <%= icon "x", class: "size-4" %>
+    </button>
   </div>
   <p class="mt-4 hidden text-sm text-neutral-500" data-picks-filter-target="noGames">No games available</p>
 

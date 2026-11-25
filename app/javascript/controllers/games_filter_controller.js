@@ -4,6 +4,7 @@ import { normalizeSearchText, matchesSearch } from "controllers/filter_search"
 export default class extends Controller {
   static targets = [
     "controls", "cards", "gameCard", "bowlSearch", "teamSearch", "conferenceSearch",
+    "clearAll",
     "bowlDropdown", "teamDropdown", "conferenceDropdown",
     "bowlOption", "teamOption", "conferenceOption",
     "bowlNoMatches", "teamNoMatches", "conferenceNoMatches"
@@ -38,6 +39,17 @@ export default class extends Controller {
       event.target === this.teamSearchTarget ? "team" : "conference"
     this.close()
     this.filterOptions(axis)
+  }
+
+  clearAll() {
+    for (const axis of ["bowl", "team", "conference"]) {
+      this[`${axis}OptionTargets`].forEach((option) => { option.querySelector("input").checked = false })
+      this[`${axis}SearchTarget`].value = ""
+      this.filterOptions(axis, false)
+    }
+    this.close()
+    this.bowlSearchTarget.focus()
+    this.update()
   }
 
   filterOptions(axis, open = true) {
@@ -120,6 +132,7 @@ export default class extends Controller {
     const bowls = this.selected(this.bowlOptionTargets)
     const teams = this.selected(this.teamOptionTargets)
     const conferences = this.selected(this.conferenceOptionTargets)
+    this.clearAllTarget.hidden = bowls.size === 0 && teams.size === 0 && conferences.size === 0
     this.gameCardTargets.forEach((card) => this.show(card, this.matchesCard(card, bowls, teams, conferences)))
   }
 

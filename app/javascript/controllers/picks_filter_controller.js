@@ -4,7 +4,7 @@ import { normalizeSearchText, matchesSearch } from "controllers/filter_search"
 export default class extends Controller {
   static targets = [
     "controls",
-    "bowlSearch", "userSearch", "bowlDropdown", "userDropdown",
+    "bowlSearch", "userSearch", "clearAll", "bowlDropdown", "userDropdown",
     "bowlOption", "userOption", "bowlNoMatches", "userNoMatches",
     "gameRow", "gameCard", "userColumn", "userCell", "userEntry",
     "emptyColumn", "emptyCell", "emptyMessage", "lockedCell", "noGames"
@@ -47,9 +47,24 @@ export default class extends Controller {
     event.target.setAttribute("aria-expanded", String(query.length > 0))
   }
 
+  clearAll() {
+    for (const axis of ["bowl", "user"]) {
+      this[`${axis}OptionTargets`].forEach((option) => {
+        option.querySelector("input").checked = false
+        option.hidden = true
+      })
+      this[`${axis}SearchTarget`].value = ""
+      this[`${axis}NoMatchesTarget`].hidden = true
+    }
+    this.close()
+    this.bowlSearchTarget.focus()
+    this.update()
+  }
+
   update() {
     const selectedBowls = this.selected(this.bowlOptionTargets)
     const selectedUsers = this.selected(this.userOptionTargets)
+    this.clearAllTarget.hidden = selectedBowls.size === 0 && selectedUsers.size === 0
     this.show(this.noGamesTarget, this.gameRowTargets.length === 0)
 
     for (const target of [...this.gameRowTargets, ...this.gameCardTargets]) {

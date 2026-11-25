@@ -103,14 +103,17 @@ class GamesIndexTest < ActionDispatch::IntegrationTest
     assert_select "[data-controller='games-filter'][data-action*='keydown.esc->games-filter#close']", count: 1
     assert_select "[data-games-filter-target='controls'][class~='hidden'][class~='sm:flex']", count: 1
     assert_select "[data-games-filter-target='cards']", count: 1
-    { "bowl" => "bowls", "team" => "teams", "conference" => "conferences" }.each do |axis, plural|
+    { "bowl" => "Bowls", "team" => "Teams", "conference" => "Conferences" }.each do |axis, plural|
       assert_select "label[for='games-#{axis}-search']", count: 0
-      assert_select "input#games-#{axis}-search[type=search][placeholder='Search #{plural}'][aria-label='Search #{plural}'][aria-controls='games-#{axis}-options'][aria-expanded=false][class~='min-w-44'][class~='w-40'][class~='max-w-full'][data-action*='input->games-filter#search']", count: 1
+      assert_select "input#games-#{axis}-search[type=search][placeholder='Filter #{plural}'][aria-label='Filter #{plural}'][aria-controls='games-#{axis}-options'][aria-expanded=false][class~='min-w-44'][class~='w-40'][class~='max-w-full'][data-action*='input->games-filter#search']", count: 1
       assert_select "#games-#{axis}-search.rounded.border.border-neutral-300.bg-white.dark\\:border-neutral-600.dark\\:bg-neutral-900", count: 1
       assert_select "#games-#{axis}-options[hidden][data-games-filter-target='#{axis}Dropdown'][class~='w-full'][class~='min-w-44'].rounded.border.border-neutral-300.bg-white.dark\\:border-neutral-600.dark\\:bg-neutral-900", count: 1
-      assert_select "[data-games-filter-target='#{axis}Count'], [data-games-filter-target='#{axis}Clear'], button[aria-label='Clear #{axis} filter']", count: 0
+      assert_select "[data-games-filter-target='#{axis}Count']", count: 0
+      assert_select "div.relative.min-w-0 > input#games-#{axis}-search:not([class~='pr-7'])", count: 1
       assert_select "[data-games-filter-target='#{axis}Option'] input[checked]", count: 0
     end
+    assert_select "[data-games-filter-target='controls'] > button:last-child[hidden][type=button][aria-label='Clear all filters'][data-games-filter-target='clearAll'][data-action='click->games-filter#clearAll'] svg.size-4 path[d='M18 6l-12 12'] + path[d='M6 6l12 12']", count: 1
+    assert_select "button[data-axis]", count: 0
     assert_select "#games-bowl-options[class~='left-0']", count: 1
     %w[team conference].each do |axis|
       assert_select "#games-#{axis}-options[class~='right-0']", count: 1

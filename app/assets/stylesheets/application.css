@@ -15,6 +15,10 @@
   display: none !important;
 }
 
+button[data-games-filter-target][hidden] {
+  display: none !important;
+}
+
 .picks-mobile-heading {
   top: var(--navbar-height, 0px);
 }

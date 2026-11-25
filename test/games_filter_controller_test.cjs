@@ -198,6 +198,7 @@ test("card refresh retains focused checkbox nodes when available choices are unc
     filter[`${axis}SearchTarget`] = { ...element(), value: "", focus() { document.activeElement = this } }
     filter[`${axis}DropdownTarget`] = element()
   }
+  filter.clearAllTarget = element()
   const card = (score) => ({ dataset: {
     bowlTitle: "Shared Bowl", homeTeamId: "4", homeTeamSchool: "Home",
     homeTeamConference: "Atlantic", awayTeamId: "5", awayTeamSchool: "Away",
@@ -222,6 +223,57 @@ test("card refresh retains focused checkbox nodes when available choices are unc
   assert.equal(filter.gameCardTargets[0].hidden, false)
   assert.equal(filter.teamDropdownTarget.hidden, false)
   assert.equal(filter.teamSearchTarget["aria-expanded"], "true")
+})
+
+test("clear all follows any selection and resets every axis, search, dropdown and card", () => {
+  const filter = new GamesFilter()
+  for (const axis of ["bowl", "team", "conference"]) {
+    filter[`${axis}OptionTargets`] = ["First", "Second"].map((value) => {
+      const option = element(value)
+      option.checkbox = { value, checked: false }
+      option.querySelector = () => option.checkbox
+      return option
+    })
+    filter[`${axis}SearchTarget`] = { ...element(), hidden: false, value: "", focus() { document.activeElement = this } }
+    filter[`${axis}DropdownTarget`] = element()
+    filter[`${axis}NoMatchesTarget`] = element()
+  }
+  filter.clearAllTarget = { ...element(), focus() { document.activeElement = this } }
+  let clearAllHidden = true
+  Object.defineProperty(filter.clearAllTarget, "hidden", {
+    get() { return clearAllHidden },
+    set(value) {
+      clearAllHidden = value
+      if (value && document.activeElement === this) document.activeElement = null
+    }
+  })
+  filter.gameCardTargets = [{ ...element(), dataset: {
+    bowlTitle: "First", homeTeamId: "First", awayTeamId: "",
+    homeTeamConference: "First", awayTeamConference: ""
+  } }]
+  filter.update()
+  assert.equal(filter.clearAllTarget.hidden, true)
+  for (const axis of ["bowl", "team", "conference"]) {
+    filter[`${axis}SearchTarget`].value = "first"
+    filter.search({ target: filter[`${axis}SearchTarget`] })
+    assert.equal(filter.clearAllTarget.hidden, axis === "bowl")
+    filter[`${axis}OptionTargets`][1].checkbox.checked = true
+    filter.update()
+    assert.equal(filter.clearAllTarget.hidden, false)
+  }
+  assert.equal(filter.gameCardTargets[0].hidden, true)
+  filter.clearAllTarget.focus()
+  filter.clearAll()
+  assert.equal(document.activeElement, filter.bowlSearchTarget)
+  for (const axis of ["bowl", "team", "conference"]) {
+    assert.equal(filter[`${axis}OptionTargets`].every((option) => !option.checkbox.checked && option.hidden), true)
+    assert.equal(filter[`${axis}SearchTarget`].value, "")
+    assert.equal(filter[`${axis}NoMatchesTarget`].hidden, true)
+    assert.equal(filter[`${axis}DropdownTarget`].hidden, true)
+    assert.equal(filter[`${axis}SearchTarget`]["aria-expanded"], "false")
+  }
+  assert.equal(filter.clearAllTarget.hidden, true)
+  assert.equal(filter.gameCardTargets[0].hidden, false)
 })
 
 test("card refresh filters replacement options without reopening a dismissed dropdown", () => {
