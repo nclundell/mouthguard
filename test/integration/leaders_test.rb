@@ -18,12 +18,12 @@ class LeadersTest < ActionDispatch::IntegrationTest
       assert_equal [ "Winner", "Eliminated user" ], cards.map { |card| card.at_css("h2").text.strip }
       assert_equal [ "Rank 1", "Rank 2" ], cards.map { |card| card.at_css("[aria-label^='Rank']")["aria-label"] }
       assert_equal [ "1 point", "0 points" ], cards.map { |card| card.at_css("[aria-label$='point'], [aria-label$='points']")["aria-label"] }
-      assert_equal [ "Can win", "Eliminated" ], cards.map { |card| card.at_css("span.block.text-xs").text.strip }
+      assert_equal [ "Winner", "Eliminated" ], cards.map { |card| card.at_css("span.block.text-xs").text.strip }
     end
     assert_select "main article:first-of-type img[alt='Avatar for Winner']", 1
     assert_select "main article:nth-of-type(2) svg[aria-hidden=true]", 1
     assert_select "main article:first-of-type svg[data-icon=crown][aria-hidden=true]", 1
-    assert_select "main article:first-of-type svg[data-icon=crown].absolute.-top-2.-left-1.z-10.size-5.-rotate-20.text-amber-500", 1
+    assert_select "main article:first-of-type svg[data-icon=crown].absolute.-top-2.-left-2.z-10.size-5.-rotate-45.text-amber-500", 1
     assert_select "main article:nth-of-type(2) svg[data-icon=crown]", 0
     assert_select "main article:first-of-type .bg-green-100.dark\\:bg-green-900", 1
     assert_select "main article:nth-of-type(2) .bg-red-100.dark\\:bg-red-900", 1
@@ -39,6 +39,7 @@ class LeadersTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "main article [aria-label='Rank 1']", count: 2
+    assert_select "main article span.block.text-xs", text: "Winner", count: 2
     assert_select "main article svg[data-icon=crown]", count: 0
   end
 
@@ -61,7 +62,23 @@ class LeadersTest < ActionDispatch::IntegrationTest
     assert_select "main article [aria-label='Rank 1']", count: 1
     assert_select "main article [aria-label='Rank 2']", count: 1
     assert_select "main article .bg-green-100.dark\\:bg-green-900", count: 2
+    assert_select "main article span.block.text-xs", text: "Winner", count: 0
+    assert_select "main article span.block.text-xs", text: "Can win", count: 2
     assert_select "main article svg[data-icon=crown]", count: 0
+  end
+
+  test "tied first-place leaders can still lose to lower viable leaders" do
+    third = User.create!(email_address: "third@example.com", password: "password")
+    rows = [ users(:one), users(:two), third ].each_with_index.map do |user, index|
+      UserRankingService::Row.new(user: user, name: "Player #{index + 1}",
+                                  points: index == 2 ? 0 : 1, rank: index == 2 ? 3 : 1, can_win: true)
+    end
+    html = ApplicationController.render(template: "leaders/index", layout: false,
+                                        assigns: { season: Current.season, leaders: rows })
+    cards = Nokogiri::HTML(html).css("article")
+
+    assert_equal [ "Can win", "Can win", "Can win" ], cards.map { |card| card.at_css("span.block.text-xs").text.strip }
+    assert_empty Nokogiri::HTML(html).css("svg[data-icon=crown]")
   end
 
   test "leaderboard shows empty state without users" do
@@ -81,6 +98,8 @@ class LeadersTest < ActionDispatch::IntegrationTest
                                         assigns: { season: Current.season, leaders: rows })
 
     assert_equal 2, Nokogiri::HTML(html).css("article").size
+    assert_equal [ "Eliminated", "Eliminated" ],
+                 Nokogiri::HTML(html).css("article span.block.text-xs").map { |status| status.text.strip }
     assert_empty Nokogiri::HTML(html).css("svg[data-icon=crown]")
   end
 
