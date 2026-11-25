@@ -4,7 +4,7 @@ class DashboardController < ApplicationController
 
   def index
     if authenticated?
-      load_comments(Comment.where(game_id: nil))
+      load_comments(Comment.current.where(game_id: nil))
       @comment = Comment.new
     end
 

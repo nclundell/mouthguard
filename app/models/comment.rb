@@ -3,13 +3,20 @@ class Comment < ApplicationRecord
   belongs_to :game, optional: true
   has_rich_text :body
 
+  before_create :set_season
+  after_create_commit :broadcast_comment
+
   validates :body, presence: true
   validate :attachment_only_images
   validate :image_attachments_within_limit
 
-  after_create_commit :broadcast_comment
+  scope :current, -> { where(season: Current.season) }
 
   private
+
+  def set_season
+    self.season = Current.season
+  end
 
   def attachment_only_images
     return unless body.present?
@@ -49,7 +56,7 @@ class Comment < ApplicationRecord
 
   def broadcast_comment
     stream = game_id ? "game_comments_#{game_id}" : "dashboard_comments"
-    scope = game_id ? Comment.where(game_id: game_id) : Comment.where(game_id: nil)
+    scope = game_id ? Comment.current.where(game_id: game_id) : Comment.current.where(game_id: nil)
     entries = scope.includes(:user, :rich_text_body).order(created_at: :desc, id: :desc).limit(26).to_a
     broadcast_replace_to stream, target: "comments_feed", partial: "shared/comments_feed",
       locals: { comments: entries.first(25), page: 1, has_older_comments: entries.size > 25,

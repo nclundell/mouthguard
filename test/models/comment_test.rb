@@ -37,6 +37,49 @@ class CommentTest < ActiveSupport::TestCase
     assert_equal "Go team!", streams.first.at_css("template li .break-words").text.strip
   end
 
+  test "new general and game comments use the current season even when another season is supplied" do
+    game = Game.create!(cfbd_id: 13_008)
+
+    general = Comment.create!(user: users(:one), body: "General", season: Current.season - 1)
+    game_comment = Comment.create!(user: users(:two), game: game, body: "Game", season: Current.season - 1)
+
+    assert_equal Current.season, general.reload.season
+    assert_equal Current.season, game_comment.reload.season
+    assert_equal [general, game_comment], Comment.current.order(:id).to_a
+  end
+
+  test "live general feed excludes older and unseasoned comments from entries and pagination" do
+    25.times { |i| Comment.create!(user: users(:one), body: "Current #{i}") }
+    old = Comment.create!(user: users(:one), body: "Older season")
+    legacy = Comment.create!(user: users(:one), body: "Unseasoned")
+    old.update_column(:season, Current.season - 1)
+    legacy.update_column(:season, nil)
+
+    streams = capture_turbo_stream_broadcasts("dashboard_comments") do
+      Comment.create!(user: users(:two), body: "Newest")
+    end
+
+    feed = streams.sole.at_css("template #comments_feed")
+    assert_equal 25, feed.css("ol#comments_list > li").size
+    assert_equal 1, feed.css("a[href='/?page=2#comments']").size
+    assert_not_includes feed.text, "Older season"
+    assert_not_includes feed.text, "Unseasoned"
+  end
+
+  test "live game feed excludes older comments for the same game" do
+    game = Game.create!(cfbd_id: 13_009)
+    old = Comment.create!(user: users(:one), game: game, body: "Older season")
+    old.update_column(:season, Current.season - 1)
+
+    streams = capture_turbo_stream_broadcasts("game_comments_#{game.id}") do
+      Comment.create!(user: users(:two), game: game, body: "Current season")
+    end
+
+    feed = streams.sole.at_css("template #comments_feed")
+    assert_equal 1, feed.css("ol#comments_list > li").size
+    assert_not_includes feed.text, "Older season"
+  end
+
   test "live dashboard feed stays at 25 and gains Older when the 26th arrives" do
     25.times { |i| Comment.create!(user: users(:one), body: "General #{i}") }
     game = Game.create!(cfbd_id: 13_005)

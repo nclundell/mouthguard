@@ -15,7 +15,7 @@ class GamesController < ApplicationController
 
   def show
     @game = Game.find(params[:id])
-    load_comments(@game.comments)
+    load_comments(@game.comments.current)
     @comment = Comment.new
     @picks_visible = @game.locked?
     return unless @picks_visible

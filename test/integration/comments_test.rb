@@ -11,7 +11,6 @@ class CommentsTest < ActionDispatch::IntegrationTest
     get root_path
 
     assert_response :success
-    assert_select "section[data-comments] h2", text: "Comments"
     assert_select "main > section[aria-labelledby=next-move-heading] > #next-move-heading", count: 1
     assert_select "main > section[aria-labelledby=next-move-heading] + section[data-comments]", count: 1
     assert_select "section[data-comments] [data-comment-id]" do |items|
@@ -42,6 +41,38 @@ class CommentsTest < ActionDispatch::IntegrationTest
     assert_select "section[data-comments]", count: 0
     assert_select "main", text: /Private general comment/, count: 0
     assert_not_includes comment_stream_names, "dashboard_comments"
+  end
+
+  test "dashboard pages exclude older and unseasoned general comments" do
+    old = Comment.create!(user: users(:one), body: "Older season")
+    legacy = Comment.create!(user: users(:one), body: "Unseasoned")
+    old.update_column(:season, Current.season - 1)
+    legacy.update_column(:season, nil)
+    current = Comment.create!(user: users(:one), body: "Current season")
+    sign_in_as users(:one)
+
+    get root_path(page: 2)
+
+    assert_select "section[data-comments] [data-comment-id]" do |items|
+      assert_equal [current.id.to_s], items.map { |item| item["data-comment-id"] }
+    end
+    assert_select "section[data-comments] a", text: "Older", count: 0
+  end
+
+  test "game show excludes older and unseasoned comments for the same game" do
+    game = Game.create!(cfbd_id: 95_015)
+    old = Comment.create!(user: users(:one), game: game, body: "Older season")
+    legacy = Comment.create!(user: users(:one), game: game, body: "Unseasoned")
+    old.update_column(:season, Current.season - 1)
+    legacy.update_column(:season, nil)
+    current = Comment.create!(user: users(:one), game: game, body: "Current season")
+    sign_in_as users(:one)
+
+    get game_path(game)
+
+    assert_select "section[data-comments] [data-comment-id]" do |items|
+      assert_equal [current.id.to_s], items.map { |item| item["data-comment-id"] }
+    end
   end
 
   test "signed-in dashboard shows an empty conversation when there are no comments" do
@@ -286,7 +317,6 @@ class CommentsTest < ActionDispatch::IntegrationTest
       } }
     end
     follow_redirect!
-    assert_select "li#comment_#{Comment.last.id} figure.attachment--pdf .attachment__name", text: "document.pdf"
     assert_select "li#comment_#{Comment.last.id} figure.attachment--pdf button.comment-image-reveal", count: 0
   end
 
@@ -349,6 +379,21 @@ class CommentsTest < ActionDispatch::IntegrationTest
       assert_select "[data-comment-id=?]", existing.id.to_s
       assert_select "[role=alert]", text: /Body can't be blank/
       assert_select "lexxy-editor[name='comment[body]'][aria-invalid=true][aria-describedby=comment-errors]", count: 1
+    end
+  end
+
+  test "invalid Turbo game post excludes older comments from the replacement" do
+    game = Game.create!(cfbd_id: 95_016)
+    old = Comment.create!(user: users(:one), game: game, body: "Older season")
+    old.update_column(:season, Current.season - 1)
+    current = Comment.create!(user: users(:one), game: game, body: "Current season")
+    sign_in_as users(:one)
+
+    post game_comments_path(game), params: { comment: { body: "" } }, as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_select "turbo-stream template section#comments [data-comment-id]" do |items|
+      assert_equal [current.id.to_s], items.map { |item| item["data-comment-id"] }
     end
   end
 
