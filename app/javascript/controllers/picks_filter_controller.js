@@ -4,9 +4,8 @@ import { normalizeSearchText, matchesSearch } from "controllers/filter_search"
 export default class extends Controller {
   static targets = [
     "controls",
-    "bowlSearch", "userSearch", "bowlClear", "userClear", "bowlDropdown", "userDropdown",
+    "bowlSearch", "userSearch", "bowlDropdown", "userDropdown",
     "bowlOption", "userOption", "bowlNoMatches", "userNoMatches",
-    "bowlCount", "userCount",
     "gameRow", "gameCard", "userColumn", "userCell", "userEntry",
     "emptyColumn", "emptyCell", "emptyMessage", "lockedCell", "noGames"
   ]
@@ -46,26 +45,11 @@ export default class extends Controller {
     this[`${axis}NoMatchesTarget`].hidden = !query || matches > 0
     this[`${axis}DropdownTarget`].hidden = !query
     event.target.setAttribute("aria-expanded", String(query.length > 0))
-    this.updateClearButtons()
-  }
-
-  clear(event) {
-    const axis = event.currentTarget === this.bowlClearTarget ? "bowl" : "user"
-    this[`${axis}OptionTargets`].forEach((option) => {
-      option.querySelector("input").checked = false
-    })
-    const input = this[`${axis}SearchTarget`]
-    input.value = ""
-    this.search({ target: input })
-    this.update()
   }
 
   update() {
     const selectedBowls = this.selected(this.bowlOptionTargets)
     const selectedUsers = this.selected(this.userOptionTargets)
-    this.bowlCountTarget.textContent = selectedBowls.size ? `${selectedBowls.size} selected` : "All"
-    this.userCountTarget.textContent = selectedUsers.size ? `${selectedUsers.size} selected` : "All"
-    this.updateClearButtons()
     this.show(this.noGamesTarget, this.gameRowTargets.length === 0)
 
     for (const target of [...this.gameRowTargets, ...this.gameCardTargets]) {
@@ -87,15 +71,6 @@ export default class extends Controller {
   selected(options) {
     return new Set(options.filter((option) => option.querySelector("input").checked)
       .map((option) => option.querySelector("input").value))
-  }
-
-  updateClearButtons() {
-    for (const axis of ["bowl", "user"]) {
-      const button = this[`${axis}ClearTarget`]
-      const hasSelection = this.selected(this[`${axis}OptionTargets`]).size > 0
-      button.disabled = !hasSelection
-      this.show(button, hasSelection)
-    }
   }
 
   show(element, visible) {

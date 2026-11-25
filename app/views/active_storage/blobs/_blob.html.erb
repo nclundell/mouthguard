@@ -4,19 +4,10 @@
       <%= image_tag blob, alt: blob.filename.to_s, class: "comment-attachment-image" %>
     <% else %>
       <button type="button" class="comment-image-reveal" data-controller="reveal-image" data-reveal-image-url-value="<%= url_for(blob) %>" data-reveal-image-alt-value="<%= blob.filename %>">
-        Show <%= blob.content_type == "image/gif" ? "GIF" : "image" %>: <%= blob.filename %> (<%= number_to_human_size blob.byte_size %>)
+        Show <%= blob.content_type == "image/gif" ? "GIF" : "image" %> (<%= number_to_human_size blob.byte_size %>)
       </button>
     <% end %>
   <% elsif blob.representable? %>
     <%= image_tag blob.representation(resize_to_limit: local_assigns[:in_gallery] ? [ 800, 600 ] : [ 1024, 768 ]) %>
   <% end %>
-
-  <figcaption class="attachment__caption">
-    <% if caption = blob.try(:caption) %>
-      <%= caption %>
-    <% else %>
-      <span class="attachment__name"><%= blob.filename %></span>
-      <span class="attachment__size"><%= number_to_human_size blob.byte_size %></span>
-    <% end %>
-  </figcaption>
 </figure>

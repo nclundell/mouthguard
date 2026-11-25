@@ -6,8 +6,7 @@ export default class extends Controller {
     "controls", "cards", "gameCard", "bowlSearch", "teamSearch", "conferenceSearch",
     "bowlDropdown", "teamDropdown", "conferenceDropdown",
     "bowlOption", "teamOption", "conferenceOption",
-    "bowlNoMatches", "teamNoMatches", "conferenceNoMatches",
-    "bowlCount", "teamCount", "conferenceCount", "bowlClear", "teamClear", "conferenceClear"
+    "bowlNoMatches", "teamNoMatches", "conferenceNoMatches"
   ]
 
   connect() {
@@ -39,7 +38,6 @@ export default class extends Controller {
       event.target === this.teamSearchTarget ? "team" : "conference"
     this.close()
     this.filterOptions(axis)
-    this.updateClearButtons()
   }
 
   filterOptions(axis, open = true) {
@@ -118,26 +116,10 @@ export default class extends Controller {
     }
   }
 
-  clear(event) {
-    const axis = event.currentTarget === this.bowlClearTarget ? "bowl" :
-      event.currentTarget === this.teamClearTarget ? "team" : "conference"
-    this[`${axis}OptionTargets`].forEach((option) => {
-      option.querySelector("input").checked = false
-    })
-    const input = this[`${axis}SearchTarget`]
-    input.value = ""
-    this.search({ target: input })
-    this.update()
-  }
-
   update() {
     const bowls = this.selected(this.bowlOptionTargets)
     const teams = this.selected(this.teamOptionTargets)
     const conferences = this.selected(this.conferenceOptionTargets)
-    this.bowlCountTarget.textContent = bowls.size ? `${bowls.size} selected` : "All"
-    this.teamCountTarget.textContent = teams.size ? `${teams.size} selected` : "All"
-    this.conferenceCountTarget.textContent = conferences.size ? `${conferences.size} selected` : "All"
-    this.updateClearButtons()
     this.gameCardTargets.forEach((card) => this.show(card, this.matchesCard(card, bowls, teams, conferences)))
   }
 
@@ -152,15 +134,6 @@ export default class extends Controller {
   selected(options) {
     return new Set(options.filter((option) => option.querySelector("input").checked)
       .map((option) => option.querySelector("input").value))
-  }
-
-  updateClearButtons() {
-    for (const axis of ["bowl", "team", "conference"]) {
-      const button = this[`${axis}ClearTarget`]
-      const hasSelection = this.selected(this[`${axis}OptionTargets`]).size > 0
-      button.disabled = !hasSelection
-      this.show(button, hasSelection)
-    }
   }
 
   show(element, visible) {

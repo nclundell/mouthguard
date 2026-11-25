@@ -142,6 +142,9 @@ class CommentsTest < ActionDispatch::IntegrationTest
     assert_response :success
     images = css_select("section[data-comments] li#comment_#{comment.id} .lexxy-content figure.attachment--gif img[src]")
     assert_equal 1, images.size
+    assert_equal "picture.gif", images.sole["alt"]
+    assert_select "li#comment_#{comment.id} figure.attachment--gif figcaption.attachment__caption", count: 0
+    assert_select "li#comment_#{comment.id} figure.attachment--gif .attachment__name", count: 0
     image_url = URI.parse(images.sole["src"])
     assert_match %r{\A/rails/active_storage/blobs/}, image_url.path
     get image_url.to_s
@@ -162,13 +165,16 @@ class CommentsTest < ActionDispatch::IntegrationTest
         get root_path
         assert_response :success
         selector = "li#comment_#{Comment.last.id} figure"
+        assert_select "#{selector} figcaption.attachment__caption", count: 0
+        assert_select "#{selector} .attachment__name", count: 0
         if size <= 10.megabytes
           assert_select "#{selector} img.comment-attachment-image[src*='/rails/active_storage/blobs/']", count: 1
           assert_select "#{selector} button", count: 0
         else
           assert_select "#{selector} img[src]", count: 0
           assert_select "#{selector} button[type=button][data-controller=reveal-image][data-reveal-image-url-value*='/rails/active_storage/blobs/']",
-            text: /Show #{type == "image/gif" ? "GIF" : "image"}/, count: 1
+            text: "Show #{type == "image/gif" ? "GIF" : "image"} (#{ActiveSupport::NumberHelper.number_to_human_size(size)})", count: 1
+          assert_select "#{selector} button.comment-image-reveal", text: /picture\.(gif|png)/, count: 0
         end
       end
     end

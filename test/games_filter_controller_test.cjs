@@ -61,7 +61,6 @@ test("typing opens the matching Games dropdown and reveals only matching option 
   filter.bowlNoMatchesTarget = element()
   filter.teamNoMatchesTarget = element()
   filter.conferenceNoMatchesTarget = element()
-  filter.updateClearButtons = () => {}
 
   filter.search({ target: filter.bowlSearchTarget })
 
@@ -198,8 +197,6 @@ test("card refresh retains focused checkbox nodes when available choices are unc
     filter[`${axis}NoMatchesTarget`] = { ...element(), before(...entries) { options.push(...entries) } }
     filter[`${axis}SearchTarget`] = { ...element(), value: "", focus() { document.activeElement = this } }
     filter[`${axis}DropdownTarget`] = element()
-    filter[`${axis}CountTarget`] = element()
-    filter[`${axis}ClearTarget`] = { ...element(), disabled: true }
   }
   const card = (score) => ({ dataset: {
     bowlTitle: "Shared Bowl", homeTeamId: "4", homeTeamSchool: "Home",
@@ -241,7 +238,6 @@ test("card refresh filters replacement options without reopening a dismissed dro
   filter.bowlNoMatchesTarget = element()
   filter.teamNoMatchesTarget = element()
   filter.conferenceNoMatchesTarget = element()
-  filter.updateClearButtons = () => {}
   filter.update = () => {}
   filter.rebuildOptions = (axis, entries) => {
     filter[`${axis}OptionTargets`] = entries.map(([, text]) => element(text))

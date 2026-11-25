@@ -87,21 +87,19 @@ class PicksTest < ActionDispatch::IntegrationTest
       assert_select "[data-picks-filter-target='gameRow']", count: 0
       assert_select "[data-picks-filter-target='gameCard']", count: 0
     end
-    assert_select "label[for=bowl-search]", text: "Bowl", count: 1
-    assert_select "label[for=user-search]", text: "User", count: 1
+    assert_select "label[for=bowl-search], label[for=user-search]", count: 0
     assert_select "input#bowl-search[type=search][placeholder='Search bowls'][aria-label='Search bowls'][aria-controls=bowl-options][aria-expanded=false][class~='w-40'][class~='max-w-full'][data-action*='input->picks-filter#search']", count: 1
     assert_select "input#user-search[type=search][placeholder='Search users'][aria-label='Search users'][aria-controls=user-options][aria-expanded=false][class~='w-40'][class~='max-w-full'][data-action*='input->picks-filter#search']", count: 1
-    assert_select "button[type=button][aria-label='Clear bowl filter'][title='Clear bowl filter'][data-picks-filter-target=bowlClear][data-action='click->picks-filter#clear'][disabled][hidden].hidden", count: 1 do
-      assert_select "svg[aria-hidden=true]", count: 1
+    assert_select "[data-picks-filter-target='bowlClear'], [data-picks-filter-target='userClear'], [data-picks-filter-target='bowlCount'], [data-picks-filter-target='userCount']", count: 0
+    assert_select "button[aria-label^='Clear']", count: 0
+    %w[bowl user].each do |axis|
+      assert_select "##{axis}-search.rounded.border.border-neutral-300.bg-white.dark\\:border-neutral-600.dark\\:bg-neutral-900", count: 1
+      assert_select "##{axis}-options[hidden][data-picks-filter-target=#{axis}Dropdown].rounded.border.border-neutral-300.bg-white.dark\\:border-neutral-600.dark\\:bg-neutral-900", count: 1
+      assert_select "##{axis}-options[class~='mt-1'][class~='p-2'][class~='shadow-lg']", count: 1
+      assert_select "div.relative.min-w-0 > div.flex.min-w-0 > input##{axis}-search[class~='w-40'][class~='max-w-full'][class~='min-w-44']", count: 1
+      alignment = axis == "bowl" ? "left-0" : "right-0"
+      assert_select "div.relative.min-w-0 > div##{axis}-options[class~='w-full'][class~='#{alignment}'][class~='min-w-44']", count: 1
     end
-    assert_select "button[type=button][aria-label='Clear user filter'][title='Clear user filter'][data-picks-filter-target=userClear][data-action='click->picks-filter#clear'][disabled][hidden].hidden", count: 1 do
-      assert_select "svg[aria-hidden=true]", count: 1
-    end
-    assert_select "button[aria-label^='Clear'][data-action='click->picks-filter#clear']", text: "Clear", count: 0
-    assert_select "#bowl-options[hidden][data-picks-filter-target=bowlDropdown]", count: 1
-    assert_select "#user-options[hidden][data-picks-filter-target=userDropdown]", count: 1
-    assert_select "[data-picks-filter-target='bowlCount']", text: "All"
-    assert_select "[data-picks-filter-target='userCount']", text: "All"
     assert_select "[data-picks-filter-target='bowlOption'][hidden] input[type=checkbox][data-action='change->picks-filter#update']", count: 3
     assert_select "[data-picks-filter-target='userOption'][hidden] input[type=checkbox][data-action='change->picks-filter#update']", count: 2
     assert_select "[data-picks-filter-target='bowlOption'] input[checked]", count: 0
@@ -121,10 +119,7 @@ class PicksTest < ActionDispatch::IntegrationTest
     assert_select "form[method=get]", count: 0
 
     get picks_path, params: { selected_user_ids: [ "", users(:two).id.to_s, "999999" ] }
-    assert_select "[data-picks-filter-target='userCount']", text: "1 selected"
-    assert_select "button[aria-label='Clear user filter']:not([disabled])", count: 1
-    assert_select "button[aria-label='Clear user filter']:not([hidden]):not(.hidden)", count: 1
-    assert_select "button[aria-label='Clear bowl filter'][disabled][hidden].hidden", count: 1
+    assert_select "[data-picks-filter-target='bowlClear'], [data-picks-filter-target='userClear'], [data-picks-filter-target='bowlCount'], [data-picks-filter-target='userCount']", count: 0
     assert_select "[data-picks-filter-target='userOption'] input[type=checkbox][checked]", count: 1
     assert_select "thead th.hidden", text: "First Fan", count: 1
     assert_select "thead th", text: "Second Fan", count: 1

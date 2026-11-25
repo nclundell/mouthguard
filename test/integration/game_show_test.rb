@@ -116,13 +116,13 @@ class GameShowTest < ActionDispatch::IntegrationTest
     assert_equal "font/ttf", response.media_type
   end
 
-  test "locked game without selections shows empty states on both sides" do
+  test "locked game without selections keeps both side panels empty" do
     game = Game.create!(cfbd_id: 92_009, start: 1.hour.ago)
     sign_in_as users(:one)
 
     get game_path(game)
 
-    assert_select "[data-picks-side] p", text: "No picks yet", count: 2
+    assert_select "[data-picks-side] p", count: 0
     assert_select "[data-picks-side] ul", count: 0
     assert_select "[data-picks-side='away'][aria-label='Away picks'][class~='hidden'][class~='lg:block']", count: 1
     assert_select "[data-picks-side='home'][aria-label='Home picks'][class~='hidden'][class~='lg:block']", count: 1
@@ -142,7 +142,8 @@ class GameShowTest < ActionDispatch::IntegrationTest
     get game_path(game)
 
     assert_select "[data-picks-side='away'] ul li", text: "Away Fan", count: 1
-    assert_select "[data-picks-side='home'] p", text: "No picks yet"
+    assert_select "[data-picks-side='home'] p", count: 0
+    assert_select "[data-picks-side='home'] ul", count: 0
     assert_select "[data-picks-side]", text: /No Selection Fan/, count: 0
     assert_select "[data-mobile-picks]", count: 0
   end

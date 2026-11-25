@@ -4,14 +4,9 @@
   <div class="mt-6 hidden gap-3 sm:flex" data-picks-filter-target="controls">
     <div class="relative min-w-0">
       <div class="flex min-w-0 items-center gap-2">
-        <label for="bowl-search" class="shrink-0 text-sm font-medium">Bowl</label>
-        <input id="bowl-search" type="search" autocomplete="off" placeholder="Search bowls" aria-label="Search bowls" aria-controls="bowl-options" aria-expanded="false" data-picks-filter-target="bowlSearch" data-action="input->picks-filter#search focus->picks-filter#search" class="min-w-0 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
+        <input id="bowl-search" type="search" autocomplete="off" placeholder="Search bowls" aria-label="Search bowls" aria-controls="bowl-options" aria-expanded="false" data-picks-filter-target="bowlSearch" data-action="input->picks-filter#search focus->picks-filter#search" class="min-w-44 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
       </div>
-      <div class="flex items-center gap-1">
-        <span class="text-xs text-neutral-500" data-picks-filter-target="bowlCount">All</span>
-        <button type="button" aria-label="Clear bowl filter" title="Clear bowl filter" data-picks-filter-target="bowlClear" data-action="click->picks-filter#clear" disabled hidden class="hidden shrink-0 text-sm text-pine-700 disabled:opacity-50 dark:text-pine-400"><%= icon "x", variant: "outline", class: "size-4", "aria-hidden": true %></button>
-      </div>
-      <div id="bowl-options" hidden data-picks-filter-target="bowlDropdown" class="absolute left-0 z-30 mt-1 w-full min-w-44 rounded-lg border border-neutral-200 bg-white p-2 shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
+      <div id="bowl-options" hidden data-picks-filter-target="bowlDropdown" class="absolute left-0 z-30 mt-1 w-full min-w-44 rounded border border-neutral-300 bg-white p-2 shadow-lg dark:border-neutral-600 dark:bg-neutral-900">
         <div class="max-h-60 overflow-y-auto">
           <% @bowl_titles.each do |title| %>
             <label hidden class="flex items-center gap-2 py-1 text-sm" data-picks-filter-target="bowlOption">
@@ -25,14 +20,9 @@
     </div>
     <div class="relative min-w-0">
       <div class="flex min-w-0 items-center gap-2">
-        <label for="user-search" class="shrink-0 text-sm font-medium">User</label>
-        <input id="user-search" type="search" autocomplete="off" placeholder="Search users" aria-label="Search users" aria-controls="user-options" aria-expanded="false" data-picks-filter-target="userSearch" data-action="input->picks-filter#search focus->picks-filter#search" class="min-w-0 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
+        <input id="user-search" type="search" autocomplete="off" placeholder="Search users" aria-label="Search users" aria-controls="user-options" aria-expanded="false" data-picks-filter-target="userSearch" data-action="input->picks-filter#search focus->picks-filter#search" class="min-w-44 w-40 max-w-full rounded border border-neutral-300 bg-white px-2 py-1 text-sm dark:border-neutral-600 dark:bg-neutral-900">
       </div>
-      <div class="flex items-center gap-1">
-        <span class="text-xs text-neutral-500" data-picks-filter-target="userCount"><%= @selected_user_ids.any? ? "#{@selected_user_ids.size} selected" : "All" %></span>
-        <button type="button" aria-label="Clear user filter" title="Clear user filter" data-picks-filter-target="userClear" data-action="click->picks-filter#clear" <%= "disabled hidden" if @selected_user_ids.empty? %> class="<%= "hidden " if @selected_user_ids.empty? %>shrink-0 text-sm text-pine-700 disabled:opacity-50 dark:text-pine-400"><%= icon "x", variant: "outline", class: "size-4", "aria-hidden": true %></button>
-      </div>
-      <div id="user-options" hidden data-picks-filter-target="userDropdown" class="absolute right-0 z-30 mt-1 w-full min-w-44 rounded-lg border border-neutral-200 bg-white p-2 shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
+      <div id="user-options" hidden data-picks-filter-target="userDropdown" class="absolute right-0 z-30 mt-1 w-full min-w-44 rounded border border-neutral-300 bg-white p-2 shadow-lg dark:border-neutral-600 dark:bg-neutral-900">
         <div class="max-h-60 overflow-y-auto">
           <% @users.each do |user| %>
             <label hidden class="flex items-center gap-2 py-1 text-sm" data-picks-filter-target="userOption">
