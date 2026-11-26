@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
-  post "/rails/active_storage/direct_uploads", to: "image_direct_uploads#create"
   mount RailsIcons::Engine, at: "/rails_icons"
+  mount MissionControl::Jobs::Engine, at: "/jobs"
+
+  post "/rails/active_storage/direct_uploads", to: "image_direct_uploads#create"
   resource :session
   resource :registration, only: [ :new, :create ]
   resource :profile, only: [ :show, :edit, :update ]
