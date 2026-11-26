@@ -46,6 +46,17 @@ class DashboardTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", leaders_path, text: /Leaders/
   end
 
+  test "scoreboard clips outer overflow while keeping its track scrollable" do
+    dashboard_game("First", start: 1.day.from_now)
+    dashboard_game("Second", start: 2.days.from_now)
+
+    get root_path
+
+    assert_select "div.relative.mt-5.overflow-x-clip > [data-game-carousel-target=track].flex.overflow-x-auto", count: 1
+    assert_select "[data-game-carousel-target=track] > [data-game-carousel-target=slide]", count: 2
+    assert_select "div.relative.mt-5 > button[data-game-carousel-control]", count: 2
+  end
+
   test "scoreboard focuses next upcoming when no games are live" do
     future = dashboard_game("Next up", start: 1.day.from_now)
     dashboard_game("Later", start: 2.days.from_now)
