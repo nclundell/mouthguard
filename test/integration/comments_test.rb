@@ -331,6 +331,10 @@ class CommentsTest < ActionDispatch::IntegrationTest
     assert_equal "Animated photo", images.first["alt"]
     assert images.all? { |image| image["loading"] == "lazy" && image["referrerpolicy"] == "no-referrer" }
     assert_equal %w[PNG JPG JPEG WEBP], images.drop(1).map { |image| image["alt"] }
+    assert_equal 5, node.css("a:has(> img.comment-attachment-image)").size
+    assert_equal "https://example.com/picture.GIF?size=large&v=2", images.first.parent["href"]
+    assert_empty node.css("a:has(> img.comment-attachment-image)").map { |link| link.text.strip }.reject(&:empty?)
+    assert_equal "Gallery", node.css("a[href='https://example.com/gallery']").sole.text
     assert_equal 1, node.css("a[href='https://example.com/gallery']").size
     assert_equal 1, node.css("a[href='https://example.com/photo.jpg/other']").size
     assert_equal 1, node.css("a[href='https://example.com/vector.svg']").size
@@ -338,6 +342,24 @@ class CommentsTest < ActionDispatch::IntegrationTest
     assert_equal 1, node.css("a[href='http://example.com/photo.gif']").size
     assert_empty node.css("img[src^='http:'], img[src^='ftp:'], img[src$='.svg']")
     assert_empty node.css("img[src^='javascript:']")
+  end
+
+  test "plain-text Giphy and PNG image URLs render inline without changing surrounding text" do
+    sign_in_as users(:one)
+    gif = "https://media.giphy.com/media/abc123/source.gif"
+    png = "https://example.com/photo.png?width=200#preview"
+    comment = Comment.create!(user: users(:one), body: "<p>Look (#{gif}), then #{png}! Done.</p>")
+
+    get threads_path
+
+    node = css_select("li#comment_#{comment.id} .lexxy-content p").sole
+    images = node.css("img.comment-attachment-image")
+    assert_equal [ gif, png ], images.map { |image| image["src"] }
+    assert_equal [ "source.gif", "photo.png" ], images.map { |image| image["alt"] }
+    assert images.all? { |image| image["loading"] == "lazy" && image["referrerpolicy"] == "no-referrer" }
+    assert_equal "Look (), then ! Done.", node.text
+    assert_equal "Look (#{gif}), then #{png}! Done.",
+      node.children.map { |child| child.name == "img" ? child["src"] : child.text }.join
   end
 
   test "raw reveal controls cannot be injected into comments" do
