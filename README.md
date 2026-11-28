@@ -37,9 +37,9 @@ with users that already exist.
 Direct HTTPS GIF, PNG, JPG, JPEG, and WebP URLs appear as images while editing
 comments. The editor submits the original URL as text, not an attachment;
 existing comment rendering still handles the URL. A preview is an atomic editor
-node: Backspace or Delete beside it first selects it, then a second press
-removes it and its URL. To change a URL, remove the preview and retype or paste
+node: Backspace or Delete beside it removes it and its URL in one press.
+To change a URL, remove the preview and retype or paste
 the link. Type whitespace after a URL to show its preview when typing; until
 then, the URL remains editable so queries and fragments can be completed.
-Pasted URLs preview immediately, even without
-trailing whitespace or at the end of a paragraph.
+Pasted URLs and complete URLs delivered in a single browser text-insertion event
+preview immediately, even without trailing whitespace or at the end of a paragraph.
