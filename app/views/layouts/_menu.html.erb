@@ -28,7 +28,7 @@
   <div class="absolute inset-x-0 top-full z-20 w-full bg-black text-neutral-100">
     <div class="mx-auto max-w-6xl px-5 py-2">
       <nav aria-label="Mobile navigation">
-        <% { "Picks" => picks_path, "Games" => games_path, "Leaders" => leaders_path, "Legends" => legends_path }.each do |title, path| %>
+        <% { "Games" => games_path, "Picks" => picks_path, "Leaders" => leaders_path, "Legends" => legends_path, "Threads" => threads_path }.each do |title, path| %>
           <%= link_to title, path, class: "flex min-h-11 items-center rounded-md px-3 font-medium text-neutral-100 hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-500" %>
         <% end %>
       </nav>

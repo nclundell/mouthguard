@@ -1,7 +1,7 @@
 <li id="<%= dom_id(comment) %>" data-comment-id="<%= comment.id %>" class="border-b border-pine-600/20 pb-4 last:border-0 last:pb-0 dark:border-pine-500/30">
   <div class="flex flex-wrap items-baseline gap-x-3 text-sm">
     <span class="font-semibold text-pine-950 dark:text-pine-400"><%= comment.user.name.presence || comment.user.email_address %></span>
-    <time datetime="<%= comment.created_at.iso8601 %>" class="text-neutral-600 dark:text-neutral-300"><%= comment.created_at.strftime("%b %-d, %Y at %-I:%M %p") %></time>
+    <time datetime="<%= comment.created_at.iso8601 %>" class="text-neutral-600 dark:text-neutral-300"><%= time_ago_in_words(comment.created_at) %> ago</time>
   </div>
-  <div class="mt-2 break-words text-neutral-900 dark:text-neutral-100"><%= comment.body %></div>
+  <div class="mt-2 break-words text-neutral-900 dark:text-neutral-100"><%= comment_body_with_images(comment) %></div>
 </li>

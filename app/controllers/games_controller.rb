@@ -15,6 +15,13 @@ class GamesController < ApplicationController
 
   def show
     @game = Game.find(params[:id])
+    if params[:older_before].present?
+      load_older_comments
+      return render partial: "shared/comments_feed", layout: false,
+        locals: { comments: @comments, page: params[:page].to_i.clamp(2, 10_000),
+                  has_older_comments: @has_older_comments, page_path: game_path(@game), chat: true, game_chat: true }
+    end
+
     load_comments(@game.comments.current)
     @comment = Comment.new
     @picks_visible = @game.locked?
@@ -28,6 +35,24 @@ class GamesController < ApplicationController
                :home
              end
       @pick_names_by_side[side] << (pick.user&.name.presence || "Player") if side && pick.user
+    end
+  end
+
+  private
+
+  def load_older_comments
+    scope = @game.comments.current
+    anchor = scope.find_by(id: params[:older_before])
+    if anchor
+      entries = scope.includes(:user, :rich_text_body)
+        .where("comments.created_at < :time OR (comments.created_at = :time AND comments.id < :id)",
+          time: anchor.created_at, id: anchor.id)
+        .order(created_at: :desc, id: :desc).limit(26).to_a
+      @has_older_comments = entries.size > 25
+      @comments = entries.first(25).reverse
+    else
+      @has_older_comments = false
+      @comments = []
     end
   end
 end

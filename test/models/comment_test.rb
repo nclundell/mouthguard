@@ -4,10 +4,10 @@ require "turbo/broadcastable/test_helper"
 class CommentTest < ActiveSupport::TestCase
   include Turbo::Broadcastable::TestHelper
 
-  test "general comments replace the feed only on the dashboard" do
+  test "general comments replace the feed only on Threads" do
     game = Game.create!(cfbd_id: 13_002)
     comment = nil
-    streams = capture_turbo_stream_broadcasts("dashboard_comments") do
+    streams = capture_turbo_stream_broadcasts("threads_comments") do
       assert_turbo_stream_broadcasts "game_comments_#{game.id}", count: 0 do
         comment = Comment.create!(user: users(:one), body: "<p>Welcome everyone!</p>")
       end
@@ -21,11 +21,23 @@ class CommentTest < ActiveSupport::TestCase
     assert_equal comment.created_at.iso8601, entry.at_css("time")["datetime"]
   end
 
+  test "live comment feed renders direct image links like the page" do
+    streams = capture_turbo_stream_broadcasts("threads_comments") do
+      Comment.create!(user: users(:one), body: '<p><a href="https://example.com/photo.webp?width=200">Photo</a></p>')
+    end
+
+    image = streams.sole.at_css("template li .lexxy-content img.comment-attachment-image")
+    assert_equal "https://example.com/photo.webp?width=200", image["src"]
+    assert_equal "Photo", image["alt"]
+    assert_equal "lazy", image["loading"]
+    assert_equal "no-referrer", image["referrerpolicy"]
+  end
+
   test "game comments broadcast only to their own game's comments stream" do
     game = Game.create!(cfbd_id: 13_003)
     other = Game.create!(cfbd_id: 13_004)
     streams = capture_turbo_stream_broadcasts("game_comments_#{game.id}") do
-      assert_turbo_stream_broadcasts "dashboard_comments", count: 0 do
+      assert_turbo_stream_broadcasts "threads_comments", count: 0 do
         assert_turbo_stream_broadcasts "game_comments_#{other.id}", count: 0 do
           Comment.create!(user: users(:two), game: game, body: "Go team!")
         end
@@ -35,6 +47,28 @@ class CommentTest < ActiveSupport::TestCase
     assert_equal [ "replace" ], streams.map { |stream| stream["action"] }
     assert_equal "comments_feed", streams.first["target"]
     assert_equal "Go team!", streams.first.at_css("template li .break-words").text.strip
+  end
+
+  test "game comments replace only their Threads card with the current-season count" do
+    game = Game.create!(cfbd_id: 13_010, season: Current.season, start: 1.hour.ago)
+    other = Game.create!(cfbd_id: 13_011, season: Current.season)
+    old = Comment.create!(user: users(:one), game: game, body: "Old")
+    old.update_column(:season, Current.season - 1)
+
+    streams = capture_turbo_stream_broadcasts("threads_games") do
+      assert_turbo_stream_broadcasts "threads_comments", count: 0 do
+        assert_turbo_stream_broadcasts "game_comments_#{other.id}", count: 0 do
+          Comment.create!(user: users(:two), game: game, body: "First")
+          Comment.create!(user: users(:two), game: game, body: "Second")
+        end
+      end
+    end
+
+    assert_equal 2, streams.size
+    assert_equal [ "replace", "replace" ], streams.map { |stream| stream["action"] }
+    assert_equal [ "threads_game_#{game.id}" ] * 2, streams.map { |stream| stream["target"] }
+    assert_equal [ "1 comment", "2 comments" ], streams.map { |stream| stream.at_css("template a span").text }
+    assert_equal [ "live", "live" ], streams.map { |stream| stream.at_css("template a")["data-game-status"] }
   end
 
   test "new general and game comments use the current season even when another season is supplied" do
@@ -55,13 +89,13 @@ class CommentTest < ActiveSupport::TestCase
     old.update_column(:season, Current.season - 1)
     legacy.update_column(:season, nil)
 
-    streams = capture_turbo_stream_broadcasts("dashboard_comments") do
+    streams = capture_turbo_stream_broadcasts("threads_comments") do
       Comment.create!(user: users(:two), body: "Newest")
     end
 
     feed = streams.sole.at_css("template #comments_feed")
     assert_equal 25, feed.css("ol#comments_list > li").size
-    assert_equal 1, feed.css("a[href='/?page=2#comments']").size
+    assert_equal 1, feed.css("a[href='/threads?page=2#comments']").size
     assert_not_includes feed.text, "Older season"
     assert_not_includes feed.text, "Unseasoned"
   end
@@ -80,23 +114,25 @@ class CommentTest < ActiveSupport::TestCase
     assert_not_includes feed.text, "Older season"
   end
 
-  test "live dashboard feed stays at 25 and gains Older when the 26th arrives" do
+  test "live Threads feed stays at 25 and gains Older when the 26th arrives" do
     25.times { |i| Comment.create!(user: users(:one), body: "General #{i}") }
     game = Game.create!(cfbd_id: 13_005)
     Comment.create!(user: users(:two), game: game, body: "Not general")
 
-    streams = capture_turbo_stream_broadcasts("dashboard_comments") do
+    streams = capture_turbo_stream_broadcasts("threads_comments") do
       Comment.create!(user: users(:two), body: "Newest general")
     end
 
     feed = streams.sole.at_css("template #comments_feed")
     assert_equal 25, feed.css("ol#comments_list > li").size
-    assert_equal "Newest general", feed.at_css("ol#comments_list > li .break-words").text.strip
-    assert_equal 1, feed.css("a[href='/?page=2#comments']").size
+    assert_equal "General 1", feed.at_css("ol#comments_list > li .break-words").text.strip
+    assert_equal "Newest general", feed.css("ol#comments_list > li .break-words").last.text.strip
+    assert feed.at_css("nav.threads-pages + ol#comments_list.threads-list")
+    assert_equal 1, feed.css("a[href='/threads?page=2#comments']").size
     assert_not_includes feed.text, "Not general"
   end
 
-  test "live game feed contains only its game's newest 25 and Older link" do
+  test "live game replacement keeps chronological chat and an Older link" do
     game = Game.create!(cfbd_id: 13_006)
     other = Game.create!(cfbd_id: 13_007)
     25.times { |i| Comment.create!(user: users(:one), game: game, body: "Game #{i}") }
@@ -108,8 +144,12 @@ class CommentTest < ActiveSupport::TestCase
     end
 
     feed = streams.sole.at_css("template #comments_feed")
+    assert_equal "threads-feed", feed["class"]
+    assert feed.at_css("nav.threads-pages + ol#comments_list.threads-list")
+    assert feed.at_css("nav.threads-pages a[data-action='threads-order#loadOlder']")
     assert_equal 25, feed.css("ol#comments_list > li").size
-    assert_equal "Newest game", feed.at_css("ol#comments_list > li .break-words").text.strip
+    assert_equal (1..24).map { |i| "Game #{i}" } + [ "Newest game" ],
+      feed.css("ol#comments_list > li .break-words").map { |node| node.text.strip }
     assert_equal 1, feed.css("a[href='#{Rails.application.routes.url_helpers.game_path(game)}?page=2#comments']").size
     assert_not_includes feed.text, "Other game"
     assert_not_includes feed.text, "General"
@@ -117,7 +157,7 @@ class CommentTest < ActiveSupport::TestCase
 
   test "rolled-back creations and updates do not broadcast comments" do
     comment = Comment.create!(user: users(:one), body: "Before")
-    assert_turbo_stream_broadcasts "dashboard_comments", count: 0 do
+    assert_turbo_stream_broadcasts "threads_comments", count: 0 do
       Comment.transaction do
         Comment.create!(user: users(:one), body: "Rolled back")
         raise ActiveRecord::Rollback

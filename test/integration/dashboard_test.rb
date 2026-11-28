@@ -220,15 +220,28 @@ class DashboardTest < ActionDispatch::IntegrationTest
     assert_select "[data-scoreboard-empty] a[href=?]", games_path
   end
 
-  test "desktop navigation lists picks before games" do
+  test "desktop navigation lists games before picks" do
     sign_in_as users(:one)
 
     get root_path
 
     assert_response :success
     assert_select "header nav[aria-label='Main navigation'] > a" do |links|
-      assert_equal %w[Games Picks Leaders Legends], links.map(&:text)
+      assert_equal %w[Games Picks Leaders Legends Threads], links.map(&:text)
     end
+  end
+
+  test "signed-in dashboard does not embed general comments" do
+    Comment.create!(user: users(:one), body: "General discussion")
+    sign_in_as users(:one)
+
+    get root_path
+
+    assert_response :success
+    assert_select "section[data-comments]", count: 0
+    assert_select "main", text: /General discussion/, count: 0
+    assert_select "header nav[aria-label='Main navigation'] a[href=?]", threads_path, text: "Threads"
+    assert_select "nav[aria-label='Mobile navigation'] a[href=?]", threads_path, text: "Threads"
   end
 
   test "navbar has mobile sticky classes and remains before main" do
@@ -341,7 +354,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "details.sm\\:hidden" do
       assert_select "nav[aria-label='Mobile navigation'] > a" do |links|
-        assert_equal %w[Picks Games Leaders Legends], links.map(&:text)
+        assert_equal %w[Games Picks Leaders Legends Threads], links.map(&:text)
       end
       assert_select "nav + br + hr + br + div.flex.items-center", text: /Pat Example/
       assert_select "a[href=?]", profile_path, text: "My Profile"
@@ -400,7 +413,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
     end
     assert_select "header a[href=?] > svg[data-icon=mouthguard][aria-hidden=true] + span", root_path, text: "Mouthguard", count: 1
     assert_select "header nav[aria-label='Main navigation'] > a" do |links|
-      assert_equal %w[Games Picks Leaders Legends], links.map(&:text)
+      assert_equal %w[Games Picks Leaders Legends Threads], links.map(&:text)
     end
     assert_select "header [data-theme-toggle]", count: 1
     assert_select "header > div.flex-wrap > div.items-center.gap-2 > div.sm\\:flex a.h-11.w-40[href=?]", new_session_path, text: "Sign In", count: 1
@@ -408,7 +421,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
     assert_select "header details.sm\\:hidden", count: 1 do
       assert_select "summary span.sr-only", text: "Open navigation menu"
       assert_select "nav[aria-label='Mobile navigation'] > a" do |links|
-        assert_equal %w[Picks Games Leaders Legends], links.map(&:text)
+        assert_equal %w[Games Picks Leaders Legends Threads], links.map(&:text)
       end
       assert_select "nav + br + hr + br + a[href=?]", new_session_path, text: "Sign In", count: 1
       assert_select "a[href=?]", profile_path, count: 0

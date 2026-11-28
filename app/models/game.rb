@@ -47,5 +47,7 @@ class Game < ApplicationRecord
     broadcast_replace_to "games", target: self, partial: "games/game_card", locals: { game: self }
     broadcast_replace_to "dashboard_games", target: self, partial: "dashboard/scoreboard_game", locals: { game: self }
     broadcast_replace_to self, target: "game_hero_#{id}", partial: "games/game_hero", locals: { game: self }
+    broadcast_replace_to "threads_games", target: "threads_game_#{id}", partial: "threads/game_card",
+      locals: { game: self, comment_count: comments.current.count }
   end
 end

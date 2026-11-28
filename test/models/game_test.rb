@@ -16,6 +16,25 @@ class GameTest < ActiveSupport::TestCase
     assert_equal "14", streams.first.at_css("template a#game_#{game.id} span.text-lg").text
   end
 
+  test "broadcasts a recalculated Threads card after a game update commits" do
+    game = Game.create!(cfbd_id: 101, season: Current.season, notes: "Before", start: 1.hour.ago)
+    Comment.create!(user: users(:one), game: game, body: "First")
+
+    streams = capture_turbo_stream_broadcasts("threads_games") do
+      assert_turbo_stream_broadcasts "threads_comments", count: 0 do
+        game.update!(notes: "After", completed: true)
+      end
+    end
+
+    assert_equal 1, streams.size
+    assert_equal "replace", streams.first["action"]
+    assert_equal "threads_game_#{game.id}", streams.first["target"]
+    card = streams.first.at_css("template a#threads_game_#{game.id}")
+    assert_equal "final", card["data-game-status"]
+    assert_equal "After", card.at_css("h3").text
+    assert_equal "1 comment", card.at_css("span").text
+  end
+
   test "broadcasts the updated hero to the game's stream" do
     game = Game.create!(cfbd_id: 102, notes: "Before", start: 1.hour.ago)
 

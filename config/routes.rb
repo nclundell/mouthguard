@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   resource :profile, only: [ :show, :edit, :update ]
   resources :passwords, param: :token
   root "dashboard#index"
+  get "threads", to: "threads#index"
   get "picks", to: "picks#index"
   get "my_picks", to: "my_picks#index"
   patch "my_picks/:id", to: "my_picks#update", as: :my_pick

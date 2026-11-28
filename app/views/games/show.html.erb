@@ -3,7 +3,7 @@
   <%= render "pick_side", side: "away", visible: @picks_visible, names: @pick_names_by_side&.fetch(:away) %>
   <div data-game-content class="min-w-0">
     <%= render "game_hero", game: @game %>
-    <%= render "shared/comments", comments: @comments, comment: @comment, form_url: game_comments_path(@game, page: (@comment_page if @comment_page > 1)), page_path: game_path(@game), page: @comment_page, has_older_comments: @has_older_comments, stream_name: "game_comments_#{@game.id}" %>
+    <%= render "shared/comments", comments: @comments.reverse, comment: @comment, form_url: game_comments_path(@game, page: (@comment_page if @comment_page > 1)), page_path: game_path(@game), page: @comment_page, has_older_comments: @has_older_comments, stream_name: "game_comments_#{@game.id}", game_chat: true %>
   </div>
   <%= render "pick_side", side: "home", visible: @picks_visible, names: @pick_names_by_side&.fetch(:home) %>
 </div>

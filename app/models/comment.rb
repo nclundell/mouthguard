@@ -55,11 +55,15 @@ class Comment < ApplicationRecord
   end
 
   def broadcast_comment
-    stream = game_id ? "game_comments_#{game_id}" : "dashboard_comments"
+    stream = game_id ? "game_comments_#{game_id}" : "threads_comments"
     scope = game_id ? Comment.current.where(game_id: game_id) : Comment.current.where(game_id: nil)
     entries = scope.includes(:user, :rich_text_body).order(created_at: :desc, id: :desc).limit(26).to_a
     broadcast_replace_to stream, target: "comments_feed", partial: "shared/comments_feed",
-      locals: { comments: entries.first(25), page: 1, has_older_comments: entries.size > 25,
-                page_path: game_id ? Rails.application.routes.url_helpers.game_path(game_id) : Rails.application.routes.url_helpers.root_path }
+      locals: { comments: entries.first(25).reverse, chat: true, game_chat: game_id.present?, page: 1, has_older_comments: entries.size > 25,
+                page_path: game_id ? Rails.application.routes.url_helpers.game_path(game_id) : Rails.application.routes.url_helpers.threads_path }
+    if game_id
+      broadcast_replace_to "threads_games", target: "threads_game_#{game_id}", partial: "threads/game_card",
+        locals: { game: game, comment_count: game.comments.current.count }
+    end
   end
 end

@@ -37,9 +37,17 @@ class Turbo::StreamsChannelTest < ActionCable::Channel::TestCase
     assert_no_streams
   end
 
+  test "guest cannot subscribe to Threads game updates" do
+    stub_connection(current_user: nil)
+    subscribe signed_stream_name: Turbo::StreamsChannel.signed_stream_name([ "threads_games" ])
+
+    assert subscription.rejected?
+    assert_no_streams
+  end
+
   test "guest cannot subscribe to signed comments streams" do
     stub_connection(current_user: nil)
-    [ "dashboard_comments", "game_comments_123" ].each do |stream|
+    [ "threads_comments", "game_comments_123" ].each do |stream|
       subscribe signed_stream_name: Turbo::StreamsChannel.signed_stream_name([ stream ])
       assert subscription.rejected?
       assert_no_streams
@@ -52,6 +60,22 @@ class Turbo::StreamsChannelTest < ActionCable::Channel::TestCase
 
     assert subscription.rejected?
     assert_no_streams
+  end
+
+  test "signed-in user can subscribe to threads comments stream" do
+    stub_connection(current_user: users(:one))
+    subscribe signed_stream_name: Turbo::StreamsChannel.signed_stream_name([ "threads_comments" ])
+
+    assert subscription.confirmed?
+    assert_has_stream "threads_comments"
+  end
+
+  test "signed-in user can subscribe to Threads game updates" do
+    stub_connection(current_user: users(:one))
+    subscribe signed_stream_name: Turbo::StreamsChannel.signed_stream_name([ "threads_games" ])
+
+    assert subscription.confirmed?
+    assert_has_stream "threads_games"
   end
 
   test "signed-in user can still subscribe to game streams" do

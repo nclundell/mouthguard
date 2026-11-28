@@ -11,6 +11,14 @@
   font-family: "Permanent Marker", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
 }
 
+.threads-games-track {
+  scrollbar-width: none;
+}
+
+.threads-games-track::-webkit-scrollbar {
+  display: none;
+}
+
 [data-picks-filter-target][hidden] {
   display: none !important;
 }
@@ -21,6 +29,274 @@ button[data-games-filter-target][hidden] {
 
 .picks-mobile-heading {
   top: var(--navbar-height, 0px);
+}
+
+section:is(.threads-comments, .game-chat) lexxy-editor.comment-composer {
+  --lexxy-editor-rows: 2lh;
+}
+
+section.threads-comments .threads-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+section.game-chat .threads-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  section:is(.threads-comments, .game-chat) {
+    height: 70dvh;
+    min-height: 24rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  section:is(.threads-comments, .game-chat) .threads-feed {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-anchor: none;
+    overscroll-behavior: contain;
+  }
+
+  section:is(.threads-comments, .game-chat) .threads-composer {
+    flex: none;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgb(67 125 104 / 30%);
+  }
+}
+
+@media (max-width: 639px) {
+  section.threads-comments lexxy-editor.comment-composer {
+    --lexxy-editor-rows: 1lh;
+  }
+
+  section.game-chat lexxy-editor.comment-composer {
+    --lexxy-editor-rows: 1lh;
+  }
+
+  body.threads-layout {
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  body.threads-layout > header {
+    flex: none;
+  }
+
+  body.threads-layout > main {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding-top: 1rem;
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+    padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  }
+
+  body.threads-layout > main > section[aria-labelledby="threads-games-heading"] {
+    flex: none;
+    margin-bottom: 1rem;
+  }
+
+  body.threads-layout > main > h1 {
+    flex: none;
+  }
+
+  body.threads-layout section.threads-comments {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin-top: 1rem;
+  }
+
+  body.threads-layout section.threads-comments .threads-feed {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-anchor: none;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+
+  body.threads-layout section.threads-comments .threads-feed::-webkit-scrollbar {
+    display: none;
+  }
+
+  body.threads-layout section.threads-comments .threads-composer {
+    flex: none;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgb(67 125 104 / 30%);
+  }
+
+  body.game-show-layout {
+    height: 100dvh;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  body.game-show-layout > header {
+    flex: none;
+  }
+
+  body.game-show-layout > main {
+    flex: 1;
+    min-height: 0;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    padding-top: 1rem;
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+    padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  }
+
+  body.game-show-layout [data-picks-layout] {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  body.game-show-layout [data-game-content] {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  body.game-show-layout [data-game-content] > section[id^="game_hero_"] {
+    flex: none;
+  }
+
+  body.game-show-layout section.game-chat {
+    flex: 1;
+    min-height: min-content;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    margin-top: 1rem;
+  }
+
+  section.game-chat .threads-feed {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    /* Keep message content out of the panel's composer-sized minimum. */
+    contain: size;
+    overflow-anchor: none;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+
+  section.game-chat .threads-feed::-webkit-scrollbar {
+    display: none;
+  }
+
+  section.game-chat .threads-composer {
+    flex: none;
+    order: 1;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgb(67 125 104 / 30%);
+  }
+}
+
+@media (max-width: 639px) and (max-height: 700px) {
+  body.game-show-layout {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+    display: block;
+  }
+
+  body.game-show-layout > main {
+    flex: none;
+    min-height: auto;
+    display: block;
+  }
+
+  body.game-show-layout [data-picks-layout] {
+    flex: none;
+    min-height: auto;
+    display: grid;
+  }
+
+  body.game-show-layout [data-game-content] {
+    flex: none;
+    min-height: auto;
+    display: block;
+  }
+
+  body.game-show-layout section.game-chat {
+    flex: none;
+    min-height: auto;
+    display: block;
+    overflow: visible;
+  }
+
+  section.game-chat .threads-feed {
+    flex: none;
+    min-height: auto;
+    overflow-y: visible;
+    contain: none;
+    overscroll-behavior: auto;
+  }
+
+  body.threads-layout {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+    display: block;
+  }
+
+  body.threads-layout > main {
+    flex: none;
+    min-height: auto;
+    display: block;
+  }
+
+  body.threads-layout section.threads-comments {
+    flex: none;
+    min-height: auto;
+    display: block;
+    overflow: visible;
+  }
+
+  body.threads-layout section.threads-comments .threads-feed {
+    flex: none;
+    min-height: auto;
+    overflow-y: visible;
+    overscroll-behavior: auto;
+  }
+}
+
+@media (max-width: 639px) and (min-height: 701px) {
+  :root.threads-js body.threads-layout .threads-feed[data-initial-scroll-pending] {
+    visibility: hidden;
+    animation: threads-feed-fallback 0s 2s forwards;
+  }
+
+  :root.threads-js body.game-show-layout section.game-chat .threads-feed[data-initial-scroll-pending] {
+    visibility: hidden;
+    animation: threads-feed-fallback 0s 2s forwards;
+  }
+}
+
+@keyframes threads-feed-fallback {
+  to { visibility: visible; }
 }
 
 :is(:root[data-theme="dark"], :root.dark) section[data-comments] {

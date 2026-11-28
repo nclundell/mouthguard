@@ -18,6 +18,9 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%= javascript_include_tag "theme", "data-turbo-track": "reload" %>
+    <% if (controller_name == "threads" && action_name == "index") || (controller_name == "games" && action_name == "show") %>
+      <script>document.documentElement.classList.add("threads-js")</script>
+    <% end %>
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "lexxy", "data-turbo-track": "reload" %>
@@ -25,7 +28,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body data-cable-session="<%= Current.session.id if authenticated? %>" class="min-h-screen bg-amber-50 bg-linear-to-b from-amber-50 to-[#f5efdf] text-neutral-900 dark:bg-neutral-950 dark:from-neutral-900 dark:to-neutral-950 dark:text-neutral-100">
+  <body data-cable-session="<%= Current.session.id if authenticated? %>" class="min-h-screen bg-amber-50 bg-linear-to-b from-amber-50 to-[#f5efdf] text-neutral-900 dark:bg-neutral-950 dark:from-neutral-900 dark:to-neutral-950 dark:text-neutral-100<%= ' threads-layout' if controller_name == 'threads' && action_name == 'index' %><%= ' game-show-layout' if controller_name == 'games' && action_name == 'show' %>">
     <%= render "layouts/navbar" %>
 
     <main class="mx-auto w-full max-w-6xl px-5 py-10 sm:py-12">

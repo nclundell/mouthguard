@@ -1,0 +1,20 @@
+<% if @games.any? %>
+  <section class="mb-8 min-w-0" aria-labelledby="threads-games-heading" data-controller="threads-carousel">
+    <%= turbo_stream_from "threads_games" %>
+      <div class="relative mt-4 min-w-0 overflow-x-clip">
+        <div data-threads-carousel-target="track" role="region" aria-label="Season games" tabindex="0" class="threads-games-track flex gap-3 overflow-x-auto px-12 py-2 scroll-px-12 focus-visible:outline-2 focus-visible:outline-pine-700">
+          <% @games.each do |game| %>
+            <%= render "threads/game_card", game: game, comment_count: @game_comment_counts.fetch(game.id, 0) %>
+          <% end %>
+        </div>
+        <div aria-hidden="true" class="pointer-events-none absolute inset-y-0 left-0 w-12 bg-linear-to-r from-amber-50 to-transparent dark:from-neutral-900"></div>
+        <div aria-hidden="true" class="pointer-events-none absolute inset-y-0 right-0 w-12 bg-linear-to-l from-amber-50 to-transparent dark:from-neutral-900"></div>
+        <button type="button" aria-label="Previous game" data-threads-carousel-target="previous" data-action="threads-carousel#previous" class="hidden absolute left-1 top-1/2 z-10 size-10 -translate-y-1/2 items-center justify-center rounded-full border border-pine-600/40 bg-white text-pine-950 shadow-sm hover:bg-pine-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-700 disabled:opacity-50 dark:bg-neutral-800 dark:text-pine-400 dark:hover:bg-neutral-700">←</button>
+        <button type="button" aria-label="Next game" data-threads-carousel-target="next" data-action="threads-carousel#next" class="hidden absolute right-1 top-1/2 z-10 size-10 -translate-y-1/2 items-center justify-center rounded-full border border-pine-600/40 bg-white text-pine-950 shadow-sm hover:bg-pine-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-700 disabled:opacity-50 dark:bg-neutral-800 dark:text-pine-400 dark:hover:bg-neutral-700">→</button>
+      </div>
+  </section>
+<% end %>
+
+<h1 class="border-l-4 border-pine-950 pl-4 text-3xl font-bold tracking-tight text-neutral-900 dark:border-pine-500 dark:text-neutral-100">Trash Talk</h1>
+
+<%= render "shared/comments", comments: @comments.reverse, comment: @comment, form_url: comments_path(page: (@comment_page if @comment_page > 1)), page_path: threads_path, page: @comment_page, has_older_comments: @has_older_comments, stream_name: "threads_comments", threads: true %>
