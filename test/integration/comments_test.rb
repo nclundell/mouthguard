@@ -27,12 +27,16 @@ class CommentsTest < ActionDispatch::IntegrationTest
     assert_equal [ "threads_comments" ], comment_stream_names
     assert_select "section[data-comments]", text: /Game-only comment/, count: 0
     assert_select "section[data-comments] form[action=?][method=post]", comments_path do
+      assert_select "[data-controller='comment-image-preview']", count: 0
       assert_select "label[for=comment_body].sr-only", text: "Your comment"
       assert_select "lexxy-editor.comment-composer[name='comment[body]'][data-direct-upload-url]", count: 1
+      assert_select "[data-comment-image-preview-target]", count: 0
       assert_select "input[type=submit][value='Post comment']"
     end
     importmap = JSON.parse(css_select('script[type="importmap"]').sole.text)
     assert_match %r{\A/assets/activestorage\.esm-[^"]+\.js\z}, importmap.fetch("imports").fetch("@rails/activestorage")
+    assert_match %r{\A/assets/lexxy_bootstrap-[^"]+\.js\z}, importmap.fetch("imports").fetch("lexxy_bootstrap")
+    assert_match %r{\A/assets/comment_image_preview-[^"]+\.js\z}, importmap.fetch("imports").fetch("comment_image_preview")
     assert_select "section.threads-comments[data-comments] #comments_feed.threads-feed + form.threads-composer", count: 1
     assert_select "#comments_feed.threads-feed > ol#comments_list.threads-list > li" do |items|
       assert_equal [older.id, newer.id].map(&:to_s), items.map { |item| item["data-comment-id"] }
@@ -132,7 +136,9 @@ class CommentsTest < ActionDispatch::IntegrationTest
     assert_select "section[data-comments]", text: /Other game comment|General comment/, count: 0
     assert_select "section[data-comments] form[action=?]", game_comments_path(game) do
       assert_select "lexxy-editor.comment-composer[name='comment[body]'][data-direct-upload-url]", count: 1
+      assert_select "[data-comment-image-preview-target]", count: 0
     end
+    assert_select "section.game-chat form[data-controller='comment-image-preview']", count: 0
     assert_select "section.game-chat[data-controller='threads-order'][data-threads-order-page-value='1'] #comments_feed.threads-feed + form.threads-composer", count: 1
     assert_select "section[data-comments] .threads-dock-spacing", count: 0
   end
@@ -360,6 +366,19 @@ class CommentsTest < ActionDispatch::IntegrationTest
     assert_equal "Look (), then ! Done.", node.text
     assert_equal "Look (#{gif}), then #{png}! Done.",
       node.children.map { |child| child.name == "img" ? child["src"] : child.text }.join
+  end
+
+  test "submitted comment HTML retains image URL text without storing an attachment" do
+    sign_in_as users(:one)
+    url = "https://example.com/a.webp?size=large#preview"
+
+    post comments_path, params: { comment: { body: "<p>Look (#{url})!</p>" } }
+
+    assert_redirected_to threads_path
+    assert_includes Comment.last.body.body.to_html, url
+    assert_not_includes Comment.last.body.body.to_html, "action-text-attachment"
+    get threads_path
+    assert_select "li#comment_#{Comment.last.id} .lexxy-content img.comment-attachment-image[src=?]", url, count: 1
   end
 
   test "raw reveal controls cannot be injected into comments" do

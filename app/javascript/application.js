@@ -1,3 +1,4 @@
+import "lexxy_bootstrap"
 // Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
 import { cable } from "@hotwired/turbo-rails"
 import "controllers"
@@ -22,5 +23,3 @@ document.addEventListener("turbo:before-render", async (event) => {
     }
   }
 })
-
-import "lexxy"
